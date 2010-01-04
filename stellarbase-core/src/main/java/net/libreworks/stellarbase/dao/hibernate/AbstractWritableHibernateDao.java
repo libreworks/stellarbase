@@ -101,7 +101,6 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 */
 	public void registerCustomEditors(PropertyEditorRegistry registry)
 	{
-		
 	}
 	
 	/**

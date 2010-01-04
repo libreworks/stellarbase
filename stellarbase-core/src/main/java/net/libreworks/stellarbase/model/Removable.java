@@ -27,7 +27,7 @@ import java.util.Date;
  * @version $Id$
  * @param <K> The type of identifier
  */
-public interface Removable<K extends Serializable> extends Identifiable<K>
+public interface Removable<K extends Serializable> extends Modifiable<K>
 {
 	/**
 	 * @return the removedBy

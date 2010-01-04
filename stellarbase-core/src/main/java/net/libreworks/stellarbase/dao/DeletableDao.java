@@ -21,7 +21,7 @@ import java.io.Serializable;
 import net.libreworks.stellarbase.model.Identifiable;
 
 /**
- * Base interface for data access objects which allow deleting or removing of entities.
+ * Base interface for data access objects which allow deleting of entities.
  * 
  * @author Jonathan Hawk
  * @version $Id$
@@ -32,9 +32,6 @@ public interface DeletableDao<T extends Identifiable<K>,K extends Serializable> 
 {
 	/**
 	 * Deletes the entity.
-	 * 
-	 * If an entity implements the removable interface, calling this method
-	 * should only set the removed fields and not actually delete the entity.
 	 * 
 	 * @param entity The entity to delete
 	 * @param by The user who did the deleting

@@ -18,10 +18,8 @@
 package net.libreworks.stellarbase.dao.hibernate;
 
 import java.io.Serializable;
-import java.util.Date;
 import net.libreworks.stellarbase.dao.DeletableDao;
 import net.libreworks.stellarbase.model.Modifiable;
-import net.libreworks.stellarbase.model.Removable;
 
 /**
  * Abstract Hibernate DAO for deletable entities 
@@ -37,13 +35,6 @@ public abstract class AbstractDeletableHibernateDao<T extends Modifiable<K>,K ex
 	 */
 	public void delete(T entity, String by)
     {
-		if ( entity instanceof Removable<?> ) {
-			Removable<?> rentity = (Removable<?>)entity;
-			rentity.setRemovedOn(new Date());
-			rentity.setRemovedBy(by);
-			getHibernateTemplate().evict(rentity);
-		} else {
-			getHibernateTemplate().delete(entity);
-		}
+		getHibernateTemplate().delete(entity);
     }
 }

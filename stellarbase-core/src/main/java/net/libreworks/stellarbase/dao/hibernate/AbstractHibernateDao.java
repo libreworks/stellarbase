@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.libreworks.stellarbase.dao.ReadableDao;
@@ -107,6 +108,9 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 	 */
 	public List<T> getByIds(final Collection<K> ids)
 	{
+		if ( ids == null || ids.isEmpty() ) {
+			return Collections.emptyList();
+		}
 		return getHibernateTemplate().execute(new HibernateCallback<List<T>>()
 		{
 			@SuppressWarnings("unchecked")
@@ -132,7 +136,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 			public T doInHibernate(Session session) throws HibernateException, SQLException
 			{
 				return (T) session.createCriteria(entityClass).add(naturalId)
-				    .uniqueResult();
+					.setCacheable(true).uniqueResult();
 			}
 		});
 	}
