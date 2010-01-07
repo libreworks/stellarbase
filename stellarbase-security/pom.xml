@@ -71,5 +71,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+        	<groupId>net.libreworks</groupId>
+        	<artifactId>stellarbase-core</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
   </dependencies>
 </project>
