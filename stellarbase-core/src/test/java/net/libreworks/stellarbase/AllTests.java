@@ -28,7 +28,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	net.libreworks.stellarbase.beans.AllTests.class,
 	net.libreworks.stellarbase.context.UpdateEventTest.class,
-	net.libreworks.stellarbase.security.AllTests.class,
 	net.libreworks.stellarbase.validation.AllTests.class
 })
 public class AllTests

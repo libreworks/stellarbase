@@ -17,6 +17,8 @@
  */
 package net.libreworks.stellarbase.util;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import org.apache.commons.lang.ObjectUtils;
 import org.springframework.util.NumberUtils;
 
@@ -55,6 +57,8 @@ public class ValueUtils
 			// if they're not equal and they have the exact same class,
 			// skip remaining checks.
 			return false;
+		} else if ( a instanceof Date || b instanceof Date ) {
+			return equivalentDates(a, b);
 		} else if ( a instanceof Number || b instanceof Number ) {
 			return equivalentNumbers(a, b);
 		}
@@ -78,6 +82,37 @@ public class ValueUtils
 			return false;
 		}
 		return (a.equals(b) || toNumber(a, Double.class).equals(toNumber(b, Double.class)));
+	}
+	
+	/**
+	 * Compares two objects that should be cast to dates.
+	 * 
+	 * If either object is not a Date, it will act as null. This method's chief
+	 * raison d'etre is that java.sql.Timestamp doesn't consider java.util.Date
+	 * equal even if they are at the same instant in time.
+	 * 
+	 * @param a The first value
+	 * @param b The second value
+	 * @return Whether the dates are considered equivalent
+	 */
+	public static boolean equivalentDates(Object a, Object b)
+	{
+		if ( a == null || b == null ) {
+			return false;
+		}
+		return ObjectUtils.equals(toDate(a), toDate(b));
+	}
+	
+	protected static Date toDate(Object value)
+	{
+		if ( value instanceof Timestamp ) {
+			// java.sql.Timestamp doesn't like to play nice with equals,
+			// but the getTime methods should return equal values
+			return new Date(((Timestamp)value).getTime());
+		} else if ( value instanceof Date ) {
+			return (Date)value;
+		}
+		return null;
 	}
 	
 	protected static <T extends Number> T toNumber(Object value, Class<T> toClass)
