@@ -18,6 +18,7 @@
 package net.libreworks.stellarbase.dao.hibernate;
 
 import java.io.Serializable;
+import net.libreworks.stellarbase.context.DeleteEvent;
 import net.libreworks.stellarbase.dao.DeletableDao;
 import net.libreworks.stellarbase.model.Modifiable;
 
@@ -26,6 +27,7 @@ import net.libreworks.stellarbase.model.Modifiable;
  * @author Jonathan Hawk
  * @param <T>
  * @param <K>
+ * @version $Id$
  */
 public abstract class AbstractDeletableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractWritableHibernateDao<T,K> implements DeletableDao<T,K>
 {
@@ -35,6 +37,7 @@ public abstract class AbstractDeletableHibernateDao<T extends Modifiable<K>,K ex
 	 */
 	public void delete(T entity, String by)
     {
+		eventMulticaster.multicastEvent(new DeleteEvent(entity, by));
 		getHibernateTemplate().delete(entity);
     }
 }

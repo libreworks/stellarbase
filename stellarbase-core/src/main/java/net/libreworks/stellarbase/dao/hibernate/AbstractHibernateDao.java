@@ -43,9 +43,9 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * @author Jonathan Hawk
  * @param <T> The entity type
  * @param <K> The identifier type
+ * @version $Id$
  */
-public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends Serializable>
-    extends HibernateDaoSupport implements ReadableDao<T,K>
+public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends Serializable> extends HibernateDaoSupport implements ReadableDao<T,K>
 {
 	protected ApplicationEventMulticaster eventMulticaster;
 	protected Class<T> entityClass;

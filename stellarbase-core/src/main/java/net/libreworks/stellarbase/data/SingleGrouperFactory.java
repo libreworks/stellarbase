@@ -15,22 +15,30 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase;
+package net.libreworks.stellarbase.data;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Jonathan Hawk
  * @version $Id$
+ * @param <K> The key type
+ * @param <V> The value type
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	net.libreworks.stellarbase.beans.AllTests.class,
-	net.libreworks.stellarbase.context.UpdateEventTest.class,
-	net.libreworks.stellarbase.security.AllTests.class,
-	net.libreworks.stellarbase.validation.AllTests.class
-})
-public class AllTests
+public interface SingleGrouperFactory<K,V>
 {
+	/**
+	 * Gets the container for group items.
+	 * 
+	 * @return The container for group items
+	 */
+	public Collection<V> getContainer();
+	
+	/**
+	 * Gets the container for groups and their items.
+	 * 
+	 * @return The container for group items
+	 */
+	public Map<K,Collection<V>> getGroupContainer();
 }

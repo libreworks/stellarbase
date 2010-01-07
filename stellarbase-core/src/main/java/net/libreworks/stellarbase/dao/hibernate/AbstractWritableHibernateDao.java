@@ -19,12 +19,15 @@ package net.libreworks.stellarbase.dao.hibernate;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
+import net.libreworks.stellarbase.context.InsertEvent;
+import net.libreworks.stellarbase.context.UpdateEvent;
 import net.libreworks.stellarbase.dao.WritableDao;
 import net.libreworks.stellarbase.model.Modifiable;
 
@@ -34,6 +37,7 @@ import net.libreworks.stellarbase.model.Modifiable;
  * @author Jonathan Hawk
  * @param <T> The type of entity
  * @param <K> The type of identifier
+ * @version $Id$
  */
 public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractHibernateDao<T,K> implements WritableDao<T,K>
 {
@@ -50,6 +54,22 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	/*
 	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.dao.WritableDao#create(java.util.Map, java.lang.String)
+	 */
+	public T create(Map<String,?> values, String by) throws BindException
+	{
+		T entity = BeanUtils.instantiate(entityClass);
+        Date now = new Date();
+        entity.setCreatedBy(by);
+        entity.setCreatedOn(now);
+        entity.setModifiedBy(by);
+        entity.setModifiedOn(now);
+        doSave(entity, values, by);
+        return entity;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see net.libreworks.stellarbase.dao.WritableDao#update(net.libreworks.stellarbase.model.Modifiable, java.util.Map, java.lang.String)
 	 */
 	public void update(T entity, Map<String,?> values, String by) throws BindException
@@ -60,14 +80,17 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		doUpdate(entity, values, by);
     }	
 	
-	protected Serializable doSave(T entity, Map<String,?> values) throws BindException
+	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
+		eventMulticaster.multicastEvent(new InsertEvent(entity, by));
 		doBind(entity, values);
 		return getHibernateTemplate().save(entity);
 	}
 	
 	protected void doUpdate(T entity, Map<String,?> values, String by) throws BindException
 	{
+		// TODO get entity values
+		eventMulticaster.multicastEvent(new UpdateEvent(entity, null, by));		
 		entity.setModifiedOn(new Date());
 		entity.setModifiedBy(by);
 		doBind(entity, values);
@@ -110,6 +133,9 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 */
 	public void setValidator(Validator validator)
     {
+		if (validator != null && !validator.supports(entityClass)) {
+			throw new IllegalArgumentException("Validator must support " + entityClass);
+		}
     	this.validator = validator;
     }	
 }

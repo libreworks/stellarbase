@@ -29,6 +29,10 @@ public class NanAwareNumberEditor extends CustomNumberEditor
 {
 	private static final String NAN = "NaN";
 	
+	/**
+	 * @param numberClass Number subclass to generate
+	 * @param allowEmpty if empty strings should be allowed
+	 */
 	public NanAwareNumberEditor(Class<?> numberClass, boolean allowEmpty)
 	{
 		super(numberClass, allowEmpty);

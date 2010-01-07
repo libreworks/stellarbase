@@ -15,22 +15,27 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase;
+package net.libreworks.stellarbase.beans;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * @author Jonathan Hawk
  * @version $Id$
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	net.libreworks.stellarbase.beans.AllTests.class,
-	net.libreworks.stellarbase.context.UpdateEventTest.class,
-	net.libreworks.stellarbase.security.AllTests.class,
-	net.libreworks.stellarbase.validation.AllTests.class
-})
-public class AllTests
+public class NanAwareNumberEditorTest
 {
+	/**
+	 * Test method for {@link net.libreworks.stellarbase.beans.NanAwareNumberEditor#setAsText(java.lang.String)}.
+	 */
+	@Test
+	public void testSetAsTextString()
+	{
+		NanAwareNumberEditor object = new NanAwareNumberEditor(Integer.class, true);
+		object.setAsText("NaN");
+		assertNull(object.getValue());
+		object.setAsText("123");
+		assertEquals(123, object.getValue());
+	}
 }
