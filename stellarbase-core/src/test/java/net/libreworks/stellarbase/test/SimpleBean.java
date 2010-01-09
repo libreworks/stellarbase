@@ -27,6 +27,7 @@ import java.util.Date;
  */
 public class SimpleBean
 {
+	private Long id;
 	private String name;
 	private Integer count;
 	private Double money;
@@ -48,6 +49,14 @@ public class SimpleBean
 	{
 		return flag;
 	}
+
+	/**
+     * @return the id
+     */
+    public Long getId()
+    {
+    	return id;
+    }
 
 	/**
 	 * @return the money
@@ -88,6 +97,14 @@ public class SimpleBean
 	{
 		this.flag = flag;
 	}
+
+	/**
+     * @param id the id to set
+     */
+    public void setId(Long id)
+    {
+    	this.id = id;
+    }
 
 	/**
 	 * @param money the money to set
