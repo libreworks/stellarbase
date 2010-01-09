@@ -18,7 +18,6 @@
 package net.libreworks.stellarbase.security.acl;
 
 import net.libreworks.stellarbase.model.Identifiable;
-
 import org.springframework.security.acls.AclEntryVoter;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.Permission;
@@ -44,6 +43,13 @@ public class IdentifiableAclEntryVoter extends AclEntryVoter
 		super(aclService, processConfigAttribute, requirePermission);
 		setProcessDomainObjectClass(Identifiable.class);
 	}
+	
+	@Override
+	protected Object getDomainObjectInstance(Object secureObject)
+	{
+        return getProcessDomainObjectClass().isInstance(secureObject) ? 
+        	secureObject : super.getDomainObjectInstance(secureObject);
+    }
 	
 	@Override
 	public boolean supports(Class<?> cls)

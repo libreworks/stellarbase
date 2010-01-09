@@ -72,9 +72,25 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>net.libreworks</groupId>
+            <artifactId>stellarbase-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
         	<groupId>net.libreworks</groupId>
         	<artifactId>stellarbase-core</artifactId>
         	<version>0.0.1-SNAPSHOT</version>
+        	<scope>compile</scope>
+        	<type>test-jar</type>
+        </dependency>
+        <dependency>
+        	<groupId>commons-logging</groupId>
+        	<artifactId>commons-logging</artifactId>
+        	<version>1.1.1</version>
+        	<type>jar</type>
+        	<scope>runtime</scope>
         </dependency>
   </dependencies>
 </project>

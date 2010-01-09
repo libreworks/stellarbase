@@ -17,6 +17,8 @@
  */
 package net.libreworks.stellarbase.security;
 
+import net.libreworks.stellarbase.security.acl.AccessDeciderTest;
+import net.libreworks.stellarbase.security.acl.IdentifiableAclEntryVoterTest;
 import net.libreworks.stellarbase.security.auth.SpringSecurityAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,6 +29,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+	AccessDeciderTest.class,
+	IdentifiableAclEntryVoterTest.class,
 	SpringSecurityAdapterTest.class
 })
 public class AllTests

@@ -17,10 +17,8 @@
  */
 package net.libreworks.stellarbase.security.acl;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
@@ -72,12 +70,12 @@ public class AclImpl implements Acl
 	 * @param parent the parent ACL 
 	 * @param sids the Sids
 	 */
-	public AclImpl(ObjectIdentity oi, Acl parent, Sid[] sids)
+	public AclImpl(ObjectIdentity oi, Acl parent, List<Sid> sids)
 	{
 		this.oi = oi;
 		this.parent = parent;
 		if ( sids != null ) {
-			loadedSids.addAll(Arrays.asList(sids));
+			loadedSids.addAll(sids);
 		}
 	}
 	
@@ -177,6 +175,11 @@ public class AclImpl implements Acl
 		return true;
 	}
 	
+	/**
+	 * Sets the access control entries
+	 * 
+	 * @param aces The aces to set
+	 */
 	public void setEntries(List<AccessControlEntry> aces)
 	{
 		this.aces = aces;
