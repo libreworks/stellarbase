@@ -26,12 +26,19 @@ import java.util.List;
 import java.util.Map;
 import net.libreworks.stellarbase.dao.ReadableDao;
 import net.libreworks.stellarbase.model.Identifiable;
+import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.HibernateProxyHelper;
+import org.hibernate.type.Type;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyValues;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -197,6 +204,30 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return crits;
 	}
 
+	/**
+	 * Turns a Hibernate entity into PropertyValues
+	 * 
+	 * @param entity The entity
+	 * @return The PropertyValues for the entity
+	 */
+	protected PropertyValues getPropertyValues(T entity)
+	{
+		Class<?> ec = ( entity instanceof HibernateProxy ) ?
+			HibernateProxyHelper.getClassWithoutInitializingProxy(entity) :
+			entity.getClass();
+		ClassMetadata catMeta = getHibernateTemplate().getSessionFactory().getClassMetadata(ec);
+		Object[] propertyValues = catMeta.getPropertyValues(entity, EntityMode.POJO);
+		String[] propertyNames = catMeta.getPropertyNames();
+		Type[] propertyTypes = catMeta.getPropertyTypes();
+		MutablePropertyValues mpv = new MutablePropertyValues();
+		for ( int i=0; i<propertyNames.length; i++ ) {
+		    if ( !propertyTypes[i].isCollectionType() ) {
+		        mpv.add(propertyNames[i], propertyValues[i]);
+		    }
+		}
+		return mpv;
+	}
+	
 	/**
 	 * @param eventMulticaster the eventMulticaster to set
 	 */
