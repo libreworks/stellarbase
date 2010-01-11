@@ -30,6 +30,10 @@ import org.springframework.security.acls.model.UnloadedSidException;
 /**
  * A simple implementation of ACL.
  * 
+ * Note that some of the methods here have been copied under the terms of the
+ * Apache 2.0 license from the AclImpl class that the Spring Security library
+ * provides.
+ * 
  * @author Jonathan Hawk
  * @version $Id$
  */
@@ -106,6 +110,15 @@ public class AclImpl implements Acl
 
 	public boolean isGranted(List<Permission> permission, List<Sid> sids, boolean adminMode) throws NotFoundException, UnloadedSidException
 	{
+		/**
+		 * The contents of this method were pretty much copied entirely and
+		 * modified from org.springframework.security.acls.domain.AclImpl.
+		 * Unfortunately, there was no abstract class from which we could extend
+		 * so the method was copied under the terms of the Apache 2.0 license
+		 * that covers both that file and this one. The original code is
+		 * Copyright 2004, 2005, 2006 Acegi Technology Pty Limited 
+		 */
+		
 		if ( !isSidLoaded(sids) ) {
 			throw new UnloadedSidException("ACL was not loaded for one or more Sids");
 		}
@@ -125,7 +138,7 @@ public class AclImpl implements Acl
 							// failure for this permission, so stop search
 							// we will see if they have a different permission
 							// (this permission is 100% rejected for this sid)
-							if ( firstRejection != null ) {
+							if ( firstRejection == null ) {
 								firstRejection = ace;
 							}
 							scanNextSid = false;

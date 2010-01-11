@@ -29,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
@@ -56,25 +58,7 @@ public class AccessDeciderTest
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		SimpleBean bean = new SimpleBean();
 		bean.setId((long)123456);
-		object = AccessDecider.factory(new AbstractAclService()
-		{
-			public Map<ObjectIdentity,Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException
-			{
-				HashMap<ObjectIdentity,Acl> acls = new HashMap<ObjectIdentity,Acl>();
-				for(ObjectIdentity oi : objects) {
-					AclImpl acl = new AclImpl(oi, null, sids);
-					List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-					aces.add(new AccessControlEntryImpl(1, acl, sids.get(0), BasePermission.ADMINISTRATION, true, false, false));
-					acl.setEntries(aces);
-					acls.put(oi, acl);
-				}
-				return acls;
-			}
-			public List<ObjectIdentity> findChildren(ObjectIdentity parentIdentity)
-			{
-				return Collections.emptyList();
-			}
-		}, bean);
+		object = AccessDecider.factory(new StubAclService(), bean);
 	}
 
 	/**
@@ -88,6 +72,23 @@ public class AccessDeciderTest
 	}
 
 	/**
+	 * Tests the simple constructor
+	 */
+	@Test
+	public void testBasicConstructor()
+	{
+		SimpleBean bean = new SimpleBean();
+		bean.setId((long)987654);		
+		StubAclService aclService = new StubAclService();
+		List<ObjectIdentity> ois = new ArrayList<ObjectIdentity>();
+		ois.add(new ObjectIdentityImpl(bean));
+		List<Sid> sids = new ArrayList<Sid>();
+		sids.add(new PrincipalSid("alice"));
+		AccessDecider ad = new AccessDecider(aclService.readAclsById(ois, sids).get(ois.get(0)));
+		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
+	}
+	
+	/**
 	 * Test method for {@link net.libreworks.stellarbase.security.acl.AccessDecider#isAllowed(org.springframework.security.acls.model.Permission[])}.
 	 */
 	@Test
@@ -95,5 +96,25 @@ public class AccessDeciderTest
 	{
 		assertTrue(object.isAllowed(BasePermission.ADMINISTRATION));
 		assertFalse(object.isAllowed(BasePermission.WRITE));
+	}
+	
+	private class StubAclService extends AbstractAclService
+	{
+		public Map<ObjectIdentity,Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException
+		{
+			HashMap<ObjectIdentity,Acl> acls = new HashMap<ObjectIdentity,Acl>();
+			for(ObjectIdentity oi : objects) {
+				AclImpl acl = new AclImpl(oi, null, sids);
+				List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
+				aces.add(new AccessControlEntryImpl(1, acl, sids.get(0), BasePermission.ADMINISTRATION, true, false, false));
+				acl.setEntries(aces);
+				acls.put(oi, acl);
+			}
+			return acls;
+		}
+		public List<ObjectIdentity> findChildren(ObjectIdentity parentIdentity)
+		{
+			return Collections.emptyList();
+		}
 	}
 }
