@@ -22,6 +22,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyEditorRegistry;
+import org.springframework.beans.PropertyValues;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
@@ -82,18 +83,18 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
-		eventMulticaster.multicastEvent(new InsertEvent(entity, by));
 		doBind(entity, values);
+		eventMulticaster.multicastEvent(new InsertEvent(entity, by));
 		return getHibernateTemplate().save(entity);
 	}
 	
 	protected void doUpdate(T entity, Map<String,?> values, String by) throws BindException
 	{
-		// TODO get entity values
-		eventMulticaster.multicastEvent(new UpdateEvent(entity, null, by));		
+		PropertyValues old = getPropertyValues(entity);
 		entity.setModifiedOn(new Date());
 		entity.setModifiedBy(by);
 		doBind(entity, values);
+		eventMulticaster.multicastEvent(new UpdateEvent(entity, old, by));
 	}
 	
 	/**
