@@ -69,8 +69,9 @@ public class ValueUtils
 	/**
 	 * Compares two objects as if they were numbers.
 	 * 
-	 * If either object is not a Number, it will be parsed (naturally, any
-	 * parsing problems will show up as a NumberFormatException).
+	 * If either object is not a Number, it will be parsed if it is recognized
+	 * as some kind of number format, otherwise, it will be defaulted to
+	 * {@link java.lang.Double#NaN}.
 	 * 
 	 * @param a The first value
 	 * @param b The second value

@@ -6,7 +6,27 @@
 	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stellarbase-core</name>
-	<url>http://maven.apache.org</url>
+	<description>Stellarbase is a starting point for Java applications using Spring. Using convention over configuration, we provide an infrastructure to get started with data entities, validation rules, data access objects, and services, as well as a cadre of utilities.</description>
+	<url>http://forge.libreworks.net/projects/stellarbase</url>
+	<inceptionYear>2010</inceptionYear>
+	<issueManagement>
+		<system>Redmine</system>
+		<url>http://forge.libreworks.net/projects/stellarbase/issues</url>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:svn:https://forge.libreworks.net/svn/stellarbase/trunk/stellarbase-core/</connection>
+		<developerConnection>scm:svn:https://forge.libreworks.net/svn/stellarbase/trunk/stellarbase-core/</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://forge.libreworks.net/projects/stellarbase/repository/show/trunk/stellarbase-core</url>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>

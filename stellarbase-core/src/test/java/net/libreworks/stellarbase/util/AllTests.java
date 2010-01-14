@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase;
+package net.libreworks.stellarbase.util;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,11 +26,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	net.libreworks.stellarbase.beans.AllTests.class,
-	net.libreworks.stellarbase.collections.AllTests.class,
-	net.libreworks.stellarbase.context.UpdateEventTest.class,
-	net.libreworks.stellarbase.util.AllTests.class,
-	net.libreworks.stellarbase.validation.AllTests.class
+	ValueUtilsTest.class
 })
 public class AllTests
 {

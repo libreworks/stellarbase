@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.libreworks.stellarbase.collections.AbstractMapDelegate;
 
 /**
  * A map wrapper which simplifies grouping values.
@@ -32,6 +33,8 @@ import java.util.Map;
  */
 public class SingleGrouper<K,V> extends AbstractMapDelegate<K,Collection<V>>
 {
+    private static final long serialVersionUID = 1L;
+    
 	private SingleGrouperFactory<K,V> factory;
 	
 	/**
