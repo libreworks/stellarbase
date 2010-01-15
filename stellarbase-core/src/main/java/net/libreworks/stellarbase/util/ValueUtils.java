@@ -20,6 +20,7 @@ package net.libreworks.stellarbase.util;
 import java.sql.Timestamp;
 import java.util.Date;
 import org.apache.commons.lang.ObjectUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 
 /**
@@ -82,7 +83,7 @@ public class ValueUtils
 		if ( a == null || b == null ) {
 			return false;
 		}
-		return (a.equals(b) || toNumber(a, Double.class).equals(toNumber(b, Double.class)));
+		return (a.equals(b) || toNumberOrNan(a, Double.class).equals(toNumberOrNan(b, Double.class)));
 	}
 	
 	/**
@@ -104,6 +105,32 @@ public class ValueUtils
 		return ObjectUtils.equals(toDate(a), toDate(b));
 	}
 	
+	/**
+	 * Tries to convert any object into a Number.
+	 * 
+	 * If the value is a Number, it will be converted or cast appropriately,
+	 * otherwise it will be turned into a String and parsed. If the value cannot
+	 * be turned into the number for whatever reason, an
+	 * IllegalArgumentException will be thrown.
+	 * 
+	 * @param <T> The number class
+	 * @param value The value to convert into a number
+	 * @param toClass The Number class to which the object will be converted
+	 * @return The number
+	 * @throws IllegalArgumentException if the value could not be converted
+	 */
+	public static <T extends Number> T toNumber(Object value, Class<T> toClass)
+	{
+		Assert.notNull(toClass);
+		if ( toClass.isInstance(value) ) {
+			return toClass.cast(value);
+	    } else if ( value instanceof Number ) {
+	    	return NumberUtils.convertNumberToTargetClass((Number)value, toClass);
+	    } else {
+	    	return NumberUtils.parseNumber(ObjectUtils.toString(value), toClass);
+	    }
+	}
+	
 	protected static Date toDate(Object value)
 	{
 		if ( value instanceof Timestamp ) {
@@ -116,7 +143,15 @@ public class ValueUtils
 		return null;
 	}
 	
-	protected static <T extends Number> T toNumber(Object value, Class<T> toClass)
+	/**
+	 * Turns an object into a Number, or {@link Double#NaN} if there's a problem
+	 * 
+	 * @param <T> The number class
+	 * @param value The value to convert
+	 * @param toClass The target class
+	 * @return The number
+	 */
+	protected static <T extends Number> T toNumberOrNan(Object value, Class<T> toClass)
 	{
 		Number nvalue = value instanceof Number ? (Number)value : Double.NaN;
 		if (!(value instanceof Number)){

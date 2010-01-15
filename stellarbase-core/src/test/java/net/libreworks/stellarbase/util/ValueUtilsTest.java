@@ -100,17 +100,17 @@ public class ValueUtilsTest
 	}
 
 	/**
-	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#toNumber(java.lang.Object, java.lang.Class)}.
+	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#toNumberOrNan(java.lang.Object, java.lang.Class)}.
 	 */
 	@Test
 	public void testToNumber()
 	{
 		BigInteger in1 = new BigInteger("12345");
-		Long out1 = ValueUtils.toNumber(in1, Long.class);
+		Long out1 = ValueUtils.toNumberOrNan(in1, Long.class);
 		assertEquals(out1.longValue(), in1.longValue(), 0);
 		
 		BigDecimal in2 = new BigDecimal("987.654");
-		Double out2 = ValueUtils.toNumber(in2, Double.class);
+		Double out2 = ValueUtils.toNumberOrNan(in2, Double.class);
 		assertEquals(out2.doubleValue(), in2.doubleValue(), 0);
 	}
 }
