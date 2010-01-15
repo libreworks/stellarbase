@@ -134,7 +134,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 */
 	public void setValidator(Validator validator)
     {
-		if (validator != null && !validator.supports(entityClass)) {
+		if (validator == null || !validator.supports(entityClass)) {
 			throw new IllegalArgumentException("Validator must support " + entityClass);
 		}
     	this.validator = validator;
