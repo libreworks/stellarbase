@@ -44,6 +44,16 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 {
 	protected Validator validator;
 	
+	@Override
+	protected void initDao() throws Exception
+	{
+		super.initDao();
+		// this must be done after we figure out the entity type this dao supports
+		if ( validator != null && !validator.supports(entityClass)) {
+			throw new IllegalArgumentException("Validator must support " + entityClass);
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.libreworks.stellarbase.dao.WritableDao#canUpdate()
@@ -134,9 +144,6 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 */
 	public void setValidator(Validator validator)
     {
-		if (validator == null || !validator.supports(entityClass)) {
-			throw new IllegalArgumentException("Validator must support " + entityClass);
-		}
     	this.validator = validator;
     }	
 }
