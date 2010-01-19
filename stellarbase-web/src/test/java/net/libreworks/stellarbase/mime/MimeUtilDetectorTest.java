@@ -45,10 +45,11 @@ public class MimeUtilDetectorTest
 	public void testGetMimeTypeFile() throws URISyntaxException
 	{
 		FluentValues types = new FluentValues()
-			.set("/mime/license.html", "text/html")
+			.set("/mime/LICENSE.html", "text/html")
 			.set("/mime/butterfly.svg", "image/svg+xml")
 			.set("/mime/book1.xls", "application/excel")
 			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
 			File file = new File(getClass().getResource(entry.getKey()).toURI());
@@ -67,6 +68,7 @@ public class MimeUtilDetectorTest
 			.set("/mime/butterfly.svg", "image/svg+xml")
 			.set("/mime/book1.xls", "application/excel")
 			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
 			assertEquals(entry.getValue(), object.getMimeType(entry.getKey()));
@@ -83,6 +85,7 @@ public class MimeUtilDetectorTest
 		FluentValues types = new FluentValues()
 			.set("/mime/automaticTextIndent.odt", "application/zip") // yeah, that's what it shows up as
 			.set("/mime/butterfly.svg", "text/xml")
+			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/book1.xls", "application/msword"); // different because of byte reading
 		for(Entry<String,Object> entry : types.entrySet()){
 			InputStream file = getClass().getResourceAsStream(entry.getKey());
@@ -100,8 +103,9 @@ public class MimeUtilDetectorTest
 		FluentValues types = new FluentValues()
 			//.set("/mime/license.html", "text/html")
 			.set("/mime/book1.xls", "application/excel")
+			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/butterfly.svg", "image/svg+xml")
-			//.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
 		for(final Entry<String,Object> entry : types.entrySet()){
 			final File file = new File(getClass().getResource(entry.getKey()).toURI());

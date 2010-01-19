@@ -30,6 +30,11 @@ public interface NamingStrategy
 	/**
 	 * Constructs a final destination filename for a file.
 	 * 
+	 * The filename returned should be an absolute path, usually prepended
+	 * by the destination.
+	 * 
+	 * @param destination The directory into which the file will be moved 
+	 * @param file The file uploaded
 	 * @return The constructed filename
 	 */
 	public String getName(String destination, MultipartFile file);
