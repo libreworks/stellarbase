@@ -18,11 +18,14 @@ package net.libreworks.stellarbase.dao.hibernate;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.PropertyValues;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
@@ -43,6 +46,9 @@ import net.libreworks.stellarbase.model.Modifiable;
 public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractHibernateDao<T,K> implements WritableDao<T,K>
 {
 	protected Validator validator;
+	protected boolean hasNaturalId = false;
+	
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	
 	@Override
 	protected void initDao() throws Exception
@@ -52,6 +58,8 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		if ( validator != null && !validator.supports(entityClass)) {
 			throw new IllegalArgumentException("Validator must support " + entityClass);
 		}
+		hasNaturalId = getHibernateTemplate().getSessionFactory()
+			.getClassMetadata(entityClass).hasNaturalIdentifier();
 	}
 	
 	/*
@@ -69,6 +77,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 */
 	public T create(Map<String,?> values, String by) throws BindException
 	{
+		enforceNaturalKey(values, null);
 		T entity = BeanUtils.instantiate(entityClass);
         Date now = new Date();
         entity.setCreatedBy(by);
@@ -77,6 +86,46 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
         entity.setModifiedOn(now);
         doSave(entity, values, by);
         return entity;
+	}
+	
+	/**
+	 * Whether the DAO should preemptively check entity natural id constraints.
+	 * 
+	 * By default, this is true. The methods create and update will first check
+	 * natural id constraints. Note that unique constraints that are not part of
+	 * the natural id are <em>not</em> checked by this behavior.
+	 * 
+	 * @return Whether unique constraints should be checked
+	 */
+	protected boolean canEnforceNaturalKey()
+	{
+		return true;
+	}
+	
+	/**
+	 * Gets the list of fields allowed for the bind during entity creation.
+	 * 
+	 * By default, this is all fields. Override this method to provide your own
+	 * list of allowed fields.
+	 * 
+	 * @return The list of allowed create bind fields
+	 */
+	protected String[] getAllowedCreateFields()
+	{
+		return EMPTY_STRING_ARRAY;
+	}
+	
+	/**
+	 * Gets the list of fields allowed for the bind during entity updating.
+	 * 
+	 * By default, this is all fields. Override this method to provide your own
+	 * list of allowed fields.
+	 * 
+	 * @return The list of allowed update bind fields
+	 */
+	protected String[] getAllowedUpdateFields()
+	{
+		return EMPTY_STRING_ARRAY;
 	}
 	
 	/*
@@ -93,17 +142,18 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
-		doBind(entity, values);
+		doBind(entity, values, getAllowedCreateFields());
 		eventMulticaster.multicastEvent(new InsertEvent(entity, by));
 		return getHibernateTemplate().save(entity);
 	}
 	
 	protected void doUpdate(T entity, Map<String,?> values, String by) throws BindException
 	{
+		enforceNaturalKey(values, entity);
 		PropertyValues old = getPropertyValues(entity);
 		entity.setModifiedOn(new Date());
 		entity.setModifiedBy(by);
-		doBind(entity, values);
+		doBind(entity, values, getAllowedUpdateFields());
 		eventMulticaster.multicastEvent(new UpdateEvent(entity, old, by));
 	}
 	
@@ -114,11 +164,12 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	 * @param values The values to bind
 	 * @throws BindException if validation of the entity fails
 	 */
-	protected void doBind(T entity, Map<String,?> values) throws BindException
+	protected void doBind(T entity, Map<String,?> values, String[] allowed) throws BindException
 	{
 		DataBinder binder = new DataBinder(entity);
 		registerCustomEditors(binder);
 		binder.setValidator(validator);
+		binder.setAllowedFields(allowed); // it's ok to pass null or empty
 		MutablePropertyValues mpv = new MutablePropertyValues(values);
 		binder.bind(mpv);
 		binder.validate();
@@ -145,5 +196,51 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	public void setValidator(Validator validator)
     {
     	this.validator = validator;
-    }	
+    }
+	
+	/**
+	 * Enforces the natural key constraint of an entity.
+	 * 
+	 * This method searches Hibernate's config settings for the entity's natural
+	 * key(s) and passes the matching key names and values to
+	 * {@link #enforceUnique(Map, Modifiable)}.
+	 * 
+	 * @param values
+	 * @param expected
+	 * @throws BindException
+	 */
+	protected void enforceNaturalKey(Map<String,?> values, T expected) throws BindException
+	{
+		if ( canEnforceNaturalKey() && hasNaturalId && values != null ) {
+			ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(entityClass);
+			String[] names = meta.getPropertyNames();
+			HashMap<String,Object> fields = new HashMap<String,Object>();
+			for(int prop : meta.getNaturalIdentifierProperties()) {
+				fields.put(names[prop], values.get(names[prop]));
+			}
+			enforceUnique(fields, expected);
+		}
+	}
+
+	/**
+	 * Does a {@link #find(Map)} using the keyValues and errors if it doesn't match the expected. 
+	 * 
+	 * @param keyValues The keyvalues (to pass to find)
+	 * @param expected The expected result (can be null or an entity)
+	 * @throws BindException If the find method returned an unexpected result
+	 */
+	protected void enforceUnique(Map<String,?> keyValues, T expected) throws BindException
+	{
+		T other = find(keyValues);
+		if ( other != null && (expected == null || !expected.equals(other)) ) {
+			T target = expected != null ? expected : BeanUtils.instantiate(entityClass);
+			BindingResult result = new BeanPropertyBindingResult(target, "target");
+			String fieldName = keyValues.size() > 1 ?
+					null : keyValues.keySet().iterator().next();
+			result.rejectValue(fieldName, "record.exists",
+					new Object[]{keyValues.toString()},
+					"A record already exists with the values {0}");
+			throw new BindException(result);
+		}
+	}
 }

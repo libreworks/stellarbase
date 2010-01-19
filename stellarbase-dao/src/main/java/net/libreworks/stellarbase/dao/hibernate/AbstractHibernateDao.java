@@ -215,10 +215,10 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		Class<?> ec = ( entity instanceof HibernateProxy ) ?
 			HibernateProxyHelper.getClassWithoutInitializingProxy(entity) :
 			entity.getClass();
-		ClassMetadata catMeta = getHibernateTemplate().getSessionFactory().getClassMetadata(ec);
-		Object[] propertyValues = catMeta.getPropertyValues(entity, EntityMode.POJO);
-		String[] propertyNames = catMeta.getPropertyNames();
-		Type[] propertyTypes = catMeta.getPropertyTypes();
+		ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(ec);
+		Object[] propertyValues = meta.getPropertyValues(entity, EntityMode.POJO);
+		String[] propertyNames = meta.getPropertyNames();
+		Type[] propertyTypes = meta.getPropertyTypes();
 		MutablePropertyValues mpv = new MutablePropertyValues();
 		for ( int i=0; i<propertyNames.length; i++ ) {
 		    if ( !propertyTypes[i].isCollectionType() ) {
