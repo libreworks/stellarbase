@@ -19,9 +19,9 @@ package net.libreworks.stellarbase.security.acl;
 
 import java.util.Collection;
 import java.util.List;
-import net.libreworks.stellarbase.model.Identifiable;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
 
 /**
@@ -36,6 +36,14 @@ import org.springframework.security.acls.model.Sid;
 public interface AccessControlEntryLoader
 {
 	/**
+	 * Whether this loader supports loading rules for the ObjectIdentity supplied.
+	 * 
+	 * @param oid The ObjectIdentity
+	 * @return Whether this loader supports rules for the ObjectIdentity
+	 */
+	public boolean supports(ObjectIdentity oid);
+	
+	/**
 	 * Loads the AccessControlEntries for the ACL and entity provided.
 	 * 
 	 * The AccessControlEntry objects will have their ACL set to be the one
@@ -44,12 +52,15 @@ public interface AccessControlEntryLoader
 	 * 
 	 * The {@code sids} parameter should be able to be null, so that when a list
 	 * of sids aren't provided, the loader will retrieve all ACL rules for the
-	 * entity. 
+	 * entity.
+	 * 
+	 * Avoid any kind of caching strategy as the AclService itself should be the
+	 * one doing that kind of behavior.
 	 * 
 	 * @param acl The ACL
-	 * @param entity The entity whose authorization rules will be loaded
+	 * @param oid The ObjectIdentity whose authorization rules will be loaded
 	 * @param sids The specific sids to which the rules will apply
 	 * @return The entries loaded
 	 */
-	public List<AccessControlEntry> getEntries(Acl acl, Identifiable<?> entity, Collection<Sid> sids);
+	public List<AccessControlEntry> getEntries(Acl acl, ObjectIdentity oid, Collection<Sid> sids);
 }
