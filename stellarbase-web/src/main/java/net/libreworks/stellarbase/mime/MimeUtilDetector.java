@@ -48,7 +48,7 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 		detector.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
 		detector.registerMimeDetector("eu.medsea.mimeutil.detector.WindowsRegistryMimeDetector");
 		if ( new File("/usr/share/mime/mime.cache").exists() ) {
-			//detector.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
+			detector.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
 		}
 	}
 	

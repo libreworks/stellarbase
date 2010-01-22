@@ -140,15 +140,36 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 
 	/**
 	 * Uploads a file to the destination directory (rejecting invalid files).
+	 * 
+	 * This method uses the default MIME types to determine if a file is valid.
 	 *  
 	 * @param file The file to upload
 	 * @return The file uploaded and validated
 	 * @throws IOException If the file cannot be moved to the destination
+	 * @throws IllegalArgumentException if the MIME type is not acceptable
 	 */
 	public UploadedFile upload(MultipartFile file) throws IOException
 	{
+		return upload(file, types);
+	}
+	
+	/**
+	 * Uploads a file to the destination directory (rejecting invalid files).
+	 * 
+	 * This method skips the default MIME types and uses the specific ones you
+	 * provide. If {@code mimeTypes} is null or empty, all MIME types will be
+	 * accepted.
+	 * 
+	 * @param file The file to upload
+	 * @param mimeTypes The acceptable MIME types (can be null or empty for all types)
+	 * @return The file uploaded and validated
+	 * @throws IOException If the file cannot be moved to the destination
+	 * @throws IllegalArgumentException if the MIME type is not acceptable
+	 */
+	public UploadedFile upload(MultipartFile file, Collection<String> mimeTypes) throws IOException
+	{
 		String mimeType = getMimeDetector().getMimeType(file);
-		if ( !types.isEmpty() && !types.contains(mimeType) ) {
+		if ( mimeTypes != null && !mimeTypes.isEmpty() && !mimeTypes.contains(mimeType) ) {
 			throw new IllegalArgumentException("MIME type not allowed: " + mimeType);
 		}
 		File dest = new File(getNamingStrategy().getName(destination, file));
