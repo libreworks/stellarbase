@@ -27,6 +27,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import net.libreworks.stellarbase.context.DeleteEvent;
 import net.libreworks.stellarbase.dao.RemovableDao;
@@ -88,6 +89,10 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 		eventMulticaster.multicastEvent(new DeleteEvent(entity, by));		
 		entity.setRemovedBy(by);
 		entity.setRemovedOn(new Date());
-		getHibernateTemplate().evict(entity);
+		HibernateTemplate ht = getHibernateTemplate();
+		if ( !ht.contains(entity) ) {
+			ht.saveOrUpdate(entity);
+		}
+		ht.evict(entity);
 	}
 }
