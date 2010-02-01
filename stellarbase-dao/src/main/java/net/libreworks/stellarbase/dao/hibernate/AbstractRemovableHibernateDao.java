@@ -93,6 +93,5 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 		if ( !ht.contains(entity) ) {
 			ht.saveOrUpdate(entity);
 		}
-		ht.evict(entity);
 	}
 }
