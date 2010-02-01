@@ -301,9 +301,10 @@ public class MailParams implements Serializable
 	/**
      * @param encoding the encoding to set
      */
-    public void setEncoding(String encoding)
+    public MailParams setEncoding(String encoding)
     {
     	this.encoding = encoding;
+    	return this;
     }
 
 	/**
@@ -369,8 +370,9 @@ public class MailParams implements Serializable
 	/**
      * @param values the values to set
      */
-    public void setValues(Map<String,?> values)
+    public MailParams setValues(Map<String,?> values)
     {
     	this.values.putAll(values);
+    	return this;
     }
 }
