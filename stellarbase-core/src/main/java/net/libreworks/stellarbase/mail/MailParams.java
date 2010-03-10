@@ -300,6 +300,7 @@ public class MailParams implements Serializable
 
 	/**
      * @param encoding the encoding to set
+	 * @return provides a fluent interface
      */
     public MailParams setEncoding(String encoding)
     {
@@ -369,6 +370,7 @@ public class MailParams implements Serializable
 
 	/**
      * @param values the values to set
+	 * @return provides a fluent interface
      */
     public MailParams setValues(Map<String,?> values)
     {
