@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.libreworks.stellarbase.test.SimpleBean;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +95,27 @@ public class AccessDeciderTest
 	{
 		assertTrue(object.isAllowed(BasePermission.ADMINISTRATION));
 		assertFalse(object.isAllowed(BasePermission.WRITE));
+	}
+	
+	protected class SimpleBean
+	{
+		private Long id;
+
+		/**
+         * @return the id
+         */
+        public Long getId()
+        {
+        	return id;
+        }
+
+		/**
+         * @param id the id to set
+         */
+        public void setId(Long id)
+        {
+        	this.id = id;
+        }
 	}
 	
 	private class StubAclService extends AbstractAclService

@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil2;
@@ -53,46 +54,46 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String getMimeType(File file)
+	public MediaType getMimeType(File file)
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(file);
 		logger.debug("MimeType for File: " + file.getName());
 		for(MimeType type : mimeTypes) {
 			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
 		}
-		return MimeUtil2.getMostSpecificMimeType(mimeTypes).toString();
+		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getMimeType(String filename)
+	public MediaType getMimeType(String filename)
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(filename);
 		logger.debug("MimeType for String: " + filename);
 		for(MimeType type : mimeTypes) {
 			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
 		}
-		return MimeUtil2.getMostSpecificMimeType(mimeTypes).toString();
+		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getMimeType(InputStream inputStream)
+	public MediaType getMimeType(InputStream inputStream)
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(inputStream);
 		logger.debug("InputStream");
 		for(MimeType type : mimeTypes) {
 			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
 		}
-		return MimeUtil2.getMostSpecificMimeType(mimeTypes).toString();
+		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getMimeType(MultipartFile multipartFile)
+	public MediaType getMimeType(MultipartFile multipartFile)
 	{
 		logger.debug("MimeType for MultipartFile: " + multipartFile.getOriginalFilename());
 		Collection<MimeType> types = detector.getMimeTypes(multipartFile.getOriginalFilename());
-		/*if ( multipartFile.getContentType() != null ) {
+		if ( multipartFile.getContentType() != null ) {
 			types.add(new MimeType(multipartFile.getContentType()));
-		}*/
+		}
 		try {
 			byte[] bytes = multipartFile.getBytes();
 			types.addAll(detector.getMimeTypes(bytes));
@@ -102,6 +103,17 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 		for(MimeType type : types) {
 			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
 		}
-		return MimeUtil2.getMostSpecificMimeType(types).toString();
+		return convert(MimeUtil2.getMostSpecificMimeType(types));
+	}
+	
+	/**
+	 * Converts a MimeUtil MimeType into a Spring MediaType.
+	 * 
+	 * @param from The MimeUtil MimeType
+	 * @return The Spring MediaType
+	 */
+	protected MediaType convert(MimeType from)
+	{
+		return new MediaType(from.getMediaType(), from.getSubType());
 	}
 }

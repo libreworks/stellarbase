@@ -168,7 +168,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	 */
 	public UploadedFile upload(MultipartFile file, Collection<String> mimeTypes) throws IOException
 	{
-		String mimeType = getMimeDetector().getMimeType(file);
+		String mimeType = getMimeDetector().getMimeType(file).toString();
 		if ( mimeTypes != null && !mimeTypes.isEmpty() && !mimeTypes.contains(mimeType) ) {
 			throw new IllegalArgumentException("MIME type not allowed: " + mimeType);
 		}

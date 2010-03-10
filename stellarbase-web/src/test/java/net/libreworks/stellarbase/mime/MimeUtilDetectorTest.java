@@ -53,7 +53,7 @@ public class MimeUtilDetectorTest
 			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
 			File file = new File(getClass().getResource(entry.getKey()).toURI());
-			assertEquals(entry.getValue(), object.getMimeType(file));
+			assertEquals(entry.getValue(), object.getMimeType(file).toString());
 		}
 	}
 
@@ -71,7 +71,7 @@ public class MimeUtilDetectorTest
 			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
-			assertEquals(entry.getValue(), object.getMimeType(entry.getKey()));
+			assertEquals(entry.getValue(), object.getMimeType(entry.getKey()).toString());
 		}
 	}
 
@@ -89,7 +89,7 @@ public class MimeUtilDetectorTest
 			.set("/mime/book1.xls", "application/msword"); // different because of byte reading
 		for(Entry<String,Object> entry : types.entrySet()){
 			InputStream file = getClass().getResourceAsStream(entry.getKey());
-			assertEquals(entry.getValue(), object.getMimeType(file));
+			assertEquals(entry.getValue(), object.getMimeType(file).toString());
 		}
 	}
 
@@ -137,7 +137,7 @@ public class MimeUtilDetectorTest
 					return fileBArray;
 				}
 			};
-			assertEquals(entry.getValue(), object.getMimeType(mf));
+			assertEquals(entry.getValue(), object.getMimeType(mf).toString());
 		}
 	}
 }

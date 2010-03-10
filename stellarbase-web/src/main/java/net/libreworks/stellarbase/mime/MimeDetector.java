@@ -20,6 +20,7 @@ package net.libreworks.stellarbase.mime;
 import java.io.File;
 import java.io.InputStream;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -36,7 +37,7 @@ public interface MimeDetector
 	 * @param file The file
 	 * @return The MIME type
 	 */
-	public String getMimeType(File file);
+	public MediaType getMimeType(File file);
 
 	/**
 	 * Gets the most specific MIME type that applies to the file
@@ -44,7 +45,7 @@ public interface MimeDetector
 	 * @param inputStream
 	 * @return The MIME type
 	 */
-	public String getMimeType(InputStream inputStream);
+	public MediaType getMimeType(InputStream inputStream);
 	
 	/**
 	 * Gets the most specific MIME type that applies to the file
@@ -52,7 +53,7 @@ public interface MimeDetector
 	 * @param multipartFile
 	 * @return The MIME type
 	 */
-	public String getMimeType(MultipartFile multipartFile);
+	public MediaType getMimeType(MultipartFile multipartFile);
 	
 	/**
 	 * Gets the most specific MIME type that applies to the file
@@ -60,5 +61,5 @@ public interface MimeDetector
 	 * @param filename The filename
 	 * @return The MIME type
 	 */
-	public String getMimeType(String filename);
+	public MediaType getMimeType(String filename);
 }
