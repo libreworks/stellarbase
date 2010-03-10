@@ -92,6 +92,10 @@
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
 					<artifactId>jmxtools</artifactId>
 					<groupId>com.sun.jdmk</groupId>
 				</exclusion>
@@ -115,14 +119,21 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.0.RELEASE</version>
+			<version>3.0.1.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>3.0.0.RELEASE</version>
+			<version>3.0.1.RELEASE</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>[1.4,1.4.1]</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
