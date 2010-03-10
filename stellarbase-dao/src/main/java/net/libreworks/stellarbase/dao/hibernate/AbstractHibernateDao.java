@@ -17,16 +17,18 @@
  */
 package net.libreworks.stellarbase.dao.hibernate;
 
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.libreworks.stellarbase.dao.ReadableDao;
 import net.libreworks.stellarbase.model.Identifiable;
-import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
@@ -35,9 +37,10 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.HibernateProxyHelper;
 import org.hibernate.type.Type;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyValues;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -56,6 +59,10 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 {
 	protected ApplicationEventMulticaster eventMulticaster;
 	protected Class<T> entityClass;
+	protected List<String> propertyNames = new ArrayList<String>();
+	protected List<String> naturalIdProperties = new ArrayList<String>();
+	protected boolean hasNaturalId = false;
+	protected List<Type> propertyTypes = new ArrayList<Type>();
 
 	/*
 	 * (non-Javadoc)
@@ -163,6 +170,15 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 	{
 		entityClass = (Class<T>) ((ParameterizedType) getClass()
 		    .getGenericSuperclass()).getActualTypeArguments()[0];
+		ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(entityClass);
+		propertyNames.addAll(Arrays.asList(meta.getPropertyNames()));
+		propertyTypes.addAll(Arrays.asList(meta.getPropertyTypes()));
+		hasNaturalId = meta.hasNaturalIdentifier();
+		if ( hasNaturalId ) {
+			for(int prop : meta.getNaturalIdentifierProperties()) {
+				naturalIdProperties.add(propertyNames.get(prop));
+			}
+		}
 	}
 
 	/*
@@ -210,20 +226,19 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 	 * @param entity The entity
 	 * @return The PropertyValues for the entity
 	 */
-	protected PropertyValues getPropertyValues(T entity)
+	protected PropertyValues getPropertyValues(Identifiable<?> entity)
 	{
-		Class<?> ec = ( entity instanceof HibernateProxy ) ?
-			HibernateProxyHelper.getClassWithoutInitializingProxy(entity) :
-			entity.getClass();
-		ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(ec);
-		Object[] propertyValues = meta.getPropertyValues(entity, EntityMode.POJO);
-		String[] propertyNames = meta.getPropertyNames();
-		Type[] propertyTypes = meta.getPropertyTypes();
+		if ( entity instanceof HibernateProxy ) {
+			getHibernateTemplate().initialize(entity);
+		}
 		MutablePropertyValues mpv = new MutablePropertyValues();
-		for ( int i=0; i<propertyNames.length; i++ ) {
-		    if ( !propertyTypes[i].isCollectionType() ) {
-		        mpv.add(propertyNames[i], propertyValues[i]);
-		    }
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+		for(PropertyDescriptor pd : bw.getPropertyDescriptors()) {
+			if ( !Collection.class.isAssignableFrom(pd.getPropertyType()) &&
+				!Map.class.isAssignableFrom(pd.getPropertyType())) {
+				String name = pd.getName();
+				mpv.add(name, bw.getPropertyValue(name));
+			}
 		}
 		return mpv;
 	}

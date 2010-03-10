@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyEditorRegistry;
@@ -47,7 +46,6 @@ import net.libreworks.stellarbase.model.Modifiable;
 public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractHibernateDao<T,K> implements WritableDao<T,K>
 {
 	protected Validator validator;
-	protected boolean hasNaturalId = false;
 	
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	
@@ -59,8 +57,6 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		if ( validator != null && !validator.supports(entityClass)) {
 			throw new IllegalArgumentException("Validator must support " + entityClass);
 		}
-		hasNaturalId = getHibernateTemplate().getSessionFactory()
-			.getClassMetadata(entityClass).hasNaturalIdentifier();
 	}
 	
 	/*
@@ -217,11 +213,9 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	protected void enforceNaturalKey(Map<String,?> values, T expected) throws BindException
 	{
 		if ( canEnforceNaturalKey() && hasNaturalId && values != null ) {
-			ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(entityClass);
-			String[] names = meta.getPropertyNames();
 			HashMap<String,Object> fields = new HashMap<String,Object>();
-			for(int prop : meta.getNaturalIdentifierProperties()) {
-				fields.put(names[prop], values.get(names[prop]));
+			for(String name : naturalIdProperties) {
+				fields.put(name, values.get(name));
 			}
 			enforceUnique(fields, expected);
 		}
