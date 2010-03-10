@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.data;
+package net.libreworks.stellarbase.collections;
 
 import java.util.Collection;
 import java.util.Map;

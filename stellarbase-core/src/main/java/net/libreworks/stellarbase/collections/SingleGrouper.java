@@ -15,13 +15,12 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.data;
+package net.libreworks.stellarbase.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.libreworks.stellarbase.collections.AbstractMapDelegate;
 
 /**
  * A map wrapper which simplifies grouping values.
