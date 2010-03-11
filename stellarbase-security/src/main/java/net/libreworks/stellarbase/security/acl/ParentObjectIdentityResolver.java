@@ -15,21 +15,26 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.collections;
+package net.libreworks.stellarbase.security.acl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.springframework.security.acls.model.ObjectIdentity;
 
 /**
+ * Resolves the parent ObjectIdentity of a child. 
+ * 
+ * This class is primarily used by the {@link LoadingAclService} to load parent
+ * ACLs. 
+ * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DoubleGrouperTest.class,
-	FluentValuesTest.class,
-	SingleGrouperTest.class
-})
-public class AllTests
+public interface ParentObjectIdentityResolver
 {
+	/**
+	 * Gets the parent ObjectIdentity for the one provided.
+	 * 
+	 * @param child The child ObjectIdentity
+	 * @return The ObjectIdentity representing the parent
+	 */
+	public ObjectIdentity getParent(ObjectIdentity child);
 }

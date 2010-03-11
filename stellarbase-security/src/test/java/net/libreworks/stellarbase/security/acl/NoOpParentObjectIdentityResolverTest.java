@@ -15,21 +15,27 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.collections;
+package net.libreworks.stellarbase.security.acl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
+ * Easiest unit test ever.
+ * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DoubleGrouperTest.class,
-	FluentValuesTest.class,
-	SingleGrouperTest.class
-})
-public class AllTests
+public class NoOpParentObjectIdentityResolverTest
 {
+
+	/**
+	 * Test method for {@link net.libreworks.stellarbase.security.acl.NoOpParentObjectIdentityResolver#getParent(org.springframework.security.acls.model.ObjectIdentity)}.
+	 */
+	@Test
+	public void testGetParent()
+	{
+		NoOpParentObjectIdentityResolver object = new NoOpParentObjectIdentityResolver();
+		assertNull(object.getParent(null));
+	}
 }

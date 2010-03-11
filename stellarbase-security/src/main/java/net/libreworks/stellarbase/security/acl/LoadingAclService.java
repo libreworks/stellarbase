@@ -41,6 +41,7 @@ public class LoadingAclService extends AbstractAclService
 {
 	protected Collection<AccessControlEntryLoader> loaders = new ArrayList<AccessControlEntryLoader>();
 	protected AclCache aclCache = new NoOpAclCache();
+	protected ParentObjectIdentityResolver parentResolver = new NoOpParentObjectIdentityResolver();
 	
 	public List<ObjectIdentity> findChildren(ObjectIdentity arg0)
 	{
@@ -48,6 +49,32 @@ public class LoadingAclService extends AbstractAclService
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Gets an Acl based on AccessControlEntry objects from the loaders.
+	 * 
+	 * @param oid The ObjectIdentity
+	 * @param sids The Sids (can be null)
+	 * @return The Acl constructed
+	 */
+	protected Acl loadAcl(ObjectIdentity oid, List<Sid> sids)
+	{
+		Acl acl = aclCache.get(oid, sids);
+		if ( acl == null ) {
+			ObjectIdentity parentOid = parentResolver.getParent(oid);
+			Acl parentAcl = parentOid != null ? loadAcl(parentOid, sids) : null;
+			acl = new AclImpl(oid, parentAcl, sids);
+			ArrayList<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
+			for(AccessControlEntryLoader loader : loaders) {
+				if ( loader.supports(oid) ) {
+					aces.addAll(loader.getEntries(acl, oid, sids));
+				}
+			}
+			((AclImpl)acl).setEntries(aces);
+			aclCache.put(oid, sids, acl);
+		}
+		return acl;
+	}
+	
 	public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException
 	{
 		if ( sids == null ) {
@@ -63,17 +90,6 @@ public class LoadingAclService extends AbstractAclService
 		}
 		return map;
 	}
-	
-	/**
-	 * Sets the AccessControlEntryLoader objects that will be used by this service.
-	 * 
-	 * @param loaders The ACE loaders
-	 */
-	public void setLoaders(Collection<AccessControlEntryLoader> loaders)
-	{
-		Assert.notNull(loaders);
-		this.loaders.addAll(loaders);
-	}
 
 	/**
 	 * @param aclCache the aclCache to set
@@ -85,26 +101,22 @@ public class LoadingAclService extends AbstractAclService
 	}
 
 	/**
-	 * Gets an Acl based on AccessControlEntry objects from the loaders.
+	 * Sets the AccessControlEntryLoader objects that will be used by this service.
 	 * 
-	 * @param oid The ObjectIdentity
-	 * @param sids The Sids (can be null)
-	 * @return The Acl constructed
+	 * @param loaders The ACE loaders
 	 */
-	protected Acl loadAcl(ObjectIdentity oid, List<Sid> sids)
+	public void setLoaders(Collection<? extends AccessControlEntryLoader> loaders)
 	{
-		Acl acl = aclCache.get(oid, sids);
-		if ( acl == null ) {
-			acl = new AclImpl(oid, null, sids);
-			ArrayList<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-			for(AccessControlEntryLoader loader : loaders) {
-				if ( loader.supports(oid) ) {
-					aces.addAll(loader.getEntries(acl, oid, sids));
-				}
-			}
-			((AclImpl)acl).setEntries(aces);
-			aclCache.put(oid, sids, acl);
-		}
-		return acl;
+		Assert.notNull(loaders);
+		this.loaders.addAll(loaders);
 	}
+
+	/**
+     * @param parentResolver the parentResolver to set
+     */
+    public void setParentResolver(ParentObjectIdentityResolver parentResolver)
+    {
+    	Assert.notNull(parentResolver);
+    	this.parentResolver = parentResolver;
+    }
 }

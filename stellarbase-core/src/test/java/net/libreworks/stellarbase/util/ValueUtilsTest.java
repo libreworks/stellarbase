@@ -32,7 +32,6 @@ import org.junit.Test;
  */
 public class ValueUtilsTest
 {
-
 	/**
 	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#equivalent(java.lang.Object, java.lang.Object)}.
 	 * @throws URISyntaxException 
@@ -43,7 +42,9 @@ public class ValueUtilsTest
 		assertTrue(ValueUtils.equivalent(null, null));
 		String test1 = "foobar";
 		assertTrue(ValueUtils.equivalent(test1, test1));
-		assertTrue(ValueUtils.equivalent("foobar1", "foobar1"));
+		String foobar1 = "foobar1";
+		String foobar1again = new String(foobar1);
+		assertTrue(ValueUtils.equivalent(foobar1, foobar1again));
 		assertFalse(ValueUtils.equivalent("foobar1", "foobar2"));
 		assertFalse(ValueUtils.equivalent("foobar1", null));
 		assertTrue(ValueUtils.equivalent(2, "2"));
@@ -100,10 +101,24 @@ public class ValueUtilsTest
 	}
 
 	/**
-	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#toNumberOrNan(java.lang.Object, java.lang.Class)}.
+	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#toNumber(Object, Class)}
 	 */
 	@Test
 	public void testToNumber()
+	{
+		BigInteger in1 = new BigInteger("12345");
+		assertEquals(in1, ValueUtils.toNumber(in1, BigInteger.class));
+		Long out1 = ValueUtils.toNumber(in1, Long.class);
+		assertEquals(in1.longValue(), out1.longValue());
+		Long out2 = ValueUtils.toNumber("12345", Long.class);
+		assertEquals(in1.longValue(), out2.longValue());
+	}
+	
+	/**
+	 * Test method for {@link net.libreworks.stellarbase.util.ValueUtils#toNumberOrNan(java.lang.Object, java.lang.Class)}.
+	 */
+	@Test
+	public void testToNumberOrNan()
 	{
 		BigInteger in1 = new BigInteger("12345");
 		Long out1 = ValueUtils.toNumberOrNan(in1, Long.class);

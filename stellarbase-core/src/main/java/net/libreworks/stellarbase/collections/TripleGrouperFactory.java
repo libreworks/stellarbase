@@ -17,19 +17,25 @@
  */
 package net.libreworks.stellarbase.collections;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
+import java.util.Map;
 
 /**
+ * Factory interface for collections and maps used within {@link TripleGrouper}.
+ * 
  * @author Jonathan Hawk
  * @version $Id$
+ * @param <A> The far outer group type
+ * @param <B> The outer group type
+ * @param <C> The inner group type
+ * @param <V> The element type
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DoubleGrouperTest.class,
-	FluentValuesTest.class,
-	SingleGrouperTest.class
-})
-public class AllTests
+public interface TripleGrouperFactory<A,B,C,V> extends DoubleGrouperFactory<B,C,V>
 {
+	/**
+	 * Gets the group container for nested groups.
+	 * 
+	 * @return The container for group items
+	 */
+	public Map<A,Map<B,Map<C,Collection<V>>>> getFarOuterGroupContainer();
 }

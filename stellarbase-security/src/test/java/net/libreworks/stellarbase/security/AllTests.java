@@ -20,6 +20,10 @@ package net.libreworks.stellarbase.security;
 import net.libreworks.stellarbase.security.acl.AccessDeciderTest;
 import net.libreworks.stellarbase.security.acl.AclImplTest;
 import net.libreworks.stellarbase.security.acl.IdentifiableAclEntryVoterTest;
+import net.libreworks.stellarbase.security.acl.LoadingAclServiceTest;
+import net.libreworks.stellarbase.security.acl.MapAclCacheTest;
+import net.libreworks.stellarbase.security.acl.NoOpAclCacheTest;
+import net.libreworks.stellarbase.security.acl.NoOpParentObjectIdentityResolverTest;
 import net.libreworks.stellarbase.security.auth.SpringSecurityAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -33,6 +37,10 @@ import org.junit.runners.Suite;
 	AccessDeciderTest.class,
 	AclImplTest.class,
 	IdentifiableAclEntryVoterTest.class,
+	LoadingAclServiceTest.class,
+	MapAclCacheTest.class,
+	NoOpAclCacheTest.class,
+	NoOpParentObjectIdentityResolverTest.class,
 	SpringSecurityAdapterTest.class
 })
 public class AllTests

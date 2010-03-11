@@ -15,21 +15,20 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.collections;
+package net.libreworks.stellarbase.security.acl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.springframework.security.acls.model.ObjectIdentity;
 
 /**
+ * Always returns nothing for parent lookups
+ * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DoubleGrouperTest.class,
-	FluentValuesTest.class,
-	SingleGrouperTest.class
-})
-public class AllTests
+public class NoOpParentObjectIdentityResolver implements ParentObjectIdentityResolver
 {
+	public ObjectIdentity getParent(ObjectIdentity child)
+	{
+		return null;
+	}
 }

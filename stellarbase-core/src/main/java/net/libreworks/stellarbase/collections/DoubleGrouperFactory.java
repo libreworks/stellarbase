@@ -17,19 +17,24 @@
  */
 package net.libreworks.stellarbase.collections;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
+import java.util.Map;
 
 /**
+ * Factory interface for collections and maps used within {@link DoubleGrouper}.
+ * 
  * @author Jonathan Hawk
  * @version $Id$
+ * @param <A> The outer group type
+ * @param <B> The inner group type
+ * @param <V> The element type
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DoubleGrouperTest.class,
-	FluentValuesTest.class,
-	SingleGrouperTest.class
-})
-public class AllTests
+public interface DoubleGrouperFactory<A,B,V> extends SingleGrouperFactory<B,V>
 {
+	/**
+	 * Gets the outer container for groups and their inner groups.
+	 * 
+	 * @return The container for group items
+	 */
+	public Map<A,Map<B,Collection<V>>> getOuterGroupContainer();
 }
