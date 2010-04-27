@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	AbstractOneFieldRuleTest.class,
+	CircularRuleTest.class,
 	OneOfRuleTest.class,
 	RequiredRuleTest.class,
 	RuleValidatorTest.class,

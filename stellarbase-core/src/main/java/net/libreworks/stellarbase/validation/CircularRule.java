@@ -17,63 +17,55 @@
  */
 package net.libreworks.stellarbase.validation;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
- * An abstract rule to allow processing of one field.
+ * A rule that validates an object doesn't reference itself in a given field.
+ * 
+ * This rule is useful for objects with parentage, to ensure an object can't
+ * list itself as a parent.
  * 
  * @author Jonathan Hawk
  * @version $Id$
- * @param <T> The type of property to validate
  */
-public abstract class AbstractOneFieldRule<T> extends AbstractRule
+public class CircularRule extends AbstractRule
 {
-	protected String field;
-
+	private static final String LABEL = "Circular";
+	
+	private String field;
+	
 	/**
-	 * @param field The field to validate
+	 * Creates a new CircularRule
+	 * 
+	 * @param field The field name
 	 */
-	public AbstractOneFieldRule(String field)
+	public CircularRule(String field)
 	{
 		Assert.notNull(field);
 		this.field = field;
 	}
-	
+
 	@Override
 	public String getConstraints()
 	{
-		return field + ":" + getConstraintLabel();
+		return field;
 	}
-	
-	/**
-	 * Performs the real validation.
-	 * 
-	 * @param value The value retrieved from the bean
-	 * @param errors The errors
-	 */
-	protected abstract void validateField(T value, Errors errors);
-	
-	/**
-	 * Gets a label about the Rule's constraints.
-	 * 
-	 * For example, a regular expression's constraint is its pattern. A greater
-	 * than constraint would be the number the value must be greater than.
-	 * 
-	 * @return The constraint label
-	 */
-	public abstract String getConstraintLabel();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.validation.Rule#validate(java.lang.Object, org.springframework.validation.Errors)
-	 */
-	@SuppressWarnings("unchecked")
-    public final void validate(Object target, Errors errors)
+
+	@Override
+	public String getLabel()
+	{
+		return LABEL;
+	}
+
+	public void validate(Object target, Errors errors)
 	{
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(target);
-		validateField((T)bw.getPropertyValue(field), errors);
+		if ( ObjectUtils.equals(target, bw.getPropertyValue(field)) ) {
+			errors.rejectValue(field, FIELD_INVALID);
+		}
 	}
 }
