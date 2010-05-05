@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2</version>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-core</name>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.0.0.RELEASE</version>
+			<version>3.0.1.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

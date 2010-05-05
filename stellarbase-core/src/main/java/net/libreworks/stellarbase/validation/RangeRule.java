@@ -90,8 +90,8 @@ public class RangeRule extends AbstractOneFieldRule<Number>
 	@Override
     protected void validateField(Number value, Errors errors)
     {
-		Double cvalue = NumberUtils.convertNumberToTargetClass(value, Double.class);
 	    if ( value != null ) {
+			Double cvalue = NumberUtils.convertNumberToTargetClass(value, Double.class);
 	    	if ( min != null && min.compareTo(cvalue) > 0 ) {
 	    		errors.rejectValue(field, FIELD_INVALID);
 	    	} else if ( max != null && max.compareTo(cvalue) < 0 ) {

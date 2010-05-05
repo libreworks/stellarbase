@@ -4,7 +4,7 @@
 	<groupId>net.libreworks</groupId>
 	<artifactId>stellarbase-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>Stellarbase Parent</name>
 	<description>Stellarbase is a starting point for Java applications using Spring. Using convention over configuration, we provide an infrastructure to get started with data entities, validation rules, data access objects, and services, as well as a cadre of utilities.</description>
 	<url>http://forge.libreworks.net/projects/stellarbase</url>
@@ -38,6 +38,19 @@
 					<verbose>true</verbose>
 					<fork>true</fork>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
