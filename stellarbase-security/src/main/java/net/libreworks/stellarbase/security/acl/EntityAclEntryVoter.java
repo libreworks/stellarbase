@@ -17,19 +17,18 @@
  */
 package net.libreworks.stellarbase.security.acl;
 
-import net.libreworks.stellarbase.model.Identifiable;
 import org.springframework.security.acls.AclEntryVoter;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.Permission;
 
 /**
- * An extension to AclEntryVoter which also supports direct use of Identifiable
- * instead of just method invocations.
+ * An extension to AclEntryVoter which also supports direct use of an entity
+ * class instead of just method invocations.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class IdentifiableAclEntryVoter extends AclEntryVoter
+public class EntityAclEntryVoter extends AclEntryVoter
 {
 	/**
 	 * Creates a new ACL entry voter
@@ -38,10 +37,10 @@ public class IdentifiableAclEntryVoter extends AclEntryVoter
 	 * @param processConfigAttribute The config attributes
 	 * @param requirePermission The permissions required
 	 */
-	public IdentifiableAclEntryVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission)
+	public EntityAclEntryVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission, Class<?> domainObjectClass)
 	{
 		super(aclService, processConfigAttribute, requirePermission);
-		setProcessDomainObjectClass(Identifiable.class);
+		setProcessDomainObjectClass(domainObjectClass);
 	}
 	
 	@Override

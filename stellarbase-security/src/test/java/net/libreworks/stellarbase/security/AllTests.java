@@ -19,7 +19,7 @@ package net.libreworks.stellarbase.security;
 
 import net.libreworks.stellarbase.security.acl.AccessDeciderTest;
 import net.libreworks.stellarbase.security.acl.AclImplTest;
-import net.libreworks.stellarbase.security.acl.IdentifiableAclEntryVoterTest;
+import net.libreworks.stellarbase.security.acl.EntityAclEntryVoterTest;
 import net.libreworks.stellarbase.security.acl.LoadingAclServiceTest;
 import net.libreworks.stellarbase.security.acl.MapAclCacheTest;
 import net.libreworks.stellarbase.security.acl.NoOpAclCacheTest;
@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	AccessDeciderTest.class,
 	AclImplTest.class,
-	IdentifiableAclEntryVoterTest.class,
+	EntityAclEntryVoterTest.class,
 	LoadingAclServiceTest.class,
 	MapAclCacheTest.class,
 	NoOpAclCacheTest.class,

@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 
 /**
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: AllTests.java 7 2010-01-07 06:48:34Z jonathanhawk $
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

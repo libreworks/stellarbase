@@ -27,7 +27,7 @@ import org.springframework.beans.MutablePropertyValues;
 
 /**
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: UpdateEventTest.java 7 2010-01-07 06:48:34Z jonathanhawk $
  */
 public class UpdateEventTest
 {

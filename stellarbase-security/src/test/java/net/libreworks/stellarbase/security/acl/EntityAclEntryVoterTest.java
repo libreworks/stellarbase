@@ -20,11 +20,9 @@ package net.libreworks.stellarbase.security.acl;
 import static org.junit.Assert.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.libreworks.stellarbase.model.Identifiable;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.JoinPoint;
 import org.junit.Before;
@@ -49,9 +47,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class IdentifiableAclEntryVoterTest
+public class EntityAclEntryVoterTest
 {
-	private IdentifiableAclEntryVoter object;
+	private EntityAclEntryVoter object;
 	
 	/**
 	 * Sets up the test
@@ -78,8 +76,8 @@ public class IdentifiableAclEntryVoterTest
 				return null;
 			}
 		};
-		object = new IdentifiableAclEntryVoter(aclService, "ACL_READ",
-			new Permission[]{BasePermission.READ});
+		object = new EntityAclEntryVoter(aclService, "ACL_READ",
+			new Permission[]{BasePermission.READ}, InnerBean.class);
 	}
 
 	/**
@@ -88,7 +86,7 @@ public class IdentifiableAclEntryVoterTest
 	@Test
 	public void testSupportsClassOfQ()
 	{
-		assertTrue(object.supports(Identifiable.class));
+		assertTrue(object.supports(InnerBean.class));
 		assertTrue(object.supports(MethodInvocation.class));
 		assertTrue(object.supports(JoinPoint.class));
 	}
@@ -125,33 +123,13 @@ public class IdentifiableAclEntryVoterTest
 	 * @author Jonathan Hawk
 	 * @version $Id$
 	 */
-	public class InnerBean implements Identifiable<Serializable>
+	public class InnerBean implements Serializable
 	{
         private static final long serialVersionUID = 1L;
-
-		public String getCreatedBy()
-        {
-            return null;
-        }
-
-		public Date getCreatedOn()
-        {
-            return null;
-        }
 
 		public Serializable getId()
         {
             return 1;
-        }
-
-		public void setCreatedBy(String createdBy)
-        {
-        
-        }
-
-		public void setCreatedOn(Date createdOn)
-        {
-        
         }
 	}
 }

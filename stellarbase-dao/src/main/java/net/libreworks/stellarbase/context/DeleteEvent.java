@@ -23,7 +23,7 @@ import net.libreworks.stellarbase.model.Identifiable;
  * Occurs when an entity is Deleted.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: DeleteEvent.java 7 2010-01-07 06:48:34Z jonathanhawk $
  */
 public class DeleteEvent extends AbstractDataEvent
 {

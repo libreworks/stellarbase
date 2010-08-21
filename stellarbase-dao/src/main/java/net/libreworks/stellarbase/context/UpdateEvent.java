@@ -24,7 +24,7 @@ import net.libreworks.stellarbase.model.Identifiable;
  * Occurs when an entity is updated.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: UpdateEvent.java 7 2010-01-07 06:48:34Z jonathanhawk $
  */
 public class UpdateEvent extends AbstractDataEvent
 {

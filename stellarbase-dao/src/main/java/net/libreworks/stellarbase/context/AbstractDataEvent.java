@@ -24,7 +24,7 @@ import org.springframework.context.ApplicationEvent;
  * Abstract base for all data access events (create, update, delete, etc.).
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: AbstractDataEvent.java 5 2010-01-04 23:30:16Z jonathanhawk $
  */
 public abstract class AbstractDataEvent extends ApplicationEvent
 {

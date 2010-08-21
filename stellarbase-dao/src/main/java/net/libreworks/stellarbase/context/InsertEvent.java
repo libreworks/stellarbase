@@ -23,7 +23,7 @@ import net.libreworks.stellarbase.model.Identifiable;
  * Occurs when an entity is inserted.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: InsertEvent.java 5 2010-01-04 23:30:16Z jonathanhawk $
  */
 public class InsertEvent extends AbstractDataEvent
 {
