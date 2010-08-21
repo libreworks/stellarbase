@@ -110,8 +110,7 @@ public class ValueUtils
 	 * 
 	 * If the value is a Number, it will be converted or cast appropriately,
 	 * otherwise it will be turned into a String and parsed. If the value cannot
-	 * be turned into the number for whatever reason, an
-	 * IllegalArgumentException will be thrown.
+	 * be turned into the number for whatever reason, zero will be returned.
 	 * 
 	 * @param <T> The number class
 	 * @param value The value to convert into a number
@@ -119,15 +118,21 @@ public class ValueUtils
 	 * @return The number
 	 * @throws IllegalArgumentException if the value could not be converted
 	 */
-	public static <T extends Number> T toNumber(Object value, Class<T> toClass)
+	public static <T extends Number> T value(Class<T> toClass, Object value)
 	{
 		Assert.notNull(toClass);
-		if ( toClass.isInstance(value) ) {
+		if ( value == null ) {
+			return NumberUtils.convertNumberToTargetClass(0, toClass);
+		} else if ( toClass.isInstance(value) ) {
 			return toClass.cast(value);
 	    } else if ( value instanceof Number ) {
 	    	return NumberUtils.convertNumberToTargetClass((Number)value, toClass);
 	    } else {
-	    	return NumberUtils.parseNumber(ObjectUtils.toString(value), toClass);
+	    	try {
+				return NumberUtils.parseNumber(ObjectUtils.toString(value), toClass);
+			} catch ( Exception e ) {
+				return NumberUtils.convertNumberToTargetClass(0, toClass);
+			}
 	    }
 	}
 	

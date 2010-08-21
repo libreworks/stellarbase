@@ -107,10 +107,10 @@ public class ValueUtilsTest
 	public void testToNumber()
 	{
 		BigInteger in1 = new BigInteger("12345");
-		assertEquals(in1, ValueUtils.toNumber(in1, BigInteger.class));
-		Long out1 = ValueUtils.toNumber(in1, Long.class);
+		assertEquals(in1, ValueUtils.value(BigInteger.class, in1));
+		Long out1 = ValueUtils.value(Long.class, in1);
 		assertEquals(in1.longValue(), out1.longValue());
-		Long out2 = ValueUtils.toNumber("12345", Long.class);
+		Long out2 = ValueUtils.value(Long.class, "12345");
 		assertEquals(in1.longValue(), out2.longValue());
 	}
 	

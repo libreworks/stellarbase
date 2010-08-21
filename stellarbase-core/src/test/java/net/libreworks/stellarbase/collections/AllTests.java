@@ -28,7 +28,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	DoubleGrouperTest.class,
 	FluentValuesTest.class,
-	SingleGrouperTest.class
+	SingleGrouperTest.class,
+	SingleGroupTotalTest.class,
+	DoubleGroupTotalTest.class
 })
 public class AllTests
 {
