@@ -97,6 +97,15 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 	    return getDao().loadById(id);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see net.libreworks.stellarbase.model.EntityRepository#refresh(net.libreworks.stellarbase.model.Identifiable)
+     */
+    public void refresh(T entity)
+    {
+    	getDao().refresh(entity);
+    }
+    
 	/**
 	 * Gets the DAO that can be used to load entities.
 	 * 

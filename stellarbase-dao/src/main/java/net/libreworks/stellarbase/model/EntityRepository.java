@@ -94,4 +94,11 @@ public interface EntityRepository<T extends Identifiable<K>, K extends Serializa
 	 * @return The entity
 	 */
 	public T loadById(K id);
+	
+	/**
+	 * Updates the entity with the most recent values from the data store.
+	 * 
+	 * @param entity The entity to refresh
+	 */
+	public void refresh(T entity);
 }

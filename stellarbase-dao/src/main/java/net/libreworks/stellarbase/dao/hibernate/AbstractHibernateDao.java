@@ -193,6 +193,15 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return entity;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.model.EntityRepository#refresh(net.libreworks.stellarbase.model.Identifiable)
+	 */
+	public void refresh(T entity)
+	{
+		getHibernateTemplate().refresh(entity);
+	}
+	
 	/**
 	 * Turns a map of key value pairs into a DetachedCriteria. Null values will
 	 * be turned into "IS NULL", Collections and arrays will be turned into
