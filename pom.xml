@@ -76,6 +76,7 @@
 	<modules>
 		<module>stellarbase-core</module>
 		<module>stellarbase-dao</module>
+		<module>stellarbase-mail</module>
 		<module>stellarbase-security</module>
 		<module>stellarbase-web</module>
 	</modules>
