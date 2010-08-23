@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
  * A simple front-end to Velocity for e-mail content.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: VelocityTemplateEngine.java 50 2010-01-21 03:04:26Z jonathanhawk $
  */
 public class VelocityTemplateEngine implements TemplateEngine, InitializingBean
 {

@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
 /**
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: MailTask.java 50 2010-01-21 03:04:26Z jonathanhawk $
  */
 public class MailTask implements Runnable, MimeMessagePreparator
 {

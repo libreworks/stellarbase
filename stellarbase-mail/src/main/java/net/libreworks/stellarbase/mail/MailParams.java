@@ -32,7 +32,7 @@ import org.springframework.util.Assert;
  * A simple Data Transfer Object to ease e-mail sending.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: MailParams.java 56 2010-03-10 00:22:55Z jonathanhawk $
  */
 public class MailParams implements Serializable
 {

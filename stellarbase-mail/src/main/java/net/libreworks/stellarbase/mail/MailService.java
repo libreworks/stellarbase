@@ -27,7 +27,7 @@ import org.springframework.util.Assert;
  * executor can be chosen to allow e-mails to be sent asynchronously
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: MailService.java 50 2010-01-21 03:04:26Z jonathanhawk $
  */
 public class MailService implements InitializingBean
 {

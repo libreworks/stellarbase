@@ -24,7 +24,7 @@ import org.springframework.mail.MailPreparationException;
  * A front-end to a templating engine (usually Velocity or FreeMarker).
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @version $Id: TemplateEngine.java 50 2010-01-21 03:04:26Z jonathanhawk $
  */
 public interface TemplateEngine
 {
