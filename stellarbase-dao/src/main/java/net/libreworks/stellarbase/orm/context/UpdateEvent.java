@@ -15,10 +15,11 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.context;
+package net.libreworks.stellarbase.orm.context;
 
 import org.springframework.beans.PropertyValues;
-import net.libreworks.stellarbase.model.Identifiable;
+
+import net.libreworks.stellarbase.orm.model.Identifiable;
 
 /**
  * Occurs when an entity is updated.

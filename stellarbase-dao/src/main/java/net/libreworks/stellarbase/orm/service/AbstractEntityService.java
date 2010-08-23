@@ -15,14 +15,15 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.service;
+package net.libreworks.stellarbase.orm.service;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import net.libreworks.stellarbase.dao.ReadableDao;
-import net.libreworks.stellarbase.model.Identifiable;
+
+import net.libreworks.stellarbase.orm.dao.ReadableDao;
+import net.libreworks.stellarbase.orm.model.Identifiable;
 
 /**
  * Base entity service.

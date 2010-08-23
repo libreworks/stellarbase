@@ -15,9 +15,10 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.context;
+package net.libreworks.stellarbase.orm.context;
 
-import net.libreworks.stellarbase.model.Identifiable;
+import net.libreworks.stellarbase.orm.model.Identifiable;
+
 import org.springframework.context.ApplicationEvent;
 
 /**

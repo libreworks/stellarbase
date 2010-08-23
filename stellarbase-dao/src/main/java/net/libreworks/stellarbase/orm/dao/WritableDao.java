@@ -15,12 +15,13 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao;
+package net.libreworks.stellarbase.orm.dao;
 
 import java.io.Serializable;
 import java.util.Map;
 import org.springframework.validation.BindException;
-import net.libreworks.stellarbase.model.Modifiable;
+
+import net.libreworks.stellarbase.orm.model.Modifiable;
 
 /**
  * Base interface for data access objects which allow creating and updating.

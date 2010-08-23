@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.model;
+package net.libreworks.stellarbase.orm.model;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao.hibernate;
+package net.libreworks.stellarbase.orm.dao.hibernate;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
@@ -27,8 +27,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import net.libreworks.stellarbase.dao.ReadableDao;
-import net.libreworks.stellarbase.model.Identifiable;
+
+import net.libreworks.stellarbase.orm.dao.ReadableDao;
+import net.libreworks.stellarbase.orm.model.Identifiable;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;

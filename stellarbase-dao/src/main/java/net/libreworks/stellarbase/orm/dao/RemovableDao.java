@@ -15,11 +15,12 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao;
+package net.libreworks.stellarbase.orm.dao;
 
 import java.io.Serializable;
 import java.util.List;
-import net.libreworks.stellarbase.model.Removable;
+
+import net.libreworks.stellarbase.orm.model.Removable;
 
 /**
  * Base interface for data access objects which allow for removal of entities (as opposed to deleting them).

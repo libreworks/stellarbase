@@ -14,7 +14,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao.hibernate;
+package net.libreworks.stellarbase.orm.dao.hibernate;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,10 +30,11 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
-import net.libreworks.stellarbase.context.InsertEvent;
-import net.libreworks.stellarbase.context.UpdateEvent;
-import net.libreworks.stellarbase.dao.WritableDao;
-import net.libreworks.stellarbase.model.Modifiable;
+
+import net.libreworks.stellarbase.orm.context.InsertEvent;
+import net.libreworks.stellarbase.orm.context.UpdateEvent;
+import net.libreworks.stellarbase.orm.dao.WritableDao;
+import net.libreworks.stellarbase.orm.model.Modifiable;
 
 /**
  * Abstract Hibernate DAO for mutable entities.

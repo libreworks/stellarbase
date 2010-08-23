@@ -15,9 +15,9 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.context;
+package net.libreworks.stellarbase.orm.context;
 
-import net.libreworks.stellarbase.model.Identifiable;
+import net.libreworks.stellarbase.orm.model.Identifiable;
 
 /**
  * Occurs when an entity is Deleted.

@@ -15,19 +15,20 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.context;
+package net.libreworks.stellarbase.orm.service;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.Serializable;
+
+import net.libreworks.stellarbase.orm.model.EntityRepository;
+import net.libreworks.stellarbase.orm.model.Identifiable;
 
 /**
+ * Base interface for services.
+ * 
  * @author Jonathan Hawk
- * @version $Id: AllTests.java 7 2010-01-07 06:48:34Z jonathanhawk $
+ * @param <T> The type of entity
+ * @param <K> The type of identifier
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	UpdateEventTest.class
-})
-public class AllTests
+public interface EntityService<T extends Identifiable<K>,K extends Serializable> extends EntityRepository<T,K>
 {
 }

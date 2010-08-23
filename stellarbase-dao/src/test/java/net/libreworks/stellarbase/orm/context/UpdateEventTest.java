@@ -15,12 +15,15 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.context;
+package net.libreworks.stellarbase.orm.context;
 
 import static org.junit.Assert.*;
 import java.io.Serializable;
 import java.util.Date;
-import net.libreworks.stellarbase.model.Identifiable;
+
+import net.libreworks.stellarbase.orm.context.UpdateEvent;
+import net.libreworks.stellarbase.orm.model.Identifiable;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.MutablePropertyValues;
@@ -64,7 +67,7 @@ public class UpdateEventTest
 	}
 
 	/**
-	 * Test method for {@link net.libreworks.stellarbase.context.UpdateEvent#getOldValues()}.
+	 * Test method for {@link net.libreworks.stellarbase.orm.context.UpdateEvent#getOldValues()}.
 	 */
 	@Test
 	public void testGetOldValues()
@@ -73,7 +76,7 @@ public class UpdateEventTest
 	}
 
 	/**
-	 * Test method for {@link net.libreworks.stellarbase.context.AbstractDataEvent#getEntity()}.
+	 * Test method for {@link net.libreworks.stellarbase.orm.context.AbstractDataEvent#getEntity()}.
 	 */
 	@Test
 	public void testGetEntity()
@@ -83,7 +86,7 @@ public class UpdateEventTest
 	}
 
 	/**
-	 * Test method for {@link net.libreworks.stellarbase.context.AbstractDataEvent#getBy()}.
+	 * Test method for {@link net.libreworks.stellarbase.orm.context.AbstractDataEvent#getBy()}.
 	 */
 	@Test
 	public void testGetBy()

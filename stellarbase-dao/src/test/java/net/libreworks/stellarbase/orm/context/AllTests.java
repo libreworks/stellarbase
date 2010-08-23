@@ -15,19 +15,19 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao;
+package net.libreworks.stellarbase.orm.context;
 
-import java.io.Serializable;
-import net.libreworks.stellarbase.model.EntityRepository;
-import net.libreworks.stellarbase.model.Identifiable;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * Base interface for data access objects.
- * 
  * @author Jonathan Hawk
- * @param <T> The type of entity
- * @param <K> The type of identifier 
+ * @version $Id: AllTests.java 7 2010-01-07 06:48:34Z jonathanhawk $
  */
-public interface ReadableDao<T extends Identifiable<K>, K extends Serializable> extends EntityRepository<T,K>
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	UpdateEventTest.class
+})
+public class AllTests
 {
 }

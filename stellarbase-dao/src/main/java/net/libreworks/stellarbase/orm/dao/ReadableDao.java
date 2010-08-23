@@ -15,26 +15,20 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao;
+package net.libreworks.stellarbase.orm.dao;
 
 import java.io.Serializable;
-import net.libreworks.stellarbase.model.Identifiable;
+
+import net.libreworks.stellarbase.orm.model.EntityRepository;
+import net.libreworks.stellarbase.orm.model.Identifiable;
 
 /**
- * Base interface for data access objects which allow deleting of entities.
+ * Base interface for data access objects.
  * 
  * @author Jonathan Hawk
- * @version $Id$
- * @param <T>
- * @param <K>
+ * @param <T> The type of entity
+ * @param <K> The type of identifier 
  */
-public interface DeletableDao<T extends Identifiable<K>,K extends Serializable> extends ReadableDao<T,K>
+public interface ReadableDao<T extends Identifiable<K>, K extends Serializable> extends EntityRepository<T,K>
 {
-	/**
-	 * Deletes the entity.
-	 * 
-	 * @param entity The entity to delete
-	 * @param by The user who did the deleting
-	 */
-	public void delete(T entity, String by);
 }

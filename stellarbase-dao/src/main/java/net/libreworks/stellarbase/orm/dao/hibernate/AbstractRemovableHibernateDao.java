@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao.hibernate;
+package net.libreworks.stellarbase.orm.dao.hibernate;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -29,9 +29,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import net.libreworks.stellarbase.context.DeleteEvent;
-import net.libreworks.stellarbase.dao.RemovableDao;
-import net.libreworks.stellarbase.model.Removable;
+import net.libreworks.stellarbase.orm.context.DeleteEvent;
+import net.libreworks.stellarbase.orm.dao.RemovableDao;
+import net.libreworks.stellarbase.orm.model.Removable;
 
 /**
  * Abstract Hibernate DAO for entities which are removable.

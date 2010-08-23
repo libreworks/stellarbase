@@ -15,12 +15,13 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.dao.hibernate;
+package net.libreworks.stellarbase.orm.dao.hibernate;
 
 import java.io.Serializable;
-import net.libreworks.stellarbase.context.DeleteEvent;
-import net.libreworks.stellarbase.dao.DeletableDao;
-import net.libreworks.stellarbase.model.Modifiable;
+
+import net.libreworks.stellarbase.orm.context.DeleteEvent;
+import net.libreworks.stellarbase.orm.dao.DeletableDao;
+import net.libreworks.stellarbase.orm.model.Modifiable;
 
 /**
  * Abstract Hibernate DAO for deletable entities 
