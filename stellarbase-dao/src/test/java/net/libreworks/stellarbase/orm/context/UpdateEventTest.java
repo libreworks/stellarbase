@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.libreworks.stellarbase.orm.context.UpdateEvent;
 import net.libreworks.stellarbase.orm.model.Identifiable;
 
 import org.junit.Before;
