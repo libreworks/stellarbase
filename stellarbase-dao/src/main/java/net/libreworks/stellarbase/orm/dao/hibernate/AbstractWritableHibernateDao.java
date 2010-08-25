@@ -62,7 +62,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.WritableDao#canUpdate()
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#canUpdate()
 	 */
 	public boolean canUpdate()
 	{
@@ -71,7 +71,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.WritableDao#create(java.util.Map, java.lang.String)
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#create(java.util.Map, java.lang.String)
 	 */
 	public T create(Map<String,?> values, String by) throws BindException
 	{
@@ -128,7 +128,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.WritableDao#update(net.libreworks.stellarbase.model.Modifiable, java.util.Map, java.lang.String)
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#update(net.libreworks.stellarbase.orm.model.Modifiable, java.util.Map, java.lang.String)
 	 */
 	public void update(T entity, Map<String,?> values, String by) throws BindException
     {

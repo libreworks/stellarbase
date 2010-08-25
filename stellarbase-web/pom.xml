@@ -12,14 +12,14 @@
 	<name>stellarbase-web</name>
 	<dependencies>
 		<dependency>
-			<groupId>net.libreworks</groupId>
+			<groupId>net.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>net.libreworks</groupId>
+			<groupId>net.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-security</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>

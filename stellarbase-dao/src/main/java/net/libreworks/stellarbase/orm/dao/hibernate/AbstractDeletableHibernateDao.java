@@ -32,10 +32,10 @@ import net.libreworks.stellarbase.orm.model.Modifiable;
  */
 public abstract class AbstractDeletableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractWritableHibernateDao<T,K> implements DeletableDao<T,K>
 {
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.DeletableDao#delete(net.libreworks.stellarbase.model.Identifiable, java.lang.String)
-	 */
+    /*
+     * (non-Javadoc)
+     * @see net.libreworks.stellarbase.orm.dao.DeletableDao#delete(net.libreworks.stellarbase.orm.model.Identifiable, java.lang.String)
+     */
 	public void delete(T entity, String by)
     {
 		eventMulticaster.multicastEvent(new DeleteEvent(entity, by));

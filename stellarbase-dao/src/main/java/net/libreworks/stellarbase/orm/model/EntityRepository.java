@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.convert.converter.Converter;
+
 /**
  * Base interface for objects serving as repositories, such as services or DAOs.
  * 
@@ -30,7 +32,7 @@ import java.util.Map;
  * @param <T> The type of entity
  * @param <K> The type of identifier
  */
-public interface EntityRepository<T extends Identifiable<K>, K extends Serializable>
+public interface EntityRepository<T extends Identifiable<K>, K extends Serializable> extends Converter<K,T>
 {
 	/**
 	 * Gets an entity by the fields specified.
@@ -83,6 +85,13 @@ public interface EntityRepository<T extends Identifiable<K>, K extends Serializa
 	 * @return The entity class
 	 */
 	public Class<T> getEntityClass();
+	
+	/**
+	 * Gets the class of identifier supported by this repository.
+	 * 
+	 * @return The identifier class
+	 */
+	public Class<T> getIdentifierClass();
 	
 	/**
 	 * Loads an entity by its identifier.

@@ -61,14 +61,30 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 {
 	protected ApplicationEventMulticaster eventMulticaster;
 	protected Class<T> entityClass;
+	protected Class<T> identifierClass;
 	protected List<String> propertyNames = new ArrayList<String>();
 	protected List<String> naturalIdProperties = new ArrayList<String>();
 	protected boolean hasNaturalId = false;
 	protected List<Type> propertyTypes = new ArrayList<Type>();
-
+	
 	/*
 	 * (non-Javadoc)
-	 * @see net.sitec.sleepingforest.model.RepositoryStrategy#find(java.util.Map)
+	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+	 */
+	public T convert(K source)
+    {
+        T entity = getById(source);
+        if ( entity == null ) {
+            throw new IllegalArgumentException("Entity "
+                    + entityClass.getName() + " not found with identifier: "
+                    + source);
+        }
+        return entity;
+    }
+
+    /*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#find(java.util.Map)
 	 */
 	public T find(final Map<String,?> fields)
 	{
@@ -85,7 +101,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#findAll(java.util.Map)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#findAll(java.util.Map)
 	 */
 	public List<T> findAll(final Map<String,?> fields)
 	{
@@ -102,7 +118,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#getAll()
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getAll()
 	 */
 	public List<T> getAll()
 	{
@@ -111,7 +127,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#getById(java.io.Serializable)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getById(java.io.Serializable)
 	 */
 	public T getById(K id)
 	{
@@ -120,7 +136,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#getByIds(java.util.Collection)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getByIds(java.util.Collection)
 	 */
 	public List<T> getByIds(final Collection<K> ids)
 	{
@@ -159,20 +175,53 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#getEntityClass()
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getEntityClass()
 	 */
 	public Class<T> getEntityClass()
 	{
 		return entityClass;
 	}
 
-	@SuppressWarnings("unchecked")
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getIdentifierClass()
+	 */
+	public Class<T> getIdentifierClass()
+    {
+        return identifierClass;
+    }
+
+	/**
+	 * Turns a Hibernate entity into PropertyValues
+	 * 
+	 * @param entity The entity
+	 * @return The PropertyValues for the entity
+	 */
+	protected PropertyValues getPropertyValues(Identifiable<?> entity)
+	{
+		if ( entity instanceof HibernateProxy ) {
+			getHibernateTemplate().initialize(entity);
+		}
+		MutablePropertyValues mpv = new MutablePropertyValues();
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+		for(PropertyDescriptor pd : bw.getPropertyDescriptors()) {
+			if ( !Collection.class.isAssignableFrom(pd.getPropertyType()) &&
+				!Map.class.isAssignableFrom(pd.getPropertyType())) {
+				String name = pd.getName();
+				mpv.add(name, bw.getPropertyValue(name));
+			}
+		}
+		return mpv;
+	}
+
+    @SuppressWarnings("unchecked")
 	@Override
 	protected void initDao() throws Exception
 	{
 		entityClass = (Class<T>) ((ParameterizedType) getClass()
 		    .getGenericSuperclass()).getActualTypeArguments()[0];
 		ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(entityClass);
+		identifierClass = meta.getIdentifierType().getReturnedClass();
 		propertyNames.addAll(Arrays.asList(meta.getPropertyNames()));
 		propertyTypes.addAll(Arrays.asList(meta.getPropertyTypes()));
 		hasNaturalId = meta.hasNaturalIdentifier();
@@ -183,25 +232,16 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#loadById(java.io.Serializable)
-	 */
+    /*
+     * (non-Javadoc)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#loadById(java.io.Serializable)
+     */
 	public T loadById(K id)
 	{
 		HibernateTemplate ht = getHibernateTemplate();
 		T entity = ht.load(entityClass, id);
 		ht.initialize(entity);
 		return entity;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#refresh(net.libreworks.stellarbase.model.Identifiable)
-	 */
-	public void refresh(T entity)
-	{
-		getHibernateTemplate().refresh(entity);
 	}
 	
 	/**
@@ -231,27 +271,13 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return crits;
 	}
 
-	/**
-	 * Turns a Hibernate entity into PropertyValues
-	 * 
-	 * @param entity The entity
-	 * @return The PropertyValues for the entity
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#refresh(net.libreworks.stellarbase.orm.model.Identifiable)
 	 */
-	protected PropertyValues getPropertyValues(Identifiable<?> entity)
+	public void refresh(T entity)
 	{
-		if ( entity instanceof HibernateProxy ) {
-			getHibernateTemplate().initialize(entity);
-		}
-		MutablePropertyValues mpv = new MutablePropertyValues();
-		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
-		for(PropertyDescriptor pd : bw.getPropertyDescriptors()) {
-			if ( !Collection.class.isAssignableFrom(pd.getPropertyType()) &&
-				!Map.class.isAssignableFrom(pd.getPropertyType())) {
-				String name = pd.getName();
-				mpv.add(name, bw.getPropertyValue(name));
-			}
-		}
-		return mpv;
+		getHibernateTemplate().refresh(entity);
 	}
 	
 	/**

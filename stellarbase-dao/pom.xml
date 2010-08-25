@@ -24,7 +24,7 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>net.libreworks</groupId>
+			<groupId>net.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>

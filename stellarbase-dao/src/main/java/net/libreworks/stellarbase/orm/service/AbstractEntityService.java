@@ -35,9 +35,18 @@ import net.libreworks.stellarbase.orm.model.Identifiable;
  */
 public abstract class AbstractEntityService<T extends Identifiable<K>,K extends Serializable> implements EntityService<T,K>
 {
-	/*
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+     */
+    public T convert(K source)
+    {
+        return getDao().convert(source);
+    }
+
+    /*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.model.EntityRepository#find(java.util.Map)
+	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#find(java.util.Map)
 	 */
     public T find(Map<String,?> fields)
     {
@@ -46,7 +55,7 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#findAll(java.util.Map)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#findAll(java.util.Map)
      */
     public List<T> findAll(Map<String,?> fields)
     {
@@ -55,7 +64,7 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#getAll()
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#getAll()
      */
     public List<T> getAll()
     {
@@ -64,7 +73,7 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#getById(java.io.Serializable)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#getById(java.io.Serializable)
      */
     public T getById(K id)
     {
@@ -73,16 +82,23 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#getByIds(java.util.Collection)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#getByIds(java.util.Collection)
      */
     public List<T> getByIds(Collection<K> ids)
     {
 	    return getDao().getByIds(ids);
     }
 
+    /**
+	 * Gets the DAO that can be used to load entities.
+	 * 
+	 * @return The DAO
+	 */
+	abstract protected ReadableDao<T,K> getDao();
+
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#getEntityClass()
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#getEntityClass()
      */
     public Class<T> getEntityClass()
     {
@@ -91,26 +107,28 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
 
     /*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#loadById(java.io.Serializable)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#getIdentifierClass()
+     */
+	public Class<T> getIdentifierClass()
+    {
+        return getDao().getIdentifierClass();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#loadById(java.io.Serializable)
      */
     public T loadById(K id)
     {
 	    return getDao().loadById(id);
     }
-
-    /*
+    
+	/*
      * (non-Javadoc)
-     * @see net.libreworks.stellarbase.model.EntityRepository#refresh(net.libreworks.stellarbase.model.Identifiable)
+     * @see net.libreworks.stellarbase.orm.model.EntityRepository#refresh(net.libreworks.stellarbase.orm.model.Identifiable)
      */
     public void refresh(T entity)
     {
     	getDao().refresh(entity);
     }
-    
-	/**
-	 * Gets the DAO that can be used to load entities.
-	 * 
-	 * @return The DAO
-	 */
-	abstract protected ReadableDao<T,K> getDao();
 }

@@ -42,10 +42,10 @@ import net.libreworks.stellarbase.orm.model.Removable;
  */
 public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K extends Serializable> extends AbstractWritableHibernateDao<T, K> implements RemovableDao<T, K>
 {
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.RemovableDao#getAllNotRemoved()
-	 */
+    /*
+     * (non-Javadoc)
+     * @see net.libreworks.stellarbase.orm.dao.RemovableDao#getAllNotRemoved()
+     */
 	public List<T> getAllNotRemoved()
 	{
 		return getHibernateTemplate().execute(new HibernateCallback<List<T>>()
@@ -82,7 +82,7 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.dao.RemovableDao#remove(net.libreworks.stellarbase.model.Removable, java.lang.String)
+	 * @see net.libreworks.stellarbase.orm.dao.RemovableDao#remove(net.libreworks.stellarbase.orm.model.Removable, java.lang.String)
 	 */
 	public void remove(T entity, String by)
 	{
