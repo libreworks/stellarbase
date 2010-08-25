@@ -61,7 +61,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 {
 	protected ApplicationEventMulticaster eventMulticaster;
 	protected Class<T> entityClass;
-	protected Class<T> identifierClass;
+	protected Class<K> identifierClass;
 	protected List<String> propertyNames = new ArrayList<String>();
 	protected List<String> naturalIdProperties = new ArrayList<String>();
 	protected boolean hasNaturalId = false;
@@ -186,7 +186,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 	 * (non-Javadoc)
 	 * @see net.libreworks.stellarbase.orm.model.EntityRepository#getIdentifierClass()
 	 */
-	public Class<T> getIdentifierClass()
+	public Class<K> getIdentifierClass()
     {
         return identifierClass;
     }

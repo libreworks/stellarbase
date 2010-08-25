@@ -91,7 +91,7 @@ public interface EntityRepository<T extends Identifiable<K>, K extends Serializa
 	 * 
 	 * @return The identifier class
 	 */
-	public Class<T> getIdentifierClass();
+	public Class<K> getIdentifierClass();
 	
 	/**
 	 * Loads an entity by its identifier.

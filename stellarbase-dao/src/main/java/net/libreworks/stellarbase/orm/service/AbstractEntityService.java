@@ -109,7 +109,7 @@ public abstract class AbstractEntityService<T extends Identifiable<K>,K extends 
      * (non-Javadoc)
      * @see net.libreworks.stellarbase.orm.model.EntityRepository#getIdentifierClass()
      */
-	public Class<T> getIdentifierClass()
+	public Class<K> getIdentifierClass()
     {
         return getDao().getIdentifierClass();
     }
