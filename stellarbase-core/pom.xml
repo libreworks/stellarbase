@@ -15,7 +15,7 @@
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>3.8.0.GA</version>
-            <scope>compile</scope>
+            <scope>runtime</scope>
         </dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
