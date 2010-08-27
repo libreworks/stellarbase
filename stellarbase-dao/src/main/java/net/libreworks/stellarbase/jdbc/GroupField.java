@@ -17,14 +17,36 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
-import java.io.Serializable;
-
 /**
- * Tagging interface for a SQL symbol
+ * A grouped data field or column.
+ * 
+ * Ported from the PHP framework Xyster by Jonathan Hawk, the original author.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-public interface Symbol extends Serializable
+public class GroupField extends Field
 {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Creates a new GroupField
+	 * 
+	 * @param name the name
+	 */
+	public GroupField(String name)
+	{
+		this(name, name);
+	}
+	
+	/**
+	 * Creates a new GroupField
+	 * 
+	 * @param name The name
+	 * @param alias The alias
+	 */
+	public GroupField(String name, String alias)
+	{
+		super(name, alias);
+	}
 }

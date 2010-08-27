@@ -17,14 +17,30 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
-import java.io.Serializable;
+import java.util.Collection;
 
 /**
- * Tagging interface for a SQL symbol
+ * The base class for Criteria.
+ * 
+ * Ported from the PHP framework Xyster by Jonathan Hawk, the original author.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-public interface Symbol extends Serializable
+public abstract class Criterion implements Symbol
 {
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Evaluates the criterion for a given object
+	 * 
+	 * @param value The value to evaluate
+	 * @return The result of the criterion applied to the object
+	 */
+	public abstract boolean evaluate(Object value);
+	
+	protected static Collection<Criterion> getFields(Criterion criteria)
+	{
+		return null;
+	}
 }

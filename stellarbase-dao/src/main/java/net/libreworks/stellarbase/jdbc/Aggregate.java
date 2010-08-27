@@ -17,14 +17,19 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
-import java.io.Serializable;
-
 /**
- * Tagging interface for a SQL symbol
+ * A selection aggregate function
+ * 
+ * Ported from the PHP framework Xyster by Jonathan Hawk, the original author.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-public interface Symbol extends Serializable
+public enum Aggregate
 {
+	SUM,
+	MAX,
+	MIN,
+	COUNT,
+	AVG;
 }

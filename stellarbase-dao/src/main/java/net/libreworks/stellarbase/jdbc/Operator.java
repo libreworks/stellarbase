@@ -17,6 +17,16 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import net.libreworks.stellarbase.util.ValueUtils;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.math.NumberRange;
+
 /**
  * An enum representing SQL operators: most of them, that is.
  * 
@@ -55,5 +65,79 @@ public enum Operator
 	public String getSql()
 	{
 		return sql;
+	}
+	
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public boolean evaluate(Object a, Object b)
+	{
+		boolean result = false;
+		if ( eq.equals(this) ) {
+			result = ObjectUtils.equals(a, b);
+		} else if ( neq.equals(this) ) {
+			result = !ObjectUtils.equals(a, b);
+		} else if (ge.equals(this) || gt.equals(this) || lt.equals(this)
+				|| le.equals(this)) {
+			if ((ge.equals(this) || le.equals(this))
+					&& ObjectUtils.equals(a, b)) {
+				result = true;
+			} else {
+				Comparable ca = a instanceof Comparable ? (Comparable) a
+						: ObjectUtils.toString(a);
+				Comparable cb = b instanceof Comparable ? (Comparable) b
+						: ObjectUtils.toString(b);
+				int compare = ca.compareTo(cb);
+				result = ((ge.equals(this) || gt.equals(this)) && compare > 0)
+						|| ((le.equals(this) || lt.equals(this)) && compare < 0);
+			}
+		} else if ( in.equals(this) || notIn.equals(this) ) {
+			if ( b instanceof Collection ) {
+				result = ((Collection) b).contains(a);
+			} else if ( b instanceof Object[] ) {
+				result = ArrayUtils.contains((Object[]) b, a);
+			}
+			if ( b != null && notIn.equals(this) ) {
+				result = !result;
+			}
+		} else if ( like.equals(this) || notLike.equals(this) ) {
+			String bs = ObjectUtils.toString(b);
+			boolean lookEnd = bs.endsWith("%"); 
+			boolean lookBeg = bs.startsWith("%");
+			boolean lookIn = lookBeg && lookEnd;
+			if ( lookIn ) {
+				result = ObjectUtils.toString(a).contains(bs.substring(1, bs.length()-2));
+			} else if ( lookBeg ) {
+				result = ObjectUtils.toString(a).startsWith(bs.substring(1));
+			} else if ( lookEnd ) {
+				result = ObjectUtils.toString(a).endsWith(bs.substring(0, bs.length()-1));
+			}
+			if ( notLike.equals(this) ) {
+				result = !result;
+			}
+		} else if ( between.equals(this) || notBetween.equals(this) ) {
+			if ( b != null ) {
+				ArrayList<Object> values = new ArrayList<Object>(
+						b instanceof Object[] ? Arrays.asList((Object[]) b)
+								: (Collection<?>) b);				
+				if ( a instanceof Number ) {
+					Number na = (Number)a;
+					NumberRange nr = new NumberRange(ValueUtils.value(
+							na.getClass(), values.get(0)), ValueUtils.value(
+							na.getClass(), values.get(1)));
+					result = nr.containsNumber(na);
+				} else {
+					Comparable c1 = values.get(0) instanceof Comparable ?
+							(Comparable) values.get(0)
+							: ObjectUtils.toString(values.get(0));
+					Comparable c2 = values.get(1) instanceof Comparable ?
+							(Comparable) values.get(1)
+							: ObjectUtils.toString(values.get(1));
+					result = c1.compareTo(a) >= 0 && c2.compareTo(a) <= 0;
+				}
+				if ( notBetween.equals(this) ) {
+					result = !result;
+				}
+			}
+		}
+		return result;
 	}
 }
