@@ -18,14 +18,13 @@
 package net.libreworks.stellarbase.jdbc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.util.Assert;
 
 /**
  * An expression is a boolean evaluation comparing a column against a value.
@@ -35,9 +34,11 @@ import org.apache.commons.lang.math.NumberUtils;
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class Expression
+public class Expression extends Criterion
 {
-	protected Field left;
+    private static final long serialVersionUID = 1L;
+    
+    protected Field left;
 	protected Operator operator;
 	protected Object right;
 
@@ -115,22 +116,17 @@ public class Expression
 		StringBuilder sb = new StringBuilder();
 		if (right == null) {
 			sb.append("NULL");
-		} else if (isMulti(right)
+		} else if (right instanceof Object[]
 				&& (Operator.between.equals(operator) || Operator.notBetween
 						.equals(operator))) {
-			ArrayList<Object> values = new ArrayList<Object>(
-					right instanceof Object[] ? Arrays.asList((Object[]) right)
-							: (Collection<?>) right);
-			sb.append(toStringScalar(values.get(0))).append(" AND ")
-					.append(toStringScalar(values.get(1)));
-		} else if (isMulti(right)
+			Object[] values = (Object[]) right;
+			sb.append(toStringScalar(values[0])).append(" AND ")
+					.append(toStringScalar(values[1]));
+		} else if (right instanceof Object[]
 				&& (Operator.in.equals(operator) || Operator.notIn
 						.equals(operator))) {
-			ArrayList<Object> values = new ArrayList<Object>(
-					right instanceof Object[] ? Arrays.asList((Object[]) right)
-							: (Collection<?>) right);
 			ArrayList<String> quoted = new ArrayList<String>();
-			for (Object o : values) {
+			for (Object o : (Object[]) right) {
 				quoted.add(toStringScalar(o));
 			}
 			sb.append('(').append(StringUtils.join(quoted, ',')).append(')');
@@ -141,15 +137,354 @@ public class Expression
 				+ sb.toString();
 	}
 
-	private static boolean isMulti(Object object)
-	{
-		return object instanceof Object[] || object instanceof Collection<?>;
-	}
-
 	private String toStringScalar(Object value)
 	{
 		return value instanceof Number || value instanceof Field
 				|| NumberUtils.isNumber(value.toString()) ? value.toString()
 				: "'" + value.toString().replace("'", "''") + "'";
 	}
+	
+    /**
+     * Equals Expression ( field = 'value' )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The EQ Expression
+     */
+	public static Expression eq(Field field, Object value)
+	{
+	    return new Expression(field, Operator.eq, value);
+	}
+	
+    /**
+     * Equals Expression ( field = 'value' )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The EQ Expression
+     */
+	public static Expression eq(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.eq, value);
+	}
+	
+    /**
+     * Not equals Expression ( field <> 'value' )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The NEQ Expression
+     */
+	public static Expression neq(Field field, Object value)
+	{
+	    return new Expression(field, Operator.neq, value);
+	}
+	
+    /**
+     * Not equals Expression ( field <> 'value' )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The NEQ Expression
+     */
+	public static Expression neq(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.neq, value);
+	}
+	
+    /**
+     * Less than or equal to Expression ( field <= 3 )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The LE Expression
+     */
+	public static Expression le(Field field, Object value)
+	{
+	    return new Expression(field, Operator.le, value);
+	}
+	
+    /**
+     * Less than or equal to Expression ( field <= 3 )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The LE Expression
+     */
+	public static Expression le(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.le, value);
+	}
+	
+    /**
+     * Less than Expression ( field < 3 )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The LT Expression
+     */
+	public static Expression lt(Field field, Object value)
+	{
+	    return new Expression(field, Operator.lt, value);
+	}
+	
+    /**
+     * Less than Expression ( field < 3 )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The LT Expression
+     */
+	public static Expression lt(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.lt, value);
+	}
+	
+    /**
+     * Greater than Expression ( field > 2 )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The GT Expression
+     */
+	public static Expression gt(Field field, Object value)
+	{
+	    return new Expression(field, Operator.gt, value);
+	}
+	
+    /**
+     * Greater than Expression ( field > 2 )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The GT Expression
+     */
+	public static Expression gt(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.gt, value);
+	}
+	
+    /**
+     * Greater than or equal to Expression ( field >= 2 )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The GE Expression
+     */
+	public static Expression ge(Field field, Object value)
+	{
+	    return new Expression(field, Operator.ge, value);
+	}
+	
+    /**
+     * Greater than or equal to Expression ( field >= 2 )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The GE Expression
+     */
+	public static Expression ge(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.ge, value);
+	}
+
+    /**
+     * LIKE Expression ( field LIKE '%value' )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The LIKE Expression
+     */
+	public static Expression like(Field field, Object value)
+	{
+	    return new Expression(field, Operator.like, value);
+	}
+
+    /**
+     * LIKE Expression ( field LIKE '%value' )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The LIKE Expression
+     */
+	public static Expression like(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.like, value);
+	}
+	
+    /**
+     * NOT LIKE Expression ( field NOT LIKE '%value' )
+     * 
+     * @param field The field
+     * @param value The value
+     * @return The NOT LIKE Expression
+     */
+	public static Expression notLike(Field field, Object value)
+	{
+	    return new Expression(field, Operator.notLike, value);
+	}
+	
+    /**
+     * NOT LIKE Expression ( field NOT LIKE '%value' )
+     * 
+     * @param name The field name
+     * @param value The value
+     * @return The NOT LIKE Expression
+     */
+	public static Expression notLike(String name, Object value)
+	{
+	    return new Expression(Field.named(name), Operator.notLike, value);
+	}
+	
+    /**
+     * BETWEEN Expression ( field BETWEEN 'value' AND 'value' )
+     * 
+     * @param field The field
+     * @param a The first value
+     * @param b The second value
+     * @return The BETWEEN Expression
+     */
+	public static Expression between(Field field, Comparable<?> a, Comparable<?> b)
+	{
+	    return new Expression(field, Operator.between, new Object[]{a, b});
+	}
+	
+    /**
+     * BETWEEN Expression ( field BETWEEN 'value' AND 'value' )
+     * 
+     * @param name The field name
+     * @param a The first value
+     * @param b The second value
+     * @return The BETWEEN Expression
+     */
+	public static Expression between(String name, Comparable<?> a, Comparable<?> b)
+	{
+	    return new Expression(Field.named(name), Operator.between, new Object[]{a, b});
+	}
+	
+    /**
+     * NOT BETWEEN Expression ( field NOT BETWEEN 'value' AND 'value' )
+     * 
+     * @param field The field
+     * @param a The first value
+     * @param b The second value
+     * @return The NOT BETWEEN Expression
+     */
+    public static Expression notBetween(Field field, Comparable<?> a, Comparable<?> b)
+    {
+        return new Expression(field, Operator.notBetween, new Object[]{a, b});
+    }
+    
+    /**
+     * NOT BETWEEN Expression ( field NOT BETWEEN 'value' AND 'value' )
+     * 
+     * @param name The field name
+     * @param a The first value
+     * @param b The second value
+     * @return The NOT BETWEEN Expression
+     */
+    public static Expression notBetween(String name, Comparable<?> a, Comparable<?> b)
+    {
+        return new Expression(Field.named(name), Operator.notBetween, new Object[]{a, b});
+    }
+	
+    /**
+     * Not in expression ( field NOT IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param field The field
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+    public static Expression notIn(Field field, Collection<?> values)
+    {
+        Assert.notNull(values);
+        return notIn(field, values.toArray());
+    }
+    
+    /**
+     * Not in expression ( field NOT IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param field The field
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+    public static Expression notIn(Field field, Object... values)
+    {
+        return new Expression(field, Operator.notIn, values);
+    }
+
+    /**
+     * Not in expression ( field NOT IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param name The field name
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+    public static Expression notIn(String name, Collection<?> values)
+    {
+        Assert.notNull(values);
+        return notIn(name, values.toArray());
+    }
+    
+    /**
+     * Not in expression ( field NOT IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param name The field name
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+    public static Expression notIn(String name, Object... values)
+    {
+        return new Expression(Field.named(name), Operator.notIn, values);
+    }
+    
+    /**
+     * In expression ( field IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param field The field
+     * @param values The values
+     * @return The IN Expression
+     */
+    public static Expression in(Field field, Collection<?> values)
+    {
+        Assert.notNull(values);
+        return in(field, values.toArray());
+    }
+    
+    /**
+     * In expression ( field IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param field The field
+     * @param values The values
+     * @return The IN Expression
+     */
+    public static Expression in(Field field, Object... values)
+    {
+        return new Expression(field, Operator.in, values);
+    }
+    
+    /**
+     * In expression ( field IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param name The field name
+     * @param values The values
+     * @return The IN Expression
+     */
+    public static Expression in(String name, Collection<?> values)
+    {
+        Assert.notNull(values);
+        return in(name, values.toArray());
+    }
+    
+    /**
+     * In expression ( field IN ( 1,1,2,3,5,8,13,21,'fibonacci' ) )
+     *  
+     * @param name The field name
+     * @param values The values
+     * @return The IN Expression
+     */
+    public static Expression in(String name, Object... values)
+    {
+        return new Expression(Field.named(name), Operator.in, values);
+    }
 }

@@ -17,6 +17,8 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
+import java.util.regex.Matcher;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -134,7 +136,7 @@ public class Field implements Symbol
 	 */
 	public static Field named(String name)
 	{
-		return new Field(name);
+		return named(name, name);
 	}
 	
 	/**
@@ -146,7 +148,12 @@ public class Field implements Symbol
 	 */
 	public static Field named(String name, String alias)
 	{
-		return new Field(name, alias);
+	    Matcher m = AggregateField.match(name);
+	    if ( m.matches() ) {
+	        return aggregate(Enum.valueOf(Aggregate.class, m.group(1)), name, alias);
+	    } else {
+	        return new Field(name, alias);
+	    }
 	}
 	
 	/**
@@ -170,6 +177,19 @@ public class Field implements Symbol
 	{
 		return new GroupField(name, alias);
 	}
+
+	/**
+	 * Creates a new AggregateField using a pre-existing function.
+	 * 
+	 * @param function The function
+	 * @param name The field name
+	 * @param alias The field alias
+	 * @return The field created
+	 */
+	public static AggregateField aggregate(Aggregate function, String name, String alias)
+	{
+	    return new AggregateField(function, name, alias);
+	}
 	
 	/**
 	 * Creates a new AggregateField to count the values in a tuple
@@ -180,7 +200,7 @@ public class Field implements Symbol
 	 */
 	public static AggregateField count(String name, String alias)
 	{
-		return new AggregateField(Aggregate.COUNT, name, alias);
+		return aggregate(Aggregate.COUNT, name, alias);
 	}
 	
 	/**
@@ -192,7 +212,7 @@ public class Field implements Symbol
 	 */
 	public static AggregateField sum(String name, String alias)
 	{
-		return new AggregateField(Aggregate.SUM, name, alias);
+		return aggregate(Aggregate.SUM, name, alias);
 	}
 	
 	/**
@@ -204,7 +224,7 @@ public class Field implements Symbol
 	 */
 	public static AggregateField avg(String name, String alias)
 	{
-		return new AggregateField(Aggregate.AVG, name, alias);
+		return aggregate(Aggregate.AVG, name, alias);
 	}
 	
 	/**
@@ -216,7 +236,7 @@ public class Field implements Symbol
 	 */
 	public static AggregateField max(String name, String alias)
 	{
-		return new AggregateField(Aggregate.MAX, name, alias);
+		return aggregate(Aggregate.MAX, name, alias);
 	}
 
 	/**
@@ -228,6 +248,6 @@ public class Field implements Symbol
 	 */
 	public static AggregateField min(String name, String alias)
 	{
-		return new AggregateField(Aggregate.MIN, name, alias);
+		return aggregate(Aggregate.MIN, name, alias);
 	}
 }

@@ -17,6 +17,9 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A data field or column with an applied aggregate function
  * 
@@ -30,6 +33,9 @@ public class AggregateField extends Field
 	private static final long serialVersionUID = 1L;
 	
 	protected Aggregate function;
+    protected static Pattern AGGREGATES = Pattern.compile(
+            "^(AVG|MAX|MIN|COUNT|SUM)\\(([\\w\\W]*)\\)$",
+            Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * Creates a new AggregateField
@@ -70,5 +76,18 @@ public class AggregateField extends Field
 	public String toString()
 	{
 		return function.toString() + "(" + super.toString() + ")";
+	}
+	
+	/**
+	 * Returns a Matcher for matching a field against an aggregate function.
+	 * 
+	 * The first group is the function name, the second group is the field name.
+	 * 
+	 * @param haystack The string to search
+	 * @return The Matcher
+	 */
+	public static Matcher match(String haystack)
+	{
+	    return AGGREGATES.matcher(haystack);
 	}
 }
