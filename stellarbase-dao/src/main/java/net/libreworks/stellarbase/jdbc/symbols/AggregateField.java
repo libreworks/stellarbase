@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.jdbc;
+package net.libreworks.stellarbase.jdbc.symbols;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

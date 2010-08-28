@@ -15,38 +15,21 @@
  * 
  * @author Jonathan Hawk
  */
-package net.libreworks.stellarbase.jdbc;
+package net.libreworks.stellarbase.jdbc.symbols;
 
 /**
- * A grouped data field or column.
+ * A selection aggregate function
  * 
  * Ported from the PHP framework Xyster by Jonathan Hawk, the original author.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class GroupField extends Field
+public enum Aggregate
 {
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Creates a new GroupField
-	 * 
-	 * @param name the name
-	 */
-	public GroupField(String name)
-	{
-		this(name, name);
-	}
-	
-	/**
-	 * Creates a new GroupField
-	 * 
-	 * @param name The name
-	 * @param alias The alias
-	 */
-	public GroupField(String name, String alias)
-	{
-		super(name, alias);
-	}
+	SUM,
+	MAX,
+	MIN,
+	COUNT,
+	AVG;
 }
