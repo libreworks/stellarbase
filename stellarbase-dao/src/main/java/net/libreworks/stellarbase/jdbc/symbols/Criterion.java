@@ -17,7 +17,6 @@
  */
 package net.libreworks.stellarbase.jdbc.symbols;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -41,25 +40,9 @@ public abstract class Criterion implements Symbol
 	public abstract boolean evaluate(Object value);
 	
 	/**
-	 * Gets all Field objects within a Criterion.
+	 * Gets all fields contained within the Criterion.
 	 * 
-	 * @param criteria The criterion containing the fields (can be null)
-	 * @return A collection containing the fields within
+	 * @return All fields in the Criterion
 	 */
-	public static Collection<Field> getFields(Criterion criteria)
-	{
-	    ArrayList<Field> fields = new ArrayList<Field>();
-	    if ( criteria instanceof Junction ) {
-	        for(Criterion c : ((Junction) criteria).getSymbols()) {
-	            fields.addAll(getFields(c));
-	        }
-	    } else if ( criteria instanceof Expression ) {
-	        Expression e = (Expression)criteria;
-	        fields.add(e.getLeft());
-	        if ( e.getRight() instanceof Field ) {
-	            fields.add((Field) e.getRight());
-	        }
-	    }
-		return fields;
-	}
+	public abstract Collection<Field> getAllFields();
 }

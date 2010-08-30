@@ -34,7 +34,7 @@ public class AggregateField extends Field
 	
 	protected Aggregate function;
     protected static Pattern AGGREGATES = Pattern.compile(
-            "^(AVG|MAX|MIN|COUNT|SUM)\\(([\\w\\W]*)\\)$",
+            "^(AVG|MAX|MIN|COUNT|SUM)\\(([^\\)]*)\\)$",
             Pattern.CASE_INSENSITIVE);
 	
 	/**

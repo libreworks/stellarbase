@@ -100,15 +100,15 @@ public enum Operator
 			}
 		} else if ( like.equals(this) || notLike.equals(this) ) {
 			String bs = ObjectUtils.toString(b);
-			boolean lookEnd = bs.endsWith("%"); 
-			boolean lookBeg = bs.startsWith("%");
+			boolean lookBeg = bs.endsWith("%"); 
+			boolean lookEnd = bs.startsWith("%");
 			boolean lookIn = lookBeg && lookEnd;
 			if ( lookIn ) {
 				result = ObjectUtils.toString(a).contains(bs.substring(1, bs.length()-2));
 			} else if ( lookBeg ) {
-				result = ObjectUtils.toString(a).startsWith(bs.substring(1));
+				result = ObjectUtils.toString(a).startsWith(bs.substring(0, bs.length()-1));
 			} else if ( lookEnd ) {
-				result = ObjectUtils.toString(a).endsWith(bs.substring(0, bs.length()-1));
+				result = ObjectUtils.toString(a).endsWith(bs.substring(1));
 			}
 			if ( notLike.equals(this) ) {
 				result = !result;
@@ -137,6 +137,11 @@ public enum Operator
 					result = !result;
 				}
 			}
+		} else if ( is.equals(this) || isNot.equals(this) ) {
+		    result = a == b;
+		    if ( isNot.equals(this) ) {
+		        result = !result;
+		    }
 		}
 		return result;
 	}

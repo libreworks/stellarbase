@@ -17,6 +17,7 @@
  */
 package net.libreworks.stellarbase.jdbc.symbols;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
@@ -129,6 +130,202 @@ public class Field implements Symbol
 	}
 	
 	/**
+	 * Creates an ascending Sort for this field.
+	 * 
+	 * @return The ascending Sort
+	 */
+	public Sort asc()
+	{
+	    return Sort.asc(this);
+	}
+	
+	/**
+	 * Creates a descending Sort for this field.
+	 * 
+	 * @return The descending Sort
+	 */
+	public Sort desc()
+	{
+	    return Sort.desc(this);
+	}
+	
+	/**
+	 * Creates an equals Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The equals Expression
+	 */
+	public Expression eq(Object value)
+	{
+	    return Expression.eq(this, value);
+	}
+	
+	/**
+	 * Creates a not-equals Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The equals Expression
+	 */
+	public Expression neq(Object value)
+	{
+	    return Expression.neq(this, value);
+	}
+	
+	/**
+	 * Creates a less-than Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The less than Expression
+	 */
+	public Expression lt(Object value)
+	{
+	    return Expression.lt(this, value);
+	}
+	
+	/**
+	 * Creates a less-than-or-equal-to Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The less than Expression
+	 */
+	public Expression le(Object value)
+	{
+	    return Expression.le(this, value);
+	}
+	
+	/**
+	 * Creates a greater-than Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The greater than Expression
+	 */
+	public Expression gt(Object value)
+	{
+	    return Expression.gt(this, value);
+	}
+	
+	/**
+	 * Creates a greater-than-or-equal-to Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The greater than Expression
+	 */
+	public Expression ge(Object value)
+	{
+	    return Expression.ge(this, value);
+	}
+	
+	/**
+	 * Creates a LIKE Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The LIKE Expression
+	 */
+	public Expression like(Object value)
+	{
+	    return Expression.like(this, value);
+	}
+	
+	/**
+	 * Creates a NOT LIKE Expression for this field.
+	 * 
+	 * @param value The comparison value
+	 * @return The NOT LIKE Expression
+	 */
+	public Expression notLike(Object value)
+	{
+	    return Expression.notLike(this, value);
+	}
+	
+	/**
+	 * Creates a BETWEEN Expression for this field.
+	 * 
+	 * @param a The starting value
+	 * @param b The ending value
+	 * @return The BETWEEN Expression
+	 */
+	public Expression between(Comparable<?> a, Comparable<?> b)
+	{
+	    return Expression.between(this, a, b);
+	}
+	
+	/**
+	 * Creates a NOT BETWEEN Expression for this field.
+	 * 
+	 * @param a The starting value
+	 * @param b The ending value
+	 * @return The NOT BETWEEN Expression
+	 */
+	public Expression notBetween(Comparable<?> a, Comparable<?> b)
+	{
+	    return Expression.notBetween(this, a, b);
+	}
+	
+    /**
+     * Creates an IN Expression for this field.
+     * 
+     * @param values The values
+     * @return The IN Expression
+     */
+	public Expression in(Object... values)
+	{
+	    return Expression.in(this, values);
+	}
+	
+    /**
+     * Creates an IN Expression for this field.
+     * 
+     * @param values The values
+     * @return The IN Expression
+     */
+	public Expression in(Collection<?> values)
+	{
+	    return Expression.in(this, values);
+	}
+
+    /**
+     * Creates a NOT IN Expression for this field.
+     * 
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+	public Expression notIn(Object... values)
+	{
+	    return Expression.notIn(this, values);
+	}
+	
+    /**
+     * Creates a NOT IN Expression for this field.
+     * 
+     * @param values The values
+     * @return The NOT IN Expression
+     */
+    public Expression notIn(Collection<?> values)
+    {
+        return Expression.notIn(this, values);
+    }
+    
+    /**
+     * Creates an IS NULL Expression for this field.
+     * 
+     * @return The IS NULL Expression
+     */
+    public Expression isNull()
+    {
+        return Expression.isNull(this);
+    }
+    
+    /**
+     * Creates an IS NOT NULL Expression for this field.
+     * 
+     * @return The IS NOT NULL Expression
+     */
+    public Expression isNotNull()
+    {
+        return Expression.isNotNull(this);
+    }
+	
+	/**
 	 * Creates a new Field
 	 * 
 	 * @param name The name of the field
@@ -150,13 +347,13 @@ public class Field implements Symbol
 	{
 	    Matcher m = AggregateField.match(name);
 	    if ( m.matches() ) {
-	        return aggregate(Enum.valueOf(Aggregate.class, m.group(1)), name, alias);
+	        return aggregate(Enum.valueOf(Aggregate.class, m.group(1)), m.group(2), alias);
 	    } else {
 	        return new Field(name, alias);
 	    }
 	}
 	
-	/**
+	/** 
 	 * Creates a new Field that defines a group
 	 * 
 	 * @param name The name of the field

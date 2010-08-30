@@ -80,7 +80,7 @@ public class SymbolClause<T extends Symbol> implements Clause<T>
 	{
 		if (this == obj)
 			return true;
-		if (obj == null || !(obj instanceof SymbolClause))
+		if (obj == null || !(obj instanceof SymbolClause<?>))
 			return false;
 		SymbolClause<?> other = (SymbolClause<?>) obj;
 		return items.equals(other.items);

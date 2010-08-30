@@ -73,7 +73,18 @@ public class Expression extends Criterion
 		return right;
 	}
 
-	/*
+	@Override
+    public Collection<Field> getAllFields()
+    {
+	    ArrayList<Field> fields = new ArrayList<Field>();
+        fields.add(left);
+        if ( right instanceof Field ) {
+            fields.add((Field)right);
+        }
+        return fields;
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#hashCode()
@@ -133,7 +144,7 @@ public class Expression extends Criterion
 		} else {
 			sb.append(toStringScalar(right));
 		}
-		return left.toString() + ' ' + operator.toString() + ' '
+		return left.toString() + ' ' + operator.getSql() + ' '
 				+ sb.toString();
 	}
 
@@ -486,5 +497,49 @@ public class Expression extends Criterion
     public static Expression in(String name, Object... values)
     {
         return new Expression(Field.named(name), Operator.in, values);
+    }
+    
+    /**
+     * IS NULL expression
+     * 
+     * @param name The field name
+     * @return The IS Expression
+     */
+    public static Expression isNull(String name)
+    {
+        return new Expression(Field.named(name), Operator.is, null);
+    }
+    
+    /**
+     * IS NULL expression
+     * 
+     * @param field The field
+     * @return The IS Expression
+     */
+    public static Expression isNull(Field field)
+    {
+        return new Expression(field, Operator.is, null);
+    }
+
+    /**
+     * IS NOT NULL expression
+     * 
+     * @param name The field name
+     * @return The IS NOT Expression
+     */
+    public static Expression isNotNull(String name)
+    {
+        return new Expression(Field.named(name), Operator.isNot, null);
+    }
+    
+    /**
+     * IS NOT NULL expression
+     * 
+     * @param field The field
+     * @return The IS NOT Expression
+     */
+    public static Expression isNotNull(Field field)
+    {
+        return new Expression(field, Operator.isNot, null);
     }
 }

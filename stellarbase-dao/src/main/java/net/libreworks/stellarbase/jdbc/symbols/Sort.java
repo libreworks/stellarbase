@@ -17,6 +17,8 @@
  */
 package net.libreworks.stellarbase.jdbc.symbols;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 
 /**
@@ -30,25 +32,48 @@ import org.springframework.util.Assert;
 public class Sort implements Symbol
 {
     private static final long serialVersionUID = 1L;
-
+    
     private Field field;
     private boolean ascending;
-    
+
     private static final String ASC = " ASC";
     private static final String DESC = " DESC";
-    
+
     protected Sort(Field field, boolean ascending)
     {
         Assert.notNull(field);
         this.field = field;
         this.ascending = ascending;
     }
-
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null || !(obj instanceof Sort))
+            return false;
+        Sort other = (Sort) obj;
+        return new EqualsBuilder()
+            .append(ascending, other.ascending)
+            .append(field, other.field)
+            .isEquals();
+    }
+    
     public Field getField()
     {
         return field;
     }
-
+    
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder()
+            .append(ascending)
+            .append(field)
+            .toHashCode();
+    }
+    
     public boolean isAscending()
     {
         return ascending;
@@ -60,6 +85,17 @@ public class Sort implements Symbol
         return field.getName() + (ascending ? ASC : DESC);
     }
     
+
+    /**
+     * Creates a new ascending Sort for the field specified
+     * 
+     * @param field The field
+     * @return The ascending Sort
+     */
+    public static Sort asc(Field field)
+    {
+        return new Sort(field, true);
+    }
     /**
      * Creates a new ascending Sort for the field specified
      * 
@@ -72,16 +108,15 @@ public class Sort implements Symbol
     }
     
     /**
-     * Creates a new ascending Sort for the field specified
+     * Creates a new descending Sort for the field specified
      * 
      * @param field The field
-     * @return The ascending Sort
+     * @return The descending Sort
      */
-    public static Sort asc(Field field)
+    public static Sort desc(Field field)
     {
-        return new Sort(field, true);
+        return new Sort(field, false);
     }
-    
     /**
      * Creates a new descending Sort for the field specified
      * 
@@ -91,16 +126,5 @@ public class Sort implements Symbol
     public static Sort desc(String name)
     {
         return new Sort(Field.named(name), false);
-    }
-    
-    /**
-     * Creates a new descending Sort for the field specified
-     * 
-     * @param field The field
-     * @return The descending Sort
-     */
-    public static Sort desc(Field field)
-    {
-        return new Sort(field, false);
     }
 }

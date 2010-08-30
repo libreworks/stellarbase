@@ -55,7 +55,7 @@ public class Junction extends Criterion implements Clause<Criterion>
 	 */
 	public static Junction and(Criterion a, Criterion b)
 	{
-		return new Junction(a, b, false);
+		return new Junction(a, b, true);
 	}
 	
 	/**
@@ -121,7 +121,17 @@ public class Junction extends Criterion implements Clause<Criterion>
 		return ok;
 	}
 
-	public Collection<Criterion> getSymbols()
+	@Override
+    public Collection<Field> getAllFields()
+    {
+	    ArrayList<Field> fields = new ArrayList<Field>();
+        for(Criterion c : criteria) {
+            fields.addAll(c.getAllFields());
+        }
+        return fields;
+    }
+
+    public Collection<Criterion> getSymbols()
 	{
 		return Collections.unmodifiableCollection(criteria);
 	}
