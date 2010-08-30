@@ -67,7 +67,7 @@ public enum Operator
 		return sql;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public boolean evaluate(Object a, Object b)
 	{
 		boolean result = false;

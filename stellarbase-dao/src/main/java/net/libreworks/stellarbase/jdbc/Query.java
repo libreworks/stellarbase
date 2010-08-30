@@ -17,14 +17,24 @@
  */
 package net.libreworks.stellarbase.jdbc;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.hsqldb.Types;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import net.libreworks.stellarbase.jdbc.symbols.Criterion;
 import net.libreworks.stellarbase.jdbc.symbols.Field;
+import net.libreworks.stellarbase.jdbc.symbols.GroupField;
+import net.libreworks.stellarbase.jdbc.symbols.Junction;
 import net.libreworks.stellarbase.jdbc.symbols.Sort;
 import net.libreworks.stellarbase.jdbc.symbols.SymbolClause;
 
@@ -42,6 +52,8 @@ public class Query
 	protected SymbolClause<Criterion> where = new SymbolClause<Criterion>();
 	protected SymbolClause<Criterion> having = new SymbolClause<Criterion>();
 	protected SymbolClause<Sort> order = new SymbolClause<Sort>();
+	
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
 	 * Creates a new Query
@@ -197,13 +209,120 @@ public class Query
     }
     
     /**
+     * Gets the SQL query and parameters
+     * 
+     * @param template The JDBCTemplate
+     * @return The SQL fragment
+     * @throws SQLException 
+     */
+    protected Fragment assemble(JdbcTemplate template) throws SQLException
+    {
+    	StringBuilder sql = new StringBuilder("SELECT ");
+    	Translator translator = new Translator(template.getDataSource().getConnection().getMetaData());
+    	ArrayList<Object> params = new ArrayList<Object>();
+    	boolean quote = true;
+    	// get columns
+    	ArrayList<String> columns = new ArrayList<String>();
+    	for(Field field : select) {
+    		StringBuilder fieldSql = new StringBuilder()
+    			.append(translator.translateField(field, quote).getSql())
+    			.append(" AS ")
+    			.append(translator.idQuote).append(field.getAlias())
+    			.append(translator.idQuote);
+    		columns.add(fieldSql.toString());
+    	}
+    	sql.append(StringUtils.join(columns, ", "));
+    	// add from
+    	sql.append(" FROM ").append(from);
+    	// add WHERE
+    	if ( !where.isEmpty() ) {
+    		Fragment whereSql = translator.translateCriterion(Junction.and(where), quote);
+    		params.addAll(whereSql.getParameters());
+    		sql.append(" WHERE ")
+    			.append(whereSql.getSql());
+    	}
+    	// add group
+    	SymbolClause<GroupField> groups = new SymbolClause<GroupField>();
+    	for(Field field : select){
+    		if ( field instanceof GroupField ) {
+    			groups.add((GroupField)field);
+    		}
+    	}
+    	if ( !groups.isEmpty() ) {
+    		sql.append(" GROUP BY ")
+    			.append(translator.translateClause(groups, quote).getSql());
+    	}
+    	// add having
+    	if ( !groups.isEmpty() && !having.isEmpty() ) {
+    		Fragment havingSql = translator.translateCriterion(Junction.and(having), quote);
+    		params.addAll(havingSql.getParameters());
+    		sql.append(" HAVING ")
+    			.append(havingSql.getSql());
+    	}
+    	// add order by
+    	if ( !order.isEmpty() ) {
+    		sql.append(" ORDER BY ")
+    			.append(translator.translateClause(order, quote).getSql());
+    	}
+    	return new Fragment(sql.toString(), params);
+    }
+    
+    protected int[] getTypes(Object[] params)
+    {
+    	int[] sqlTypes = new int[params.length];
+    	for(int i=0; i<params.length; i++){
+    		sqlTypes[i] = getSqlType(params[i]);
+    	}
+    	return sqlTypes;
+    }
+    
+    protected int getSqlType(Object value)
+    {
+    	if ( value == null ) {
+    		return Types.NULL;
+    	} else if ( value instanceof java.sql.Date ) {
+    		return Types.DATE;
+    	} else if ( value instanceof java.sql.Time ) {
+    		return Types.TIME;
+    	} else if ( value instanceof java.util.Date || value instanceof java.sql.Timestamp ) {
+    		return Types.TIMESTAMP;
+    	} else if ( value instanceof Boolean ) {
+    		return Types.BOOLEAN;
+    	} else if ( value instanceof byte[] ) {
+    		return Types.VARBINARY;
+    	} else if ( value instanceof Short ) {
+    		return Types.SMALLINT;
+    	} else if ( value instanceof Integer ) {
+    		return Types.INTEGER;
+    	} else if ( value instanceof Long || value instanceof BigInteger ) {
+    		return Types.BIGINT;
+    	} else if ( value instanceof Double ) {
+    		return Types.DOUBLE;
+    	} else if ( value instanceof BigDecimal ) {
+    		return Types.DECIMAL;
+    	} else if ( value instanceof Float ) {
+    		return Types.REAL;
+    	} else {
+    		return Types.VARCHAR;
+    	}
+    }
+    
+    /**
      * Executes the query.
      * 
      * @param template The JDBC Template
      * @return The results as a List of Maps
+     * @throws SQLException 
      */
-    public List<Map<String,Object>> execute(JdbcTemplate template)
+    public List<Map<String,Object>> execute(JdbcTemplate template) throws SQLException
     {
-        return null;
+    	Fragment sql = assemble(template);
+    	if ( logger.isDebugEnabled() ) {
+    		logger.debug("Generated SQL: " + sql.getSql());
+    	}
+    	return ( sql.getParameters().isEmpty() ) ?
+    		template.queryForList(sql.getSql()) :
+   			template.queryForList(sql.getSql(), sql.getParameters().toArray(),
+   				getTypes(sql.getParameters().toArray()));
     }
 }

@@ -18,6 +18,8 @@
 package net.libreworks.stellarbase.jdbc;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Parameters for a SQL query.
@@ -35,14 +37,20 @@ public class Fragment
         this.sql = sql;
     }
     
+    public Fragment(String sql, Collection<?> parameters)
+    {
+    	this.sql = sql;
+    	this.parameters.addAll(parameters);
+    }
+    
     public String getSql()
     {
         return sql;
     }
     
-    public ArrayList<Object> getParameters()
+    public Collection<Object> getParameters()
     {
-        return parameters;
+        return Collections.unmodifiableCollection(parameters);
     }
     
     public void addParameters(Fragment fragment)

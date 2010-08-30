@@ -70,6 +70,50 @@ public class Junction extends Criterion implements Clause<Criterion>
 		return new Junction(a, b, false);
 	}
 	
+	/**
+	 * Creates a new Junction using an "AND" operator (conjunction).
+	 * 
+	 * @param criteria The criteria to use
+	 * @return The new Junction
+	 */
+	public static Criterion and(Clause<? extends Criterion> criteria)
+	{
+		if ( criteria instanceof Junction && ((Junction)criteria).conjunction ) {
+			return (Junction)criteria;
+		} if ( criteria.size() == 0 ) {
+			return null;
+		} else if ( criteria.size() == 1 ) {
+			return new ArrayList<Criterion>(criteria.getSymbols()).get(0);
+		} else {
+			ArrayList<Criterion> all = new ArrayList<Criterion>(criteria.getSymbols());
+			Junction j = new Junction(all.get(0), all.get(1), true);
+			j.criteria.addAll(all.subList(2, all.size()));
+			return j;
+		}
+	}
+	
+	/**
+	 * Creates a new Junction using an "AND" operator (conjunction).
+	 * 
+	 * @param criteria The criteria to use
+	 * @return The new Junction
+	 */
+	public static Criterion or(Clause<? extends Criterion> criteria)
+	{
+		if ( criteria instanceof Junction && !((Junction)criteria).conjunction ) {
+			return (Junction)criteria;
+		} else if ( criteria.size() == 0 ) {
+			return null;
+		} else if ( criteria.size() == 1 ) {
+			return new ArrayList<Criterion>(criteria.getSymbols()).get(0);
+		} else {
+			ArrayList<Criterion> all = new ArrayList<Criterion>(criteria.getSymbols());
+			Junction j = new Junction(all.get(0), all.get(1), false);
+			j.criteria.addAll(all.subList(2, all.size()));
+			return j;
+		}
+	}
+	
 	protected Junction(Criterion a, Criterion b, boolean isConjunction)
 	{
 		this.conjunction = isConjunction;
