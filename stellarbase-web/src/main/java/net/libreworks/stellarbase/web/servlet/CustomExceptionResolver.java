@@ -20,7 +20,6 @@ package net.libreworks.stellarbase.web.servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.libreworks.stellarbase.collections.FluentValues;
 import net.libreworks.stellarbase.web.json.ErrorConverter;
 import net.libreworks.stellarbase.web.json.JsonWrappedException;
 
@@ -40,7 +39,8 @@ import org.springframework.web.util.WebUtils;
  * <ul><li>Forward forbidden errors ({@link SecurityException} and {@link AccessDeniedException}) to the forbidden view (by default "_forbidden"), and set status code to 403 "Forbidden".</li>
  * <li>Set {@link BindException} to have a response of 422 "Unprocessable Entity"</li>
  * <li>Forward all other errors to the error view (by default "_error") with a response code of 500 "Internal Server Error"</li>
- * <li>Forward errors that are requested by XMLHttpRequest to a special ajax error view (by default "_ajaxError")</li></ul>
+ * <li>Forward errors that are requested by XMLHttpRequest to a special ajax error view (by default "_ajaxError")</li>
+ * <li>Turn {@link JsonWrappedException}s into a JSON object using the ErrorConverter and MappingJacksonJsonView properties</li></ul>
  * 
  * It also translates exceptions into JSON where appropriate (sort of). 
  * 
@@ -52,6 +52,7 @@ public class CustomExceptionResolver implements HandlerExceptionResolver
 	private static final String DEFAULT_ERROR_VIEW_NAME = "_error";
 	private static final String DEFAULT_FORBIDDEN_VIEW_NAME = "_forbidden";
 	private static final String DEFAULT_AJAX_ERROR_VIEW_NAME = "_ajaxError";
+	private MappingJacksonJsonView view;
 	private ErrorConverter errorConverter;
 	private String errorViewName = DEFAULT_ERROR_VIEW_NAME;
 	private String forbiddenViewName = DEFAULT_FORBIDDEN_VIEW_NAME;
@@ -67,30 +68,46 @@ public class CustomExceptionResolver implements HandlerExceptionResolver
 	 */
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 	{
-		String viewName = errorViewName;
 		int statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-		FluentValues model = new FluentValues();
-		if ( ex instanceof JsonWrappedException ) {
+		ModelAndView mav = new ModelAndView();
+		if (ex instanceof JsonWrappedException) {
 			Throwable inner = ex.getCause();
-			model.put("exception", inner);
-		} else {
-			if ( ex instanceof BindException ) {
+			if (inner instanceof BindException) {
 				statusCode = 422;
-			} else if ( ex instanceof SecurityException || ex instanceof AccessDeniedException ) {
+			} else if (inner instanceof SecurityException
+					|| inner instanceof AccessDeniedException) {
+				statusCode = HttpServletResponse.SC_FORBIDDEN;
+			}
+			mav.addAllObjects(errorConverter.convert(inner)).setView(view);
+		} else {
+			String viewName = errorViewName;
+			if (ex instanceof BindException) {
+				statusCode = 422;
+			} else if (ex instanceof SecurityException
+					|| ex instanceof AccessDeniedException) {
 				statusCode = HttpServletResponse.SC_FORBIDDEN;
 				viewName = forbiddenViewName;
 			}
-			if ( XMLHTTPREQUEST.equals(request.getHeader(X_REQUESTED_WITH)) ) {
+			if (XMLHTTPREQUEST.equals(request.getHeader(X_REQUESTED_WITH))) {
 				viewName = ajaxErrorViewName;
 			}
-			model.put("exception", ex);
+			mav.addObject("exception", ex).setViewName(viewName);
 		}
-		if ( statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) {
+		if (statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
 			log.error("Exception occurred during request", ex);
 		}
 		response.setStatus(statusCode);
-		request.setAttribute(WebUtils.ERROR_STATUS_CODE_ATTRIBUTE, new Integer(statusCode));
-		return new ModelAndView(viewName, model);
+		request.setAttribute(WebUtils.ERROR_STATUS_CODE_ATTRIBUTE, new Integer(
+				statusCode));
+		return mav;
+	}
+
+	/**
+	 * @param ajaxErrorViewName the ajaxErrorViewName to set
+	 */
+	public void setAjaxErrorViewName(String ajaxErrorViewName)
+	{
+		this.ajaxErrorViewName = ajaxErrorViewName;
 	}
 
 	/**
@@ -118,10 +135,10 @@ public class CustomExceptionResolver implements HandlerExceptionResolver
 	}
 
 	/**
-	 * @param ajaxErrorViewName the ajaxErrorViewName to set
+	 * @param view the view to set
 	 */
-	public void setAjaxErrorViewName(String ajaxErrorViewName)
+	public void setView(MappingJacksonJsonView view)
 	{
-		this.ajaxErrorViewName = ajaxErrorViewName;
+		this.view = view;
 	}
 }
