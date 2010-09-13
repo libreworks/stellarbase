@@ -125,7 +125,9 @@ public class Query
 	}
     
     /**
-     * Adds a having clause.
+     * Adds Criterion to the having clause.
+	 * 
+	 * See {@link Expression} or {@link Junction} for further examples.
      * 
      * @param having The criteria
      * @return provides a fluent interface
@@ -139,7 +141,9 @@ public class Query
     }
 
     /**
-     * Adds a having clause.
+     * Adds Criterion to the having clause.
+	 * 
+	 * See {@link Expression} or {@link Junction} for further examples.
      * 
      * @param having The criteria
      * @return provides a fluent interface
@@ -153,7 +157,11 @@ public class Query
     }
 	
 	/**
-	 * Adds a where clause.
+	 * Adds Criterion to the where clause.
+	 * 
+	 * <pre>.where(Expression.eq("fieldName", "Field value"));</pre>
+	 * 
+	 * See {@link Expression} or {@link Junction} for further examples.
 	 * 
 	 * @param criteria The criteria
 	 * @return provides a fluent interface
@@ -167,7 +175,9 @@ public class Query
 	}
 	
 	/**
-     * Adds a where clause.
+     * Adds criteria to the where clause.
+     * 
+	 * See {@link Expression} or {@link Junction} for further examples.
      * 
      * @param criteria The criteria
      * @return provides a fluent interface
