@@ -38,7 +38,7 @@ public abstract class AbstractDeletableHibernateDao<T extends Modifiable<K>,K ex
      */
 	public void delete(T entity, String by)
     {
-		eventMulticaster.multicastEvent(new DeleteEvent(entity, by));
+		eventPublisher.publishEvent(new DeleteEvent(entity, by));
 		getHibernateTemplate().delete(entity);
     }
 }

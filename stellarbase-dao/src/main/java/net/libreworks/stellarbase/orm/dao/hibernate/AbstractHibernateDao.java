@@ -44,7 +44,8 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyValues;
-import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -57,9 +58,9 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * @param <K> The identifier type
  * @version $Id$
  */
-public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends Serializable> extends HibernateDaoSupport implements ReadableDao<T,K>
+public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends Serializable> extends HibernateDaoSupport implements ReadableDao<T,K>, ApplicationEventPublisherAware
 {
-	protected ApplicationEventMulticaster eventMulticaster;
+	protected ApplicationEventPublisher eventPublisher;
 	protected Class<T> entityClass;
 	protected Class<K> identifierClass;
 	protected List<String> propertyNames = new ArrayList<String>();
@@ -280,11 +281,12 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		getHibernateTemplate().refresh(entity);
 	}
 	
-	/**
-	 * @param eventMulticaster the eventMulticaster to set
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.context.ApplicationEventPublisherAware#setApplicationEventPublisher(org.springframework.context.ApplicationEventPublisher)
 	 */
-	public void setEventMulticaster(ApplicationEventMulticaster eventMulticaster)
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher)
 	{
-		this.eventMulticaster = eventMulticaster;
+		this.eventPublisher = applicationEventPublisher;
 	}
 }

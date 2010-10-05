@@ -86,7 +86,7 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 	 */
 	public void remove(T entity, String by)
 	{
-		eventMulticaster.multicastEvent(new DeleteEvent(entity, by));		
+		eventPublisher.publishEvent(new DeleteEvent(entity, by));		
 		entity.setRemovedBy(by);
 		entity.setRemovedOn(new Date());
 		HibernateTemplate ht = getHibernateTemplate();

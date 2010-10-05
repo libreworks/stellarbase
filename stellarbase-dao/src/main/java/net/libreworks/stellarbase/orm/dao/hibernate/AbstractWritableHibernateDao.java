@@ -141,7 +141,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
 		doBind(entity, values, getAllowedCreateFields());
-		eventMulticaster.multicastEvent(new InsertEvent(entity, by));
+		eventPublisher.publishEvent(new InsertEvent(entity, by));
 		return getHibernateTemplate().save(entity);
 	}
 	
@@ -156,7 +156,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		if ( !ht.contains(entity) ) {
 			ht.saveOrUpdate(entity);
 		}
-		eventMulticaster.multicastEvent(new UpdateEvent(entity, old, by));
+		eventPublisher.publishEvent(new UpdateEvent(entity, old, by));
 	}
 	
 	/**
