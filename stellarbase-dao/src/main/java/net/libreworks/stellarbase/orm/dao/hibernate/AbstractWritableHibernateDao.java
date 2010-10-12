@@ -141,8 +141,9 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
 		doBind(entity, values, getAllowedCreateFields());
+		Serializable id = getHibernateTemplate().save(entity);
 		eventPublisher.publishEvent(new InsertEvent(entity, by));
-		return getHibernateTemplate().save(entity);
+		return id;
 	}
 	
 	protected void doUpdate(T entity, Map<String,?> values, String by) throws BindException
