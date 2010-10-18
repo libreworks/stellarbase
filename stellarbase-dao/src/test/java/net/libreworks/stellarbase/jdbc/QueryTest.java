@@ -20,8 +20,11 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -32,7 +35,6 @@ import net.libreworks.stellarbase.jdbc.symbols.Expression;
 import net.libreworks.stellarbase.jdbc.symbols.Field;
 import net.libreworks.stellarbase.jdbc.symbols.Sort;
 
-import org.hsqldb.Types;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -54,6 +56,12 @@ public class QueryTest
 		assertEquals("foo", object.from);
 	}
 
+	public void testFrom2()
+	{
+	    Query foo = new Query("bar");
+	    assertEquals("bar", foo.from);
+	}
+	
 	@Test
 	public void testDistinct()
 	{
@@ -84,6 +92,26 @@ public class QueryTest
 		assertTrue(object.select.getSymbols().containsAll(fields));
 	}
 
+	@Test
+	public void testSelectStringVarArgs()
+	{
+	    assertSame(object, object.select("foo", "bar", "baz"));
+	    assertTrue(object.select.getSymbols().contains(Field.named("foo")));
+	    assertTrue(object.select.getSymbols().contains(Field.named("bar")));
+	    assertTrue(object.select.getSymbols().contains(Field.named("baz")));
+	}
+	
+	@Test
+	public void testSelectMapStringObject()
+	{
+	    HashMap<String,String> fields = new HashMap<String,String>();
+	    fields.put("foo", "f");
+	    fields.put("bar", "b");
+	    assertSame(object, object.select(fields));
+	    assertTrue(object.select.getSymbols().contains(Field.named("f", "foo")));
+	    assertTrue(object.select.getSymbols().contains(Field.named("b", "bar")));
+	}
+	
 	@Test
 	public void testHavingCriterionArray()
 	{
@@ -144,6 +172,31 @@ public class QueryTest
 		assertTrue(object.order.getSymbols().containsAll(sorts));
 	}
 
+	@Test
+	public void testOrderAsc()
+	{
+	    assertSame(object, object.orderAsc("foo", "bar"));
+	    assertTrue(object.order.getSymbols().contains(Sort.asc("foo")));
+	    assertTrue(object.order.getSymbols().contains(Sort.asc("bar")));
+	}
+	
+	@Test
+	public void testOrderDesc()
+	{
+	    assertSame(object, object.orderDesc("foo", "bar"));
+        assertTrue(object.order.getSymbols().contains(Sort.desc("foo")));
+        assertTrue(object.order.getSymbols().contains(Sort.desc("bar")));
+	}
+	
+	@Test
+	public void testToExpression()
+	{
+	    assertEquals(Expression.isNull("foo"), object.toExpression("foo", null));
+	    assertEquals(Expression.in("bar", new Object[0]), object.toExpression("bar", new Object[0]));
+	    assertEquals(Expression.in("baz", Collections.singleton(null)), object.toExpression("baz", Collections.singleton(null)));
+	    assertEquals(Expression.eq("foobar", "abc"), object.toExpression("foobar", "abc"));
+	}
+	
 	@Test
 	public void testAssemble() throws SQLException
 	{

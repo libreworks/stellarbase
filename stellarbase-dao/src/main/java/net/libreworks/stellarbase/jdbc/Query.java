@@ -20,18 +20,19 @@ package net.libreworks.stellarbase.jdbc;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.hsqldb.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import net.libreworks.stellarbase.jdbc.symbols.Criterion;
+import net.libreworks.stellarbase.jdbc.symbols.Expression;
 import net.libreworks.stellarbase.jdbc.symbols.Field;
 import net.libreworks.stellarbase.jdbc.symbols.GroupField;
 import net.libreworks.stellarbase.jdbc.symbols.Junction;
@@ -124,6 +125,34 @@ public class Query
         return this;
 	}
     
+	/**
+	 * Sets the fields used in the select.
+	 * 
+	 * @param fields The fields
+	 * @return provides a fluent interface
+	 */
+	public Query select(String... fields)
+	{
+	    for(String field : fields){
+	        select.add(Field.named(field));
+	    }
+	    return this;
+	}
+	
+	/**
+	 * Sets the fields used in the select.
+	 * 
+	 * @param fields A map whose keys are the alias and values are the names.
+	 * @return provides a fluent interface
+	 */
+	public Query select(Map<String,String> fields)
+	{
+	    for(Map.Entry<String,String> entry : fields.entrySet()){
+	        select.add(Field.named(entry.getValue(), entry.getKey()));
+	    }
+	    return this;
+	}
+	
     /**
      * Adds Criterion to the having clause.
 	 * 
@@ -156,6 +185,41 @@ public class Query
         return this;
     }
 	
+    /**
+     * Adds Criterion to the having clause (field must be an aggregate function)
+     * 
+     * If the value is null, it's the equivalent of {@link Expression#isNull(String)}.
+     * If the value is a Collection or an Object array, it's the equivalent of
+     * {@link Expression#in(String, Collection)}. Otherwise, it's the equivalent
+     * of {@link Expression#eq(String, Object)}.
+     * 
+     * @param name The criteria
+     * @param value The value
+     * @return provides a fluent interface
+     */
+    public Query having(String name, Object value)
+    {
+        having.add(toExpression(name, value));
+        return this;
+    }
+
+    /**
+     * Adds Criterion to the having clause (field must be an aggregate function)
+     *
+     * Each key is the field name, and the value is the Criterion value. See
+     * {@link #having(String, Object)} for more information.
+     * 
+     * @param having
+     * @return provides a fluent interface
+     */
+    public Query having(Map<String,?> having)
+    {
+        for(Map.Entry<String,?> entry : having.entrySet()){
+            this.having.add(toExpression(entry.getKey(), entry.getValue()));
+        }
+        return this;
+    }
+    
 	/**
 	 * Adds Criterion to the where clause.
 	 * 
@@ -191,6 +255,54 @@ public class Query
 	}
 	
 	/**
+	 * Adds a criteria to the where clause.
+	 * 
+	 * If the value is null, it's the equivalent of {@link Expression#isNull(String)}.
+	 * If the value is a Collection or an Object array, it's the equivalent of
+	 * {@link Expression#in(String, Collection)}. Otherwise, it's the equivalent
+	 * of {@link Expression#eq(String, Object)}.
+	 * 
+	 * @param name The field name
+	 * @param value The value
+	 * @return provides a fluent interface
+	 */
+	public Query where(String name, Object value)
+	{
+	    where.add(toExpression(name, value));
+        return this;
+	}
+	
+	protected Expression toExpression(String name, Object value)
+	{
+	    if ( value == null ) {
+            return Expression.isNull(name);
+        } else if ( value instanceof Object[] ) {
+            return Expression.in(name, (Object[])value);
+        } else if ( value instanceof Collection<?> ) {
+            return Expression.in(name, (Collection<?>)value);
+        } else {
+            return Expression.eq(name, value);
+        }
+	}
+	
+	/**
+	 * Adds criteria to the where clause.
+	 * 
+	 * Each key is the field name, and the value is the Criterion value. See
+	 * {@link #where(String, Object)} for more information. 
+	 * 
+	 * @param criteria The criteria
+	 * @return provides a fluent interface
+	 */
+	public Query where(Map<String,?> criteria)
+	{
+	    for(Map.Entry<String,?> entry : criteria.entrySet()) {
+	        where.add(toExpression(entry.getKey(), entry.getValue()));
+	    }
+	    return this;
+	}
+	
+	/**
 	 * Adds an order by clause
 	 * 
 	 * @param sorts The sort clause
@@ -214,6 +326,34 @@ public class Query
     {
         for(Sort sort : sorts){
             order.add(sort);
+        }
+        return this;
+    }
+    
+    /**
+     * Adds an order by clause with ascending fields
+     * 
+     * @param fields The sort clause fields
+     * @return provides a fluent interface
+     */
+    public Query orderAsc(String... fields)
+    {
+        for(String field : fields){
+            order.add(Sort.asc(field));
+        }
+        return this;
+    }
+    
+    /**
+     * Adds an order by clause with descending fields
+     * 
+     * @param fields
+     * @return
+     */
+    public Query orderDesc(String... fields)
+    {
+        for(String field : fields){
+            order.add(Sort.desc(field));
         }
         return this;
     }
