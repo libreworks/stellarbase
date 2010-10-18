@@ -17,13 +17,7 @@
  */
 package net.libreworks.stellarbase.web;
 
-import java.security.Principal;
-import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import net.libreworks.stellarbase.collections.FluentValues;
-import net.libreworks.stellarbase.security.auth.PrincipalAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * A base class for controllers.
@@ -33,60 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public abstract class ControllerSupport
 {
-	@Autowired
-	protected PrincipalAdapter principalAdapter;
 	private static final String HEADER_EXPIRES = "Expires";
 	private static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
-	
-	/**
-	 * Returns a new ModelAndView with some common values and no view name.
-	 * 
-	 * @see ControllerSupport#getCommonModelAttributes()
-	 * @return The ModelAndView
-	 */
-	protected ModelAndView createModelAndView()
-	{
-		return createModelAndView(null);
-	}
-
-	/**
-	 * Returns a new ModelAndView with some common values.
-	 * 
-	 * @param name The view name
-	 * @return The ModelAndView
-	 */
-	protected ModelAndView createModelAndView(String name)
-	{
-		return new ModelAndView(name).addAllObjects(getCommonModelAttributes());
-	}
-
-	/**
-	 * Gets some common values that are put in every view from
-	 * {@link #createModelAndView()}.
-	 * 
-	 * Override this method to add the same attributes to all methods in a
-	 * single controller, but <em>be sure to mix-in those returned by
-	 * {@code super.getCommonModelAttributes()}!</em>.
-	 * 
-	 * @return The common attributes
-	 */
-	protected Map<String,?> getCommonModelAttributes()
-	{
-		return new FluentValues().set("principal", principalAdapter
-		    .getPrincipal());
-	}
-
-	/**
-	 * Gets the currently authenticated Principal. Note that the {@code
-	 * principalAdapter} property must be set.
-	 * 
-	 * @return The currently authenticated Principal
-	 */
-	protected Principal getPrincipal()
-	{
-		return principalAdapter == null ? null : principalAdapter
-		    .getPrincipal();
-	}
 
 	/**
 	 * Sends the {@code Content-Disposition: attachment; filename="x"} header.
