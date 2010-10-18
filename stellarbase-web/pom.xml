@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.3</version>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-web</name>
