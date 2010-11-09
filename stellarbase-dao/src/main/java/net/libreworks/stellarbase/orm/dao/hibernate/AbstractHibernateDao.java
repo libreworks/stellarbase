@@ -206,9 +206,10 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		MutablePropertyValues mpv = new MutablePropertyValues();
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
 		for(PropertyDescriptor pd : bw.getPropertyDescriptors()) {
-			if ( !Collection.class.isAssignableFrom(pd.getPropertyType()) &&
+			String name = pd.getName();
+			if ( propertyNames.contains(name) &&
+				!Collection.class.isAssignableFrom(pd.getPropertyType()) &&
 				!Map.class.isAssignableFrom(pd.getPropertyType())) {
-				String name = pd.getName();
 				mpv.add(name, bw.getPropertyValue(name));
 			}
 		}

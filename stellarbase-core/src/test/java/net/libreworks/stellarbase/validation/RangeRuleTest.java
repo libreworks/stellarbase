@@ -83,4 +83,43 @@ public class RangeRuleTest
 		object.validate(target, errors);
 		assertTrue(errors.hasErrors());
 	}
+	
+	/**
+	 * Test too big
+	 */
+	@Test
+	public void testValidate3()
+	{
+		SimpleBean target = new SimpleBean();
+		target.setCount(11);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, "target");
+		object.validate(target, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	/**
+	 * Test min
+	 */
+	@Test
+	public void testValidate4()
+	{
+		SimpleBean target = new SimpleBean();
+		target.setCount(0);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, "target");
+		object.validate(target, errors);
+		assertFalse(errors.hasErrors());		
+	}
+	
+	/**
+	 * Test min
+	 */
+	@Test
+	public void testValidate5()
+	{
+		SimpleBean target = new SimpleBean();
+		target.setCount(10);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, "target");
+		object.validate(target, errors);
+		assertFalse(errors.hasErrors());		
+	}
 }

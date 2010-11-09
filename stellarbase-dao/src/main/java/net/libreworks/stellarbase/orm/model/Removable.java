@@ -40,6 +40,11 @@ public interface Removable<K extends Serializable> extends Modifiable<K>
 	public Date getRemovedOn();
 	
 	/**
+	 * @return whether the entity has been removed
+	 */
+	public boolean isRemoved();
+	
+	/**
 	 * @param removedBy the removedBy to set
 	 */
 	public void setRemovedBy(String removedBy);

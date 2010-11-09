@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="net.libreworks.stellarbase.orm.dao.Person" table="person">
+        <id name="id" type="java.lang.Long" column="person_id">
+            <generator class="native" />
+        </id>
+        <natural-id mutable="false">
+            <property name="username" type="string"/>
+        </natural-id>
+        <version name="version" type="integer"/>
+        <property name="firstName" column="first_name" type="string" length="255"/>
+        <property name="mi" type="character"/>
+        <property name="lastName" column="last_name" type="string" length="255"/>
+        <property name="suffix" type="string" length="20"/>
+        <property name="birthday" type="date"/>
+        <property name="bio" type="text"/>
+        <property name="admin" type="boolean"/>
+        <property name="createdOn" column="created_on" type="timestamp" not-null="true"/>
+        <property name="createdBy" column="created_by" type="string" length="50" not-null="true"/>
+        <property name="modifiedOn" column="modified_on" type="timestamp" not-null="true"/>
+        <property name="modifiedBy" column="modified_by" type="string" length="50" not-null="true"/>
+        <property name="removedOn" column="removed_on" type="timestamp"/>
+        <property name="removedBy" column="removed_by" type="string" length="50"/>
+    </class>
+</hibernate-mapping>
