@@ -18,9 +18,12 @@
 package net.libreworks.stellarbase.collections;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +94,17 @@ public class DoubleGrouperTest
 		assertTrue(object.get("bar").get(10).containsAll(data));
 	}
 
+	@Test
+	public void testAddAllGenerics()
+	{
+	    DoubleGrouper<String,String,Number> object = new DoubleGrouper<String,String,Number>();
+	    List<Double> nums = Arrays.asList(1.0, 2.0, 3.0);
+	    HashMap<String,Collection<Number>> nums2 = new HashMap<String,Collection<Number>>();
+	    nums2.put("b", new ArrayList<Number>(nums));
+	    object.addAll("a", "b", nums);
+	    object.addAll("a", nums2);
+	}
+	
 	/**
 	 * Test method for {@link net.libreworks.stellarbase.collections.DoubleGrouper#put(java.lang.Object, java.util.Map)}.
 	 */

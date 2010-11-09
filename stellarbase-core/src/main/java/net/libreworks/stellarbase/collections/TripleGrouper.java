@@ -109,7 +109,7 @@ public class TripleGrouper<A,B,C,V> extends AbstractMapDelegate<A,Map<B,Map<C,Co
 	 * @param group3 Third group key
 	 * @param values The elements to add
 	 */
-	public void addAll(A group1, B group2, C group3, Collection<V> values)
+	public void addAll(A group1, B group2, C group3, Collection<? extends V> values)
 	{
 		ensureCapacity(group1, group2, group3);
 		delegate.get(group1).get(group2).get(group3).addAll(values);
@@ -122,7 +122,7 @@ public class TripleGrouper<A,B,C,V> extends AbstractMapDelegate<A,Map<B,Map<C,Co
 	 * @param group2 Second group key
 	 * @param groups Map of third group keys to collections of values
 	 */
-	public void addAll(A group1, B group2, Map<C,Collection<V>> groups)
+	public void addAll(A group1, B group2, Map<C,? extends Collection<V>> groups)
 	{
 		if (!delegate.containsKey(group1)){
 			delegate.put(group1, factory.getOuterGroupContainer());
@@ -139,9 +139,9 @@ public class TripleGrouper<A,B,C,V> extends AbstractMapDelegate<A,Map<B,Map<C,Co
 	 * @param group1 First group key
 	 * @param groups Map of second group keys to maps of third group keys to values
 	 */
-	public void addAll(A group1, Map<B,Map<C,Collection<V>>> groups)
+	public void addAll(A group1, Map<B,Map<C,? extends Collection<V>>> groups)
 	{
-		for(Map.Entry<B,Map<C,Collection<V>>> entry : groups.entrySet()){
+		for(Map.Entry<B,Map<C,? extends Collection<V>>> entry : groups.entrySet()){
 			addAll(group1, entry.getKey(), entry.getValue());
 		}
 	}

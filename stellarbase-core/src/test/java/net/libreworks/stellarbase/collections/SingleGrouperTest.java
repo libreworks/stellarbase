@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Test;
@@ -94,6 +95,14 @@ public class SingleGrouperTest
 		assertEquals(odds, object.get("odds"));
 	}
 
+	@Test
+	public void testAddAllGenerics()
+	{
+	    SingleGrouper<String,Number> object = new SingleGrouper<String,Number>();
+	    List<Double> nums = Arrays.asList(0.3, 0.4, 0.5);
+	    object.addAll("test", nums);
+	}
+	
 	/**
 	 * Test for {@link SingleGrouper#put(Object, java.util.Collection)}
 	 */

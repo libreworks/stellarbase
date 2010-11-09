@@ -61,7 +61,7 @@ public class DoubleGroupTotal extends AbstractMapDelegate<String,SingleGroupTota
 	 * @param key2 The second group
 	 * @param value The value to add
 	 */
-	public void add(String key1, String key2, Double value)
+	public void add(String key1, Comparable<?> key2, Double value)
 	{
 		if ( !containsKey(key1) ) {
 			delegate.put(key1, new SingleGroupTotal());
@@ -76,7 +76,7 @@ public class DoubleGroupTotal extends AbstractMapDelegate<String,SingleGroupTota
 	 * @param key2 The second group
 	 * @param values The values to add
 	 */
-	public void addAll(String key1, String key2, Collection<Double> values)
+	public void addAll(String key1, Comparable<?> key2, Collection<Double> values)
 	{
 		add(key1, key2, MathUtils.sum(values, Double.class));
 	}

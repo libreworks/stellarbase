@@ -85,7 +85,7 @@ public class SingleGrouper<K,V> extends AbstractMapDelegate<K,Collection<V>>
 	 * @param group The group
 	 * @param elements The elements
 	 */
-	public void addAll(K group, Collection<V> elements)
+	public void addAll(K group, Collection<? extends V> elements)
 	{
 		if (!delegate.containsKey(group)){
 			delegate.put(group, factory.getContainer());

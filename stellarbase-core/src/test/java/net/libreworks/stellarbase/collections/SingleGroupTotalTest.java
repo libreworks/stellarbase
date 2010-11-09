@@ -44,6 +44,16 @@ public class SingleGroupTotalTest
 		assertEquals(8.0, object.get("foo").doubleValue(), 0);
 		assertEquals(4.0, object.get("bar").doubleValue(), 0);
 	}
+	
+	@Test
+	public void testAddNumbers()
+	{
+	    object.add(1, 3.1);
+	    object.add(2, 4.1);
+	    object.add(2, 5.1);
+	    assertEquals(3.1, object.get(1).doubleValue(), 0);
+	    assertEquals(9.2, object.get(2).doubleValue(), 0);
+	}
 
 	@Test
 	public void testAddAll()
@@ -54,6 +64,15 @@ public class SingleGroupTotalTest
 		assertEquals(19.5, object.get("bar").doubleValue(), 0);
 	}
 
+	@Test
+	public void testAddAllNumbers()
+	{
+	    object.addAll(4, Arrays.asList(4.0, 3.0, 2.0));
+	    object.addAll(5, Arrays.asList(1.0, 18.0, 0.5));
+	    assertEquals(9.0, object.get(4).doubleValue(), 0);
+        assertEquals(19.5, object.get(5).doubleValue(), 0);
+	}
+	
 	@Test(expected=UnsupportedOperationException.class)
 	public void testPut()
 	{

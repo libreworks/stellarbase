@@ -95,7 +95,7 @@ public class DoubleGrouper<A,B,V> extends AbstractMapDelegate<A,Map<B,Collection
 	 * @param group2 Second group key
 	 * @param values The value to add
 	 */
-	public void addAll(A group1, B group2, Collection<V> values)
+	public void addAll(A group1, B group2, Collection<? extends V> values)
 	{
 		if (!delegate.containsKey(group1)){
 			delegate.put(group1, factory.getGroupContainer());
@@ -112,7 +112,7 @@ public class DoubleGrouper<A,B,V> extends AbstractMapDelegate<A,Map<B,Collection
 	 * @param group1 First group key
 	 * @param groups Map of second group keys to collection of values
 	 */
-	public void addAll(A group1, Map<B,Collection<V>> groups)
+	public void addAll(A group1, Map<B,? extends Collection<V>> groups)
 	{
 		if (!delegate.containsKey(group1)){
 			delegate.put(group1, factory.getGroupContainer());

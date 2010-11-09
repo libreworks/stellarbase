@@ -33,7 +33,7 @@ import net.libreworks.stellarbase.util.ValueUtils;
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
+public class SingleGroupTotal extends AbstractMapDelegate<Comparable<?>,Double>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 */
 	public SingleGroupTotal()
 	{
-		this(new HashMap<String,Double>());
+		this(new HashMap<Comparable<?>,Double>());
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 * @param delegate
 	 *            The map to use to store the groups and values
 	 */
-	public SingleGroupTotal(Map<String,Double> delegate)
+	public SingleGroupTotal(Map<Comparable<?>,Double> delegate)
 	{
 		super(delegate);
 	}
@@ -64,7 +64,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 * @param value
 	 *            The value to be added
 	 */
-	public void add(String key, Double value)
+	public void add(Comparable<?> key, Double value)
 	{
 		if (!containsKey(key)) {
 			delegate.put(key, 0.0);
@@ -81,7 +81,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 * @param values
 	 *            The values to be added
 	 */
-	public void addAll(String key, Collection<Double> values)
+	public void addAll(Comparable<?> key, Collection<Double> values)
 	{
 		add(key, MathUtils.sum(values, Double.class));
 	}
@@ -91,7 +91,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 * 
 	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
 	 */
-	public Double put(String arg0, Double arg1)
+	public Double put(Comparable<?> arg0, Double arg1)
 	{
 		throw new UnsupportedOperationException("Use the 'add' method");
 	}
@@ -101,7 +101,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<String,Double>
 	 * 
 	 * @see java.util.Map#putAll(java.util.Map)
 	 */
-	public void putAll(Map<? extends String,? extends Double> arg0)
+	public void putAll(Map<? extends Comparable<?>,? extends Double> arg0)
 	{
 		throw new UnsupportedOperationException("Use the 'addAll' method");
 	}
