@@ -353,6 +353,18 @@ public class Field implements Symbol
 	    }
 	}
 	
+	/**
+	 * Creates a new expression Field that isn't quoted, along with an alias
+	 * 
+	 * @param name The raw contents of the Field
+	 * @param alias The alias of the field
+	 * @return The field created
+	 */
+	public static Field raw(String name, String alias)
+	{
+		return new RawField(name, alias);
+	}
+	
 	/** 
 	 * Creates a new Field that defines a group
 	 * 

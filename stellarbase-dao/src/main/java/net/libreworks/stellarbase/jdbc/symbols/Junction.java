@@ -43,8 +43,8 @@ public class Junction extends Criterion implements Clause<Criterion>
 	protected ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 	protected boolean conjunction;
 	
-	protected static final String OR = " OR ";
-	protected static final String AND = " AND ";
+	public static final String OR = " OR ";
+	public static final String AND = " AND ";
 
 	/**
 	 * Creates a new Junction using an "AND" operator (conjunction).

@@ -32,6 +32,7 @@ import net.libreworks.stellarbase.jdbc.symbols.Expression;
 import net.libreworks.stellarbase.jdbc.symbols.Field;
 import net.libreworks.stellarbase.jdbc.symbols.Junction;
 import net.libreworks.stellarbase.jdbc.symbols.Operator;
+import net.libreworks.stellarbase.jdbc.symbols.RawField;
 import net.libreworks.stellarbase.jdbc.symbols.Sort;
 import net.libreworks.stellarbase.jdbc.symbols.Symbol;
 
@@ -45,8 +46,11 @@ public class Translator
 {
 	protected String table;
 	protected String idQuote;
-	public static final String QMARK = "?";
+	public static final char QMARK = '?';
 	public static final char COMMA = ',';
+	public static final char LP = '(';
+	public static final char RP = ')';
+	public static final String NULL = "NULL";
 
 	/**
 	 * Creates a new Translator
@@ -108,14 +112,14 @@ public class Translator
 	 */
 	public Fragment translateField(Field field, boolean quote)
 	{
-		String fieldName = quote ? idQuote + field.getName() + idQuote : field
-				.getName();
+		String fieldName = quote && !(field instanceof RawField) ?
+		    idQuote + field.getName() + idQuote : field.getName();
 		if (!StringUtils.isBlank(table)) {
 			fieldName = table + "." + fieldName;
 		}
-		return new Fragment(
-				field instanceof AggregateField ? ((AggregateField) field)
-						.getFunction() + "(" + fieldName + ")" : fieldName);
+		return new Fragment(field instanceof AggregateField ?
+		    new StringBuilder().append(((AggregateField)field).getFunction())
+		        .append(LP).append(fieldName).append(RP).toString() : fieldName);
 	}
 
 	/**
@@ -130,7 +134,7 @@ public class Translator
 	public Fragment translateSort(Sort sort, boolean quote)
 	{
 		return new Fragment(translateField(sort.getField(), quote).getSql()
-				+ (sort.isAscending() ? " ASC" : " DESC"));
+		    + (sort.isAscending() ? Sort.ASC : Sort.DESC));
 	}
 
 	/**
@@ -170,23 +174,22 @@ public class Translator
 		StringBuilder sql = new StringBuilder()
 				.append(translateField(expression.getLeft(), quote).getSql())
 				.append(' ').append(o.getSql()).append(' ');
-		if ("NULL".equals(val) || val == null) {
-			sql.append("NULL");
+		if (NULL.equals(val) || val == null) {
+			sql.append(NULL);
 		} else if (val instanceof Field) {
 			sql.append(translateField((Field) val, quote).getSql());
 		} else {
 			if (val instanceof Object[]) {
 				Object[] vals = (Object[]) val;
 				if (Operator.between.equals(o) || Operator.notBetween.equals(o)) {
-					sql.append(QMARK).append(" AND ").append(QMARK);
+					sql.append(QMARK).append(Junction.AND).append(QMARK);
 					binds.add(vals[0]);
 					binds.add(vals[1]);
 				} else if (Operator.in.equals(o) || Operator.notIn.equals(o)) {
 					binds.addAll(Arrays.asList(vals));
 					String[] qs = new String[vals.length];
-					Arrays.fill(qs, QMARK);
-					sql.append('(').append(StringUtils.join(qs, COMMA))
-							.append(')');
+					Arrays.fill(qs, String.valueOf(QMARK));
+					sql.append(LP).append(StringUtils.join(qs, COMMA)).append(RP);
 				}
 			} else {
 				sql.append(QMARK);
@@ -212,9 +215,10 @@ public class Translator
 			Fragment loopToken = translateCriterion(c, quote);
 			criteria.put(loopToken.getSql(), loopToken);
 		}
-		Fragment token = new Fragment("( "
-				+ StringUtils.join(criteria.keySet(),
-						(junction.isConjunction() ? " AND " : " OR ")) + " )");
+		Fragment token = new Fragment(new StringBuilder().append(LP)
+		    .append(StringUtils.join(criteria.keySet(),
+			    (junction.isConjunction() ? Junction.AND : Junction.OR)))
+			.append(RP).toString());
 		for (Fragment f : criteria.values()) {
 			token.addParameters(f);
 		}

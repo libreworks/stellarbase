@@ -52,7 +52,7 @@ public class TranslatorTest
 		assertEquals("a = ?", c1.getSql());
 		assertEquals(4, c1.getParameters().iterator().next());
 		Fragment c2 = object.translate(Junction.and(Expression.eq("b", "foo"), Expression.neq("c", "bar")), false);
-		assertEquals("( b = ? AND c <> ? )", c2.getSql());
+		assertEquals("(b = ? AND c <> ?)", c2.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c2.getParameters().toArray());
 		assertEquals("\"foobar\"", object.translate(Field.named("foobar"), true).getSql());
 		assertEquals("bar ASC", object.translate(Sort.asc("bar"), false).getSql());
@@ -70,6 +70,8 @@ public class TranslatorTest
 		assertEquals("foobar", object.translateField(Field.named("foobar"), false).getSql());
 		assertEquals("COUNT(\"foobar\")", object.translateField(Field.count("foobar", "foo"), true).getSql());
 		assertEquals("SUM(foobar)", object.translateField(Field.sum("foobar", "foo"), false).getSql());
+		assertEquals("MID(foobar, 1, 2)", object.translateField(Field.raw("MID(foobar, 1, 2)", "foo"), true).getSql());
+		assertEquals("MID(foobar, 1, 2)", object.translateField(Field.raw("MID(foobar, 1, 2)", "foo"), false).getSql());
 	}
 	
 	@Test
@@ -98,13 +100,13 @@ public class TranslatorTest
 		assertEquals("a = ?", c1.getSql());
 		assertEquals(4, c1.getParameters().iterator().next());
 		Fragment c2 = object.translateCriterion(Junction.and(Expression.eq("b", "foo"), Expression.neq("c", "bar")), false);
-		assertEquals("( b = ? AND c <> ? )", c2.getSql());
+		assertEquals("(b = ? AND c <> ?)", c2.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c2.getParameters().toArray());
 		Fragment c3 = object.translateCriterion(Expression.eq("a", 4), true);
 		assertEquals("\"a\" = ?", c3.getSql());
 		assertEquals(4, c3.getParameters().iterator().next());
 		Fragment c4 = object.translateCriterion(Junction.and(Expression.eq("b", "foo"), Expression.neq("c", "bar")), true);
-		assertEquals("( \"b\" = ? AND \"c\" <> ? )", c4.getSql());
+		assertEquals("(\"b\" = ? AND \"c\" <> ?)", c4.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c4.getParameters().toArray());
 	}
 
@@ -136,19 +138,19 @@ public class TranslatorTest
 	public void testTranslateJunction()
 	{
 		Fragment c1 = object.translateJunction(Junction.or(Expression.eq("b", "foo"), Expression.neq("c", "bar")), false);
-		assertEquals("( b = ? OR c <> ? )", c1.getSql());
+		assertEquals("(b = ? OR c <> ?)", c1.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c1.getParameters().toArray());
 		Fragment c2 = object.translateJunction(Junction.and(Expression.eq("b", "foo"), Expression.neq("c", "bar")), false);
-		assertEquals("( b = ? AND c <> ? )", c2.getSql());
+		assertEquals("(b = ? AND c <> ?)", c2.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c2.getParameters().toArray());
 		Fragment c3 = object.translateJunction(Junction.or(Expression.eq("b", "foo"), Expression.neq("c", "bar")), true);
-		assertEquals("( \"b\" = ? OR \"c\" <> ? )", c3.getSql());
+		assertEquals("(\"b\" = ? OR \"c\" <> ?)", c3.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c3.getParameters().toArray());
 		Fragment c4 = object.translateJunction(Junction.and(Expression.eq("b", "foo"), Expression.neq("c", "bar")), true);
-		assertEquals("( \"b\" = ? AND \"c\" <> ? )", c4.getSql());
+		assertEquals("(\"b\" = ? AND \"c\" <> ?)", c4.getSql());
 		assertArrayEquals(new Object[]{"foo", "bar"}, c4.getParameters().toArray());
 		Fragment c5 = object.translateJunction(Junction.and(Junction.or(Expression.eq("a", 1), Expression.eq("b", 2)), Expression.eq("c", 3)), false);
-		assertEquals("( ( a = ? OR b = ? ) AND c = ? )", c5.getSql());
+		assertEquals("((a = ? OR b = ?) AND c = ?)", c5.getSql());
 		assertArrayEquals(new Object[]{1, 2, 3}, c5.getParameters().toArray());
 	}
 

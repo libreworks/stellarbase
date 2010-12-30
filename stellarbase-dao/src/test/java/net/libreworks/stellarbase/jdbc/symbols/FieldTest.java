@@ -277,6 +277,15 @@ public class FieldTest
     }
 
     @Test
+    public void testRawString()
+    {
+    	Field object = Field.raw("SUBSTRING(aoeu, 1, 2)", "midstr");
+    	assertTrue(object instanceof RawField);
+    	assertEquals("SUBSTRING(aoeu, 1, 2)", object.getName());
+    	assertEquals("midstr", object.getAlias());
+    }
+    
+    @Test
     public void testGroupString()
     {
         GroupField object = Field.group("foo");

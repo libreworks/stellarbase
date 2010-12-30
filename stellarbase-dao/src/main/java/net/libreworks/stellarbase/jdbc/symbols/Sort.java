@@ -36,8 +36,8 @@ public class Sort implements Symbol
     private Field field;
     private boolean ascending;
 
-    private static final String ASC = " ASC";
-    private static final String DESC = " DESC";
+    public static final String ASC = " ASC";
+    public static final String DESC = " DESC";
 
     protected Sort(Field field, boolean ascending)
     {
@@ -82,7 +82,7 @@ public class Sort implements Symbol
     @Override
     public String toString()
     {
-        return field.getName() + (ascending ? ASC : DESC);
+        return field.getName().concat(ascending ? ASC : DESC);
     }
     
 

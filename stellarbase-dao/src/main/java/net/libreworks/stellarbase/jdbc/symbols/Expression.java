@@ -131,7 +131,7 @@ public class Expression extends Criterion
 				&& (Operator.between.equals(operator) || Operator.notBetween
 						.equals(operator))) {
 			Object[] values = (Object[]) right;
-			sb.append(toStringScalar(values[0])).append(" AND ")
+			sb.append(toStringScalar(values[0])).append(Junction.AND)
 					.append(toStringScalar(values[1]));
 		} else if (right instanceof Object[]
 				&& (Operator.in.equals(operator) || Operator.notIn
