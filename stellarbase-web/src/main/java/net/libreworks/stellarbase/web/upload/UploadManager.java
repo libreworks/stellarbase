@@ -53,7 +53,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	public void afterPropertiesSet() throws Exception
 	{
 		if ( mimeDetector == null ) {
-			beanFactory.getBean(MimeDetector.class);
+			mimeDetector = beanFactory.getBean(MimeDetector.class);
 		}
 	}
 
@@ -108,8 +108,11 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	public void setDestination(String destination)
 	{
 		File dest = new File(destination);
-		if ( !dest.exists() || !dest.canWrite() ) {
-			throw new IllegalArgumentException("Target directory does not exist or is not writable");
+		if ( !dest.exists() ) {
+			throw new IllegalArgumentException("Target directory does not exist: " + dest.getAbsolutePath());
+		}
+		if ( !dest.canWrite() ) {
+			throw new IllegalArgumentException("Target directory is not writable: " + dest.getAbsolutePath());
 		}
 		this.destination = destination;
 	}
