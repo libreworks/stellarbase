@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import net.libreworks.stellarbase.mime.MimeDetector;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -90,7 +89,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	 * 
 	 * @return The MIME types
 	 */
-	public Set<String> getTypes()
+	public Collection<String> getTypes()
 	{
 		return Collections.unmodifiableSet(types);
 	}
