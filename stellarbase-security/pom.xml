@@ -23,14 +23,30 @@
 			<version>3.0.5.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- 
+		<!-- force versions -->
 		<dependency>
-			<groupId>net.libreworks.stellarbase</groupId>
-			<artifactId>stellarbase-core</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>3.0.5.RELEASE</version>
 			<scope>compile</scope>
-			<type>jar</type>
 		</dependency>
-		 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>3.0.5.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>3.0.5.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>3.0.5.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 </project>
