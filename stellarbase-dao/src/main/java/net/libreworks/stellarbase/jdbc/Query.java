@@ -372,16 +372,20 @@ public class Query
     	ArrayList<Object> params = new ArrayList<Object>();
     	boolean quote = true;
     	// get columns
-    	ArrayList<String> columns = new ArrayList<String>();
-    	for(Field field : select) {
-    		StringBuilder fieldSql = new StringBuilder()
-    			.append(translator.translateField(field, quote).getSql())
-    			.append(" AS ")
-    			.append(translator.idQuote).append(field.getAlias())
-    			.append(translator.idQuote);
-    		columns.add(fieldSql.toString());
+    	if ( select.isEmpty() ) {
+    		sql.append('*');
+    	} else {
+        	ArrayList<String> columns = new ArrayList<String>();
+	    	for(Field field : select) {
+	    		StringBuilder fieldSql = new StringBuilder()
+	    			.append(translator.translateField(field, quote).getSql())
+	    			.append(" AS ")
+	    			.append(translator.idQuote).append(field.getAlias())
+	    			.append(translator.idQuote);
+	    		columns.add(fieldSql.toString());
+	    	}
+	    	sql.append(StringUtils.join(columns, ", "));
     	}
-    	sql.append(StringUtils.join(columns, ", "));
     	// add from
     	sql.append(" FROM ").append(from);
     	// add WHERE

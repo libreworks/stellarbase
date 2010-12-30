@@ -196,6 +196,23 @@ public class QueryTest
 	    assertEquals(Expression.in("baz", Collections.singleton(null)), object.toExpression("baz", Collections.singleton(null)));
 	    assertEquals(Expression.eq("foobar", "abc"), object.toExpression("foobar", "abc"));
 	}
+
+	@Test
+	public void testAssemble2() throws SQLException
+	{
+		object.from("place")
+			.where(Expression.eq("baz", 6))
+			.orderBy(Sort.asc("foo"));
+		Fragment sql = object.assemble(new JdbcTemplate(){
+			@Override
+			public DataSource getDataSource()
+			{
+				return new StubDataSource();
+			}
+		});
+		assertEquals("SELECT * FROM place WHERE \"baz\" = ? ORDER BY \"foo\" ASC", sql.getSql());
+		assertArrayEquals(new Object[]{6}, sql.getParameters().toArray());
+	}
 	
 	@Test
 	public void testAssemble() throws SQLException
