@@ -61,7 +61,7 @@ public class MailTask implements Runnable, MimeMessagePreparator
 		final InternetAddress[] EMPTY = new InternetAddress[0];
 		helper.setFrom(params.getFrom());
 		helper.setBcc(params.getBcc().toArray(EMPTY));
-		helper.setTo(params.getBcc().toArray(EMPTY));
+		helper.setTo(params.getTo().toArray(EMPTY));
 		helper.setCc(params.getCc().toArray(EMPTY));
 		if ( params.getSubject() != null ) {
 			helper.setSubject(params.getSubject());

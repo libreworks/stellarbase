@@ -37,5 +37,11 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.libreworks.stellarbase</groupId>
+			<artifactId>stellarbase-core</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
