@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.4</version>
+		<version>0.0.5</version>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-web</name>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>3.0.4.RELEASE</version>
+			<version>3.0.5.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
 			<exclusions>

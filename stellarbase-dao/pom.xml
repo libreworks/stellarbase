@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.4</version>
+		<version>0.0.5</version>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-dao</name>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.0.4.RELEASE</version>
+			<version>3.0.5.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>3.0.4.RELEASE</version>
+			<version>3.0.5.RELEASE</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
