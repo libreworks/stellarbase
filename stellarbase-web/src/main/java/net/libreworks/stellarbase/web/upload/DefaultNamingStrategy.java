@@ -36,7 +36,8 @@ import net.libreworks.stellarbase.util.FileUtil;
  */
 public class DefaultNamingStrategy implements NamingStrategy
 {
-	protected String digest = "MD5";
+	public static final String DEFAULT_DIGEST = "MD5";
+	protected String digest = DEFAULT_DIGEST;
 	protected boolean hashFolders = false;
 	
 	protected MessageDigest getDigest()
@@ -44,26 +45,36 @@ public class DefaultNamingStrategy implements NamingStrategy
 		try {
 			return MessageDigest.getInstance(digest);
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("Unable to create message digest", e);
+			throw new IllegalStateException("Unable to create message digest", e);
 		}
 	}
 	
-	public String getName(String destination, MultipartFile file)
+	protected String doDigest(String in)
 	{
-		String fname = file.getName();
-		String extension = FileUtil.getExtension(fname);
-		String nameKey = System.currentTimeMillis() + "_" + fname;
 		MessageDigest m = getDigest();
-		m.update(nameKey.getBytes(), 0, nameKey.length());
+		m.update(in.getBytes(), 0, in.length());
 		String hash = new BigInteger(1, m.digest()).toString(16);
-		if ( hash.length() == 31 ) {
+		// MD5 in Java leaves out a leading zero. Add it, when applicable.
+		if ( DEFAULT_DIGEST.equals(digest) && hash.length() == 31 ) {
 			hash = "0" + hash;
 		}
+		return hash;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.web.upload.NamingStrategy#getName(java.lang.String, org.springframework.web.multipart.MultipartFile)
+	 */
+	public String getName(String destination, MultipartFile file)
+	{
+		String fname = file.getOriginalFilename();
+		String extension = FileUtil.getExtension(fname);
+		String hash = doDigest(System.currentTimeMillis() + "_" + fname);
 		StringBuilder sb = new StringBuilder(destination)
-			.append(File.pathSeparatorChar);
+			.append(File.separatorChar);
 		if ( hashFolders ) {
-			sb.append(hash.substring(0, 1)).append(File.pathSeparatorChar)
-				.append(hash.substring(0, 2)).append(File.pathSeparatorChar);
+			sb.append(hash.substring(0, 1)).append(File.separatorChar)
+				.append(hash.substring(0, 2)).append(File.separatorChar);
 		}
 		return sb.append(hash).append('.').append(extension).toString();
 	}
