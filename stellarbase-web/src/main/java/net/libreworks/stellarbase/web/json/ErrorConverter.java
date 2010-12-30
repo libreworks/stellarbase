@@ -59,7 +59,7 @@ public class ErrorConverter implements MessageSourceAware
 	public Map<String,?> convert(Throwable e)
 	{
 		if ( e instanceof BindException ) {
-			return convert(e);
+			return convert((BindException)e);
 		}
 		return Collections.singletonMap("error", new FluentValues()
 			.set("message", e.getMessage())
