@@ -25,6 +25,7 @@ import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.acls.model.SidRetrievalStrategy;
@@ -89,7 +90,7 @@ public class AccessDecider
 	 * Creates an AccessDecider.
 	 * 
 	 * @param aclService The ACL Service from which the ACL will be retrieved
-	 * @param entity The entity
+	 * @param entity The domain entity or an {@link ObjectIdentity}.
 	 * @return The AccessDecider created
 	 */
 	public static AccessDecider factory(AclService aclService, Object entity)
@@ -101,8 +102,8 @@ public class AccessDecider
 	 * Creates an AccessDecider.
 	 * 
 	 * @param aclService The ACL Service from which the ACL will be retrieved
-	 * @param entity The entity
-	 * @param sidRetrievalStrategy The Sid retrieval strategy
+	 * @param entity The domain entity or an {@link ObjectIdentity}.
+	 * @param sidRetrievalStrategy The {@link Sid} retrieval strategy
 	 * @return The AccessDecider created
 	 */
 	public static AccessDecider factory(AclService aclService, Object entity, SidRetrievalStrategy sidRetrievalStrategy)
@@ -110,6 +111,7 @@ public class AccessDecider
 		List<Sid> sids = sidRetrievalStrategy.getSids(
 			SecurityContextHolder.getContext().getAuthentication());
 		return new AccessDecider(aclService.readAclById(
+			entity instanceof ObjectIdentity ? (ObjectIdentity)entity :
 				new ObjectIdentityImpl(entity), sids), sids);
 	}
 }

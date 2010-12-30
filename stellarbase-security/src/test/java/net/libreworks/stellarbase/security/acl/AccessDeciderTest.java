@@ -71,6 +71,32 @@ public class AccessDeciderTest
 	}
 
 	/**
+	 * Test the ability to pass in an ObjectIdentity
+	 */
+	@Test
+	public void testFactory1()
+	{
+		SimpleBean bean = new SimpleBean();
+		bean.setId((long)987654);		
+		StubAclService aclService = new StubAclService();
+		AccessDecider ad = AccessDecider.factory(aclService, new ObjectIdentityImpl(bean));
+		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
+	}
+	
+	/**
+	 * Test the ability to pass in an entity
+	 */
+	@Test
+	public void testFactory2()
+	{
+		SimpleBean bean = new SimpleBean();
+		bean.setId((long)987654);		
+		StubAclService aclService = new StubAclService();
+		AccessDecider ad = AccessDecider.factory(aclService, bean);
+		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
+	}
+	
+	/**
 	 * Tests the simple constructor
 	 */
 	@Test
