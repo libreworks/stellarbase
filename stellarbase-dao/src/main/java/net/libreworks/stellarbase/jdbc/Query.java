@@ -19,17 +19,13 @@ package net.libreworks.stellarbase.jdbc;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import net.libreworks.stellarbase.jdbc.symbols.Criterion;
 import net.libreworks.stellarbase.jdbc.symbols.Expression;
@@ -38,6 +34,12 @@ import net.libreworks.stellarbase.jdbc.symbols.GroupField;
 import net.libreworks.stellarbase.jdbc.symbols.Junction;
 import net.libreworks.stellarbase.jdbc.symbols.Sort;
 import net.libreworks.stellarbase.jdbc.symbols.SymbolClause;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * Parameters for a SQL query.
@@ -365,10 +367,16 @@ public class Query
      * @return The SQL fragment
      * @throws SQLException 
      */
-    protected Fragment assemble(JdbcTemplate template) throws SQLException
+    protected Fragment assemble(JdbcTemplate template)
     {
     	StringBuilder sql = new StringBuilder("SELECT ");
-    	Translator translator = new Translator(template.getDataSource().getConnection().getMetaData());
+    	DatabaseMetaData dbmd = null;
+		try {
+			dbmd = template.getDataSource().getConnection().getMetaData();
+		} catch (SQLException e) {
+			throw new CannotGetJdbcConnectionException("Could not get database metadata", e);
+		}
+    	Translator translator = new Translator(dbmd);
     	ArrayList<Object> params = new ArrayList<Object>();
     	boolean quote = true;
     	// get columns
@@ -421,7 +429,13 @@ public class Query
     	return new Fragment(sql.toString(), params);
     }
     
-    protected int[] getTypes(Object[] params)
+    /**
+     * Tries to get the JDBC SQL Types based on the objects passed.
+     * 
+     * @param params The objects to determine their JDBC SQL Type
+     * @return The java.sql.Types constants
+     */
+    public static int[] getSqlTypes(Object[] params)
     {
     	int[] sqlTypes = new int[params.length];
     	for(int i=0; i<params.length; i++){
@@ -430,7 +444,13 @@ public class Query
     	return sqlTypes;
     }
     
-    protected int getSqlType(Object value)
+    /**
+     * Tries to get the JDBC SQL Type based on an object passed.
+     * 
+     * @param value The object to determine its JDBC SQL Type
+     * @return The java.sql.Types constant
+     */
+    public static int getSqlType(Object value)
     {
     	if ( value == null ) {
     		return Types.NULL;
@@ -466,9 +486,9 @@ public class Query
      * 
      * @param template The JDBC Template
      * @return The results as a List of Maps
-     * @throws SQLException 
+     * @throws DataAccessException if something goes wrong with the database 
      */
-    public List<Map<String,Object>> execute(JdbcTemplate template) throws SQLException
+    public List<Map<String,Object>> execute(JdbcTemplate template)
     {
     	Fragment sql = assemble(template);
     	if ( logger.isDebugEnabled() ) {
@@ -477,6 +497,6 @@ public class Query
     	return ( sql.getParameters().isEmpty() ) ?
     		template.queryForList(sql.getSql()) :
    			template.queryForList(sql.getSql(), sql.getParameters().toArray(),
-   				getTypes(sql.getParameters().toArray()));
+   				getSqlTypes(sql.getParameters().toArray()));
     }
 }

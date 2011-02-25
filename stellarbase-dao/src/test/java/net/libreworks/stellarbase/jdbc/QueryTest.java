@@ -1,3 +1,20 @@
+/**
+ * Copyright 2011 LibreWorks contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author Jonathan Hawk
+ */
 package net.libreworks.stellarbase.jdbc;
 
 import static org.junit.Assert.*;
@@ -239,27 +256,27 @@ public class QueryTest
 	public void testGetTypes()
 	{
 		assertArrayEquals(new int[]{Types.INTEGER, Types.VARCHAR, Types.BOOLEAN},
-				object.getTypes(new Object[]{Integer.valueOf(4), "Hey", Boolean.FALSE}));
+			Query.getSqlTypes(new Object[]{Integer.valueOf(4), "Hey", Boolean.FALSE}));
 	}
 
 	@Test
 	public void testGetSqlType()
 	{
-		assertEquals(Types.INTEGER, object.getSqlType(new Integer(3)));
-		assertEquals(Types.SMALLINT, object.getSqlType(new Short((short)2)));
-		assertEquals(Types.BOOLEAN, object.getSqlType(true));
-		assertEquals(Types.NULL, object.getSqlType(null));
-		assertEquals(Types.DATE, object.getSqlType(new java.sql.Date(System.currentTimeMillis())));
-		assertEquals(Types.TIME, object.getSqlType(new java.sql.Time(System.currentTimeMillis())));
-		assertEquals(Types.TIMESTAMP, object.getSqlType(new java.sql.Timestamp(System.currentTimeMillis())));
-		assertEquals(Types.TIMESTAMP, object.getSqlType(new Date()));
-		assertEquals(Types.DECIMAL, object.getSqlType(new BigDecimal(123.45)));
-		assertEquals(Types.BIGINT, object.getSqlType(1234L));
-		assertEquals(Types.BIGINT, object.getSqlType(new BigInteger("12345")));
-		assertEquals(Types.REAL, object.getSqlType(new Float(12345.0f)));
-		assertEquals(Types.DOUBLE, object.getSqlType(12345.678));
-		assertEquals(Types.VARBINARY, object.getSqlType(new byte[0]));
-		assertEquals(Types.VARCHAR, object.getSqlType("thing"));
+		assertEquals(Types.INTEGER, Query.getSqlType(new Integer(3)));
+		assertEquals(Types.SMALLINT, Query.getSqlType(new Short((short)2)));
+		assertEquals(Types.BOOLEAN, Query.getSqlType(true));
+		assertEquals(Types.NULL, Query.getSqlType(null));
+		assertEquals(Types.DATE, Query.getSqlType(new java.sql.Date(System.currentTimeMillis())));
+		assertEquals(Types.TIME, Query.getSqlType(new java.sql.Time(System.currentTimeMillis())));
+		assertEquals(Types.TIMESTAMP, Query.getSqlType(new java.sql.Timestamp(System.currentTimeMillis())));
+		assertEquals(Types.TIMESTAMP, Query.getSqlType(new Date()));
+		assertEquals(Types.DECIMAL, Query.getSqlType(new BigDecimal(123.45)));
+		assertEquals(Types.BIGINT, Query.getSqlType(1234L));
+		assertEquals(Types.BIGINT, Query.getSqlType(new BigInteger("12345")));
+		assertEquals(Types.REAL, Query.getSqlType(new Float(12345.0f)));
+		assertEquals(Types.DOUBLE, Query.getSqlType(12345.678));
+		assertEquals(Types.VARBINARY, Query.getSqlType(new byte[0]));
+		assertEquals(Types.VARCHAR, Query.getSqlType("thing"));
 	}
 	
 	private class StubDataSource implements DataSource

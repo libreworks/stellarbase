@@ -67,6 +67,36 @@ public class HibernateRemovableDaoTest extends AbstractHibernateTestSupport
 		assertEquals("foo", p.getRemovedBy());
 	}
 	
+	@Test
+	@Transactional(rollbackFor=Throwable.class)
+	public void testUnremove()
+	{
+		Person p = getFixture(23);
+		assertFalse(p.isRemoved());
+		assertNull(p.getRemovedOn());
+		assertNull(p.getRemovedBy());
+		object.remove(p, "foo");
+		HibernateTemplate ht = getHibernateTemplate();
+		ht.flush();
+		ht.refresh(p);
+		assertTrue(p.isRemoved());
+		assertNotNull(p.getRemovedOn());
+		assertEquals("foo", p.getRemovedBy());
+		object.unremove(p, "foo2");
+		ht.flush();
+		ht.refresh(p);
+		assertFalse(p.isRemoved());
+		assertNull(p.getRemovedOn());
+		assertNull(p.getRemovedBy());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testUnremoveBad()
+	{
+		Person p = new Person();
+		object.unremove(p, "foo");
+	}
+	
 	public Person getFixture(int seed)
 	{
 		return create(Person.class, new FluentValues()

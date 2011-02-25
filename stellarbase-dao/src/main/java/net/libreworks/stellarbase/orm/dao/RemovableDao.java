@@ -50,4 +50,13 @@ public interface RemovableDao<T extends Removable<K>,K extends Serializable> ext
 	 * @param by The user who did the removing
 	 */
 	public void remove(T entity, String by);
+	
+	/**
+	 * Clears the removed information for entity.
+	 * 
+	 * @param entity The entity to un-remove (must be removed already).
+	 * @param by The user who did the un-removing.
+	 * @throws IllegalArgumentException if the entity isn't removed
+	 */
+	public void unremove(T entity, String by);
 }

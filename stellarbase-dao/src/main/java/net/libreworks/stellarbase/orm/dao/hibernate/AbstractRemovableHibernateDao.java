@@ -22,16 +22,17 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import net.libreworks.stellarbase.orm.context.DeleteEvent;
+import net.libreworks.stellarbase.orm.context.UndeleteEvent;
+import net.libreworks.stellarbase.orm.dao.RemovableDao;
+import net.libreworks.stellarbase.orm.model.Removable;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import net.libreworks.stellarbase.orm.context.DeleteEvent;
-import net.libreworks.stellarbase.orm.dao.RemovableDao;
-import net.libreworks.stellarbase.orm.model.Removable;
 
 /**
  * Abstract Hibernate DAO for entities which are removable.
@@ -86,12 +87,30 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 	 */
 	public void remove(T entity, String by)
 	{
-		eventPublisher.publishEvent(new DeleteEvent(entity, by));		
+		eventPublisher.publishEvent(new DeleteEvent(entity, by));
 		entity.setRemovedBy(by);
 		entity.setRemovedOn(new Date());
 		HibernateTemplate ht = getHibernateTemplate();
 		if ( !ht.contains(entity) ) {
 			ht.saveOrUpdate(entity);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.dao.RemovableDao#unremove(net.libreworks.stellarbase.orm.model.Removable, java.lang.String)
+	 */
+	public void unremove(T entity, String by)
+	{
+		if ( entity == null || !entity.isRemoved() ) {
+			throw new IllegalArgumentException("Entity must be removed");
+		}
+		entity.setRemovedOn(null);
+		entity.setRemovedBy(null);
+		HibernateTemplate ht = getHibernateTemplate();
+		if ( !ht.contains(entity) ) {
+			ht.saveOrUpdate(entity);
+		}
+		eventPublisher.publishEvent(new UndeleteEvent(entity, by));
 	}
 }

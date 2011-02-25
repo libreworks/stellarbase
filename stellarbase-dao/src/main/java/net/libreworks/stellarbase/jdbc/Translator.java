@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.UncategorizedSQLException;
 
 import net.libreworks.stellarbase.jdbc.symbols.AggregateField;
 import net.libreworks.stellarbase.jdbc.symbols.Clause;
@@ -57,12 +59,16 @@ public class Translator
 	 * 
 	 * @param dbMeta
 	 *            The database metadata
-	 * @throws SQLException
+	 * @throws DataAccessException
 	 *             if a problem occurs using the database metadata
 	 */
-	public Translator(DatabaseMetaData dbMeta) throws SQLException
+	public Translator(DatabaseMetaData dbMeta) throws DataAccessException
 	{
-		this.idQuote = dbMeta.getIdentifierQuoteString();
+		try {
+			this.idQuote = dbMeta.getIdentifierQuoteString();
+		} catch (SQLException e) {
+			throw new UncategorizedSQLException("getIdentifierQuoteString", "", e);
+		}
 	}
 
 	/**
