@@ -29,6 +29,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 /**
  * Translates errors into something viewable in JSON format.
@@ -81,6 +82,9 @@ public class ErrorConverter implements MessageSourceAware
 	 *     {
 	 *         "field": "password",
 	 *         "message": "The password is silly."
+	 *     },
+	 *     {
+	 *         "message": "The record itself is bad, not just fields."
 	 *     }
 	 * ]
 	 * }</pre>
@@ -90,9 +94,15 @@ public class ErrorConverter implements MessageSourceAware
 	 */
 	public Map<String,?> convert(BindException e)
 	{
-		List<?> errors = e.getFieldErrors();
-		ArrayList<Map<String,?>> jsonErrors = new ArrayList<Map<String,?>>(errors.size());
+		ArrayList<Map<String,?>> jsonErrors = new ArrayList<Map<String,?>>(e.getErrorCount());
 		Locale locale = Locale.getDefault();
+		List<?> globalErrors = e.getGlobalErrors();
+		for(Object o : globalErrors){
+			ObjectError err = (ObjectError)o;
+			jsonErrors.add(new FluentValues()
+				.set("message", messageSource.getMessage(err, locale)));
+		}
+		List<?> errors = e.getFieldErrors();
 		for(Object o : errors) {
 			FieldError err = (FieldError)o;
 			jsonErrors.add(new FluentValues()
