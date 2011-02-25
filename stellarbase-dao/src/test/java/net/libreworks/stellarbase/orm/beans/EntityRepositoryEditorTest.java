@@ -29,6 +29,7 @@ import net.libreworks.stellarbase.orm.model.Identifiable;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.validation.DataBinder;
 
 public class EntityRepositoryEditorTest
 {
@@ -40,6 +41,16 @@ public class EntityRepositoryEditorTest
 		object = EntityRepositoryEditor.factory(new TestRepository());
 	}
 
+	@Test
+	public void testRegister()
+	{
+		TestEntity entity = new TestEntity();
+		DataBinder binder = new DataBinder(entity, "target");
+		assertNull(binder.findCustomEditor(TestEntity.class, null));
+		EntityRepositoryEditor.register(binder, new TestRepository());
+		assertNotNull(binder.findCustomEditor(TestEntity.class, null));
+	}
+	
 	@Test
 	public void testGetAsText()
 	{

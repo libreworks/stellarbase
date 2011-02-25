@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.ConversionServiceFactory;
 import org.springframework.util.Assert;
@@ -56,6 +57,25 @@ public class EntityRepositoryEditor<T extends Identifiable<K>, K extends Seriali
         this.repository = repository;
     }
 
+    /**
+     * A convenience method to register multiple property editors.
+     * 
+     * This method will go through each repository provided and create an
+     * {@link EntityRepositoryEditor} using the {@link #factory(EntityRepository)}
+     * method, and register it with the {@code propertyEditor}.
+     * 
+     * @param propertyEditor The editor to which the editors will be registered
+     * @param repos The repositories
+     */
+    public static void register(PropertyEditorRegistry propertyEditor, EntityRepository<?,?>... repos)
+    {
+    	Assert.notNull(propertyEditor, "propertyEditor must not be null");
+    	for(EntityRepository<?,?> repo : repos) {
+    		propertyEditor.registerCustomEditor(repo.getEntityClass(),
+    				factory(repo));
+    	}
+    }
+    
     /**
      * Creates a new PropertyEditor for entities using their identifiers.
      * 
