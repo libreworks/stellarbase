@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2011 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ public abstract class ControllerSupport
 {
 	private static final String HEADER_EXPIRES = "Expires";
 	private static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+	private static final String HEADER_CACHE_CONTROL = "Cache-Control";
+	private static final String CACHE_CONTROL_PRIVATE = "private, must-revalidate, max-age=0, pre-check=0";
 
 	/**
 	 * Sends the {@code Content-Disposition: attachment; filename="x"} header.
@@ -43,8 +45,20 @@ public abstract class ControllerSupport
 	protected void setDispositionAttachment(String filename, HttpServletResponse response)
 	{
 		response.setHeader(HEADER_CONTENT_DISPOSITION, "attachment;filename=\"" + filename + "\"");
-		response.setIntHeader(HEADER_EXPIRES, 0);
-		response.setHeader("Cache-Control", "private");
+		setCachePrivate(response);
+	}
+	
+	/**
+	 * Sends a private "Cache-Control" header.
+	 * 
+	 * Specifically, this sends "private, must-revalidate, max-age=0,
+	 * pre-check=0".
+	 * 
+	 * @param response The HTTP response
+	 */
+	protected void setCachePrivate(HttpServletResponse response)
+	{
+		response.setHeader(HEADER_CACHE_CONTROL, CACHE_CONTROL_PRIVATE);
 	}
 	
 	/**
