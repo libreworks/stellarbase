@@ -156,6 +156,16 @@ public abstract class AbstractMapDelegate<K,V> implements Map<K,V>, Serializable
 		return delegate.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return delegate.toString();
+	}
+	
 	/**
 	 * @return
 	 * @see java.util.Map#values()

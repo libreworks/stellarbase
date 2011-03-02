@@ -77,4 +77,17 @@ public class FluentValuesTest
 		object.putAll(values);
 		assertEquals(values, object);
 	}
+	
+	/**
+	 * Test method for {@link FluentValues#toString()}
+	 */
+	@Test
+	public void testToString()
+	{
+		HashMap<String,Object> values = new HashMap<String,Object>();
+		values.put("name", "Bob");
+		values.put("age", new Integer(41));
+		FluentValues object = new FluentValues(values);
+		assertEquals(values.toString(), object.toString());
+	}
 }
