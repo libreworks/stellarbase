@@ -81,6 +81,40 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 
 	@Test
 	@Transactional(rollbackFor=Throwable.class)
+	public void testUpdateDisallowedField() throws Exception
+	{
+		Calendar bd = Calendar.getInstance();
+		bd.set(2010, 3, 19, 0, 0, 0);
+		FluentValues values = new FluentValues()
+			.set("username", "doublecompile")
+			.set("firstName", "Jonathan")
+			.set("mi", new Character('D'))
+			.set("lastName", "Hawk")
+			.set("birthday", bd.getTime())
+			.set("bio", "I am pretty cool")
+			.set("admin", Boolean.TRUE)
+			.set("createdOn", new Date())
+			.set("modifiedOn", new Date())
+			.set("modifiedBy", "foo")
+			.set("createdBy", "foo");
+		Person entity = create(Person.class, values);
+		HibernateTemplate ht = getHibernateTemplate();
+		ht.refresh(entity);
+		Date then = entity.getModifiedOn();
+		Integer version = entity.getVersion();
+		FluentValues values2 = new FluentValues()
+			.set("username", "ANewUsername");
+		object.update(entity, values2, "foo1");
+		ht.flush();
+		ht.refresh(entity);
+		assertEquals("doublecompile", entity.getUsername());
+		assertEquals("foo1", entity.getModifiedBy());
+		assertFalse(entity.getModifiedBy().equals(then));
+		assertTrue(entity.getVersion() > version);
+	}
+	
+	@Test
+	@Transactional(rollbackFor=Throwable.class)
 	public void testUpdate() throws Exception
 	{
 		Calendar bd = Calendar.getInstance();

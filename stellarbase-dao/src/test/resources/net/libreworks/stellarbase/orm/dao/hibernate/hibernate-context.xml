@@ -35,7 +35,16 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     
-    <bean id="threadDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernateThreadDao" parent="abstractHibernateDao"/>
-    <bean id="postDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernatePostDao" parent="abstractHibernateDao"/>
-    <bean id="personDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernatePersonDao" parent="abstractHibernateDao"/>
+    <bean id="threadDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernateThreadDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="title,sticky,announcement,closed,lastPostOn,postsSum"/>
+        <property name="allowedUpdateFields" value="title,sticky,announcement,closed,lastPostOn,postsSum"/>
+    </bean>
+    <bean id="postDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernatePostDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="thread,author,title,body"/>
+        <property name="allowedUpdateFields" value="title,body"/>
+    </bean>
+    <bean id="personDao" class="net.libreworks.stellarbase.orm.dao.hibernate.HibernatePersonDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="username,firstName,mi,lastName,suffix,birthday,bio,admin"/>
+        <property name="allowedUpdateFields" value="firstName,mi,lastName,suffix,birthday,bio,admin"/>
+    </bean>
 </beans>

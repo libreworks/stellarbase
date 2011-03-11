@@ -46,9 +46,13 @@ import net.libreworks.stellarbase.orm.model.Modifiable;
  */
 public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K extends Serializable> extends AbstractHibernateDao<T,K> implements WritableDao<T,K>
 {
-	protected Validator validator;
-	
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+	
+	protected String[] initAllowedCreateFields = EMPTY_STRING_ARRAY;
+	protected String[] initAllowedUpdateFields = EMPTY_STRING_ARRAY;
+	protected String[] allowedCreateFields = EMPTY_STRING_ARRAY;
+	protected String[] allowedUpdateFields = EMPTY_STRING_ARRAY;
+	protected Validator validator;
 	
 	@Override
 	protected void initDao() throws Exception
@@ -58,32 +62,14 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		if ( validator != null && !validator.supports(entityClass)) {
 			throw new IllegalArgumentException("Validator must support " + entityClass);
 		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#canUpdate()
-	 */
-	public boolean canUpdate()
-	{
-		return true;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#create(java.util.Map, java.lang.String)
-	 */
-	public T create(Map<String,?> values, String by) throws BindException
-	{
-		enforceNaturalKey(values, null);
-		T entity = BeanUtils.instantiate(entityClass);
-        Date now = new Date();
-        entity.setCreatedBy(by);
-        entity.setCreatedOn(now);
-        entity.setModifiedBy(by);
-        entity.setModifiedOn(now);
-        doSave(entity, values, by);
-        return entity;
+		if ( allowedCreateFields != null ) {
+			initAllowedCreateFields = allowedCreateFields;
+			allowedCreateFields = null;
+		}
+		if ( allowedUpdateFields != null ) {
+			initAllowedUpdateFields = allowedUpdateFields;
+			allowedUpdateFields = null;
+		}
 	}
 	
 	/**
@@ -100,43 +86,53 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 		return true;
 	}
 	
-	/**
-	 * Gets the list of fields allowed for the bind during entity creation.
-	 * 
-	 * By default, this is all fields. Override this method to provide your own
-	 * list of allowed fields.
-	 * 
-	 * @return The list of allowed create bind fields
-	 */
-	protected String[] getAllowedCreateFields()
-	{
-		return EMPTY_STRING_ARRAY;
-	}
-	
-	/**
-	 * Gets the list of fields allowed for the bind during entity updating.
-	 * 
-	 * By default, this is all fields. Override this method to provide your own
-	 * list of allowed fields.
-	 * 
-	 * @return The list of allowed update bind fields
-	 */
-	protected String[] getAllowedUpdateFields()
-	{
-		return EMPTY_STRING_ARRAY;
-	}
-	
 	/*
 	 * (non-Javadoc)
-	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#update(net.libreworks.stellarbase.orm.model.Modifiable, java.util.Map, java.lang.String)
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#canUpdate()
 	 */
-	public void update(T entity, Map<String,?> values, String by) throws BindException
-    {
-		if ( !canUpdate() ) {
-			throw new UnsupportedOperationException("This DAO does not support updating");
+	public boolean canUpdate()
+	{
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#create(java.util.Map, java.lang.String)
+	 */
+	public T create(Map<String,?> values, String by) throws BindException
+	{
+		enforceNaturalKey(values, null);
+		T entity = BeanUtils.instantiate(entityClass);
+        Date now = new Date();
+        entity.setCreatedBy(by);
+        entity.setCreatedOn(now);
+        entity.setModifiedBy(by);
+        entity.setModifiedOn(now);
+        doSave(entity, values, by);
+        return entity;
+	}
+
+	/**
+	 * Binds the values to the entity provided and invokes the DAO's validator.
+	 * 
+	 * @param entity The entity to bind
+	 * @param values The values to bind
+	 * @throws BindException if validation of the entity fails
+	 */
+	protected void doBind(T entity, Map<String,?> values, String[] allowed) throws BindException
+	{
+		DataBinder binder = new DataBinder(entity);
+		registerCustomEditors(binder);
+		binder.setValidator(validator);
+		binder.setAllowedFields(allowed); // it's ok to pass null or empty
+		MutablePropertyValues mpv = new MutablePropertyValues(values);
+		binder.bind(mpv);
+		binder.validate();
+		BindingResult results = binder.getBindingResult();
+		if ( results.hasErrors() ) {
+			throw new BindException(results);
 		}
-		doUpdate(entity, values, by);
-    }	
+	}
 	
 	protected Serializable doSave(T entity, Map<String,?> values, String by) throws BindException
 	{
@@ -161,47 +157,6 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	}
 	
 	/**
-	 * Binds the values to the entity provided and invokes the DAO's validator.
-	 * 
-	 * @param entity The entity to bind
-	 * @param values The values to bind
-	 * @throws BindException if validation of the entity fails
-	 */
-	protected void doBind(T entity, Map<String,?> values, String[] allowed) throws BindException
-	{
-		DataBinder binder = new DataBinder(entity);
-		registerCustomEditors(binder);
-		binder.setValidator(validator);
-		binder.setAllowedFields(allowed); // it's ok to pass null or empty
-		MutablePropertyValues mpv = new MutablePropertyValues(values);
-		binder.bind(mpv);
-		binder.validate();
-		BindingResult results = binder.getBindingResult();
-		if ( results.hasErrors() ) {
-			throw new BindException(results);
-		}
-	}
-
-	/**
-	 * Registers custom property editors with the data binder
-	 * 
-	 * @param registry The registry to which editors will be added
-	 */
-	public void registerCustomEditors(PropertyEditorRegistry registry)
-	{
-	}
-	
-	/**
-	 * Sets the validator this DAO will use when data is bound to an entity.
-	 * 
-	 * @param validator the validator
-	 */
-	public void setValidator(Validator validator)
-    {
-    	this.validator = validator;
-    }
-	
-	/**
 	 * Enforces the natural key constraint of an entity.
 	 * 
 	 * This method searches Hibernate's config settings for the entity's natural
@@ -222,7 +177,7 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 			enforceUnique(fields, expected);
 		}
 	}
-
+	
 	/**
 	 * Does a {@link #find(Map)} using the keyValues and errors if it doesn't match the expected. 
 	 * 
@@ -244,4 +199,85 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 			throw new BindException(result);
 		}
 	}
+	
+	/**
+	 * Gets the list of fields allowed for the bind during entity creation.
+	 * 
+	 * By default, this is all fields. Override this method to provide your own
+	 * list of allowed fields.
+	 * 
+	 * @return The list of allowed create bind fields
+	 */
+	protected String[] getAllowedCreateFields()
+	{
+		return initAllowedCreateFields;
+	}	
+	
+	/**
+	 * Gets the list of fields allowed for the bind during entity updating.
+	 * 
+	 * By default, this is all fields. Override this method to provide your own
+	 * list of allowed fields.
+	 * 
+	 * @return The list of allowed update bind fields
+	 */
+	protected String[] getAllowedUpdateFields()
+	{
+		return initAllowedUpdateFields;
+	}
+	
+	/**
+	 * Registers custom property editors with the data binder
+	 * 
+	 * @param registry The registry to which editors will be added
+	 */
+	public void registerCustomEditors(PropertyEditorRegistry registry)
+	{
+	}
+
+	/**
+	 * Sets the fields which are allowed to be specified during entity creation.
+	 * 
+	 * If no fields are specified, the default is to allow all fields.
+	 * 
+	 * @param allowedCreateFields the allowedCreateFields to set
+	 */
+	public void setAllowedCreateFields(String[] allowedCreateFields)
+	{
+		this.allowedCreateFields = allowedCreateFields;
+	}
+	
+	/**
+	 * Sets the fields which are allowed to be specified during entity update.
+	 * 
+	 * If no fields are specified, the default is to allow all fields.
+	 * 
+	 * @param allowedUpdateFields the allowedUpdateFields to set
+	 */
+	public void setAllowedUpdateFields(String[] allowedUpdateFields)
+	{
+		this.allowedUpdateFields = allowedUpdateFields;
+	}
+	
+	/**
+	 * Sets the validator this DAO will use when data is bound to an entity.
+	 * 
+	 * @param validator the validator
+	 */
+	public void setValidator(Validator validator)
+    {
+    	this.validator = validator;
+    }
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.libreworks.stellarbase.orm.dao.WritableDao#update(net.libreworks.stellarbase.orm.model.Modifiable, java.util.Map, java.lang.String)
+	 */
+	public void update(T entity, Map<String,?> values, String by) throws BindException
+    {
+		if ( !canUpdate() ) {
+			throw new UnsupportedOperationException("This DAO does not support updating");
+		}
+		doUpdate(entity, values, by);
+    }
 }
