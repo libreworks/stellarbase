@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>stellarbase-parent</artifactId>
 		<groupId>net.libreworks.stellarbase</groupId>
-		<version>0.0.6-SNAPSHOT</version>
+		<version>0.0.6</version>
         <relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
