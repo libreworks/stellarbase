@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.JoinPoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -86,38 +85,9 @@ public class EntityAclEntryVoterTest
 	@Test
 	public void testSupportsClassOfQ()
 	{
-		assertTrue(object.supports(InnerBean.class));
 		assertTrue(object.supports(MethodInvocation.class));
-		assertTrue(object.supports(JoinPoint.class));
 	}
 
-	/**
-	 * Tests the vote method
-	 */
-	@Test
-	public void testVote()
-	{
-		UsernamePasswordAuthenticationToken authentication =
-			new UsernamePasswordAuthenticationToken("alice", "aoeuhtns");
-		ArrayList<ConfigAttribute> attribs = new ArrayList<ConfigAttribute>();
-		attribs.add(new SecurityConfig("ACL_READ"));
-		assertEquals(AccessDecisionVoter.ACCESS_GRANTED,
-			object.vote(authentication, new InnerBean(), attribs));
-	}
-	
-	/**
-	 * Tests the vote method
-	 */
-	@Test
-	public void testVoteAbstain()
-	{
-		UsernamePasswordAuthenticationToken authentication =
-			new UsernamePasswordAuthenticationToken("alice", "aoeuhtns");
-		ArrayList<ConfigAttribute> attribs = new ArrayList<ConfigAttribute>();
-		attribs.add(new SecurityConfig("ACL_WRITE"));
-		assertEquals(AccessDecisionVoter.ACCESS_ABSTAIN,
-			object.vote(authentication, new InnerBean(), attribs));
-	}
 	
 	/**
 	 * @author Jonathan Hawk

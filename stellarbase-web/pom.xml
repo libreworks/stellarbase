@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.7-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
         <relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.6.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
 			<exclusions>
@@ -53,11 +53,25 @@
 			<type>jar</type>
 			<scope>compile</scope>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+          			<groupId>log4j</groupId>
+          			<artifactId>log4j</artifactId>
+		        </exclusion>
+				<exclusion>
+          			<groupId>org.slf4j</groupId>
+          			<artifactId>slf4j-log4j12</artifactId>
+        		</exclusion>
+				<exclusion>
+          			<groupId>org.slf4j</groupId>
+          			<artifactId>slf4j-api</artifactId>
+        		</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<version>[1.5.0,1.5.9]</version>
+			<version>1.9.13</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

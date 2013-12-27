@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.0.7-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
@@ -15,19 +15,19 @@
         <dependency>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.8.0.GA</version>
+            <version>3.12.1.GA</version>
             <scope>runtime</scope>
         </dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>3.2.6.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
 			<exclusions>
@@ -36,6 +36,11 @@
 					<groupId>commons-logging</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-collections</artifactId>
+			<version>r03</version>
 		</dependency>
 	</dependencies>
 </project>

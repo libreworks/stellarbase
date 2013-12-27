@@ -19,7 +19,7 @@ package net.libreworks.stellarbase.jdbc.symbols;
 
 import java.util.Map;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.PropertyAccessorFactory;
 
 /**

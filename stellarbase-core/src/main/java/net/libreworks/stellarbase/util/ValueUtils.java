@@ -19,7 +19,7 @@ package net.libreworks.stellarbase.util;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 
@@ -161,7 +161,7 @@ public class ValueUtils
 		Number nvalue = value instanceof Number ? (Number)value : Double.NaN;
 		if (!(value instanceof Number)){
 			String svalue = ObjectUtils.toString(value);
-			if(org.apache.commons.lang.math.NumberUtils.isNumber(svalue)) {
+			if(org.apache.commons.lang3.math.NumberUtils.isNumber(svalue)) {
 				nvalue = NumberUtils.parseNumber(svalue, toClass);
 			}
 		}

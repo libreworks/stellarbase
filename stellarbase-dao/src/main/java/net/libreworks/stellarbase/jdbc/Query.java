@@ -35,7 +35,7 @@ import net.libreworks.stellarbase.jdbc.symbols.Junction;
 import net.libreworks.stellarbase.jdbc.symbols.Sort;
 import net.libreworks.stellarbase.jdbc.symbols.SymbolClause;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;

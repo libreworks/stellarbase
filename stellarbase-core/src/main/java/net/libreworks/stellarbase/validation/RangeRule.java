@@ -17,7 +17,7 @@
  */
 package net.libreworks.stellarbase.validation;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 import org.springframework.validation.Errors;

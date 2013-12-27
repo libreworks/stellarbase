@@ -20,11 +20,11 @@ package net.libreworks.stellarbase.orm.beans;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.support.ConversionServiceFactory;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.util.Assert;
 
 import net.libreworks.stellarbase.orm.model.EntityRepository;
@@ -44,7 +44,7 @@ public class EntityRepositoryEditor<T extends Identifiable<K>, K extends Seriali
 {
     protected EntityRepository<T,K> repository;
     
-    protected ConversionService conversionService = ConversionServiceFactory.createDefaultConversionService();
+    protected ConversionService conversionService = new DefaultConversionService();
 
     /**
      * Creates a new PropertyEditor for entities using their identifiers.

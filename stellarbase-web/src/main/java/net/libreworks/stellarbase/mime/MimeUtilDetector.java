@@ -58,10 +58,7 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(file);
 		logger.debug("MimeType for File: " + file.getName());
-		for(MimeType type : mimeTypes) {
-			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
-		}
-		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
+		return convert(mimeTypes);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -69,10 +66,7 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(filename);
 		logger.debug("MimeType for String: " + filename);
-		for(MimeType type : mimeTypes) {
-			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
-		}
-		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
+		return convert(mimeTypes);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,10 +74,7 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 	{
 		Collection<MimeType> mimeTypes = detector.getMimeTypes(inputStream);
 		logger.debug("InputStream");
-		for(MimeType type : mimeTypes) {
-			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
-		}
-		return convert(MimeUtil2.getMostSpecificMimeType(mimeTypes));
+		return convert(mimeTypes);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,20 +91,25 @@ public class MimeUtilDetector implements MimeDetector, InitializingBean
 		} catch (IOException e) {
 			// just try the filename
 		}
-		for(MimeType type : types) {
-			logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
-		}
-		return convert(MimeUtil2.getMostSpecificMimeType(types));
+		return convert(types);
 	}
 	
 	/**
 	 * Converts a MimeUtil MimeType into a Spring MediaType.
 	 * 
-	 * @param from The MimeUtil MimeType
+	 * @param mimeTypes The MimeUtil MimeTypes
 	 * @return The Spring MediaType
 	 */
-	protected MediaType convert(MimeType from)
+	protected MediaType convert(Collection<MimeType> mimeTypes)
 	{
+		if(logger.isDebugEnabled()){
+			System.out.println("=====");
+			for(MimeType type : mimeTypes) {
+				System.out.println(type.toString() + " (" + type.getSpecificity() + ")");
+				logger.debug(type.toString() + " (" + type.getSpecificity() + ")");
+			}			
+		}
+		MimeType from = MimeUtil2.getMostSpecificMimeType(mimeTypes);
 		return new MediaType(from.getMediaType(), from.getSubType());
 	}
 }

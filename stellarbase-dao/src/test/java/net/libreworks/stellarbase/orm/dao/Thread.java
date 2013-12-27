@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import net.libreworks.stellarbase.orm.model.Modifiable;
 

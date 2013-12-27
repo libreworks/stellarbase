@@ -123,7 +123,9 @@ public abstract class AbstractWritableHibernateDao<T extends Modifiable<K>,K ext
 	{
 		DataBinder binder = new DataBinder(entity);
 		registerCustomEditors(binder);
-		binder.setValidator(validator);
+		if(validator != null){
+			binder.setValidator(validator);
+		}
 		binder.setAllowedFields(allowed); // it's ok to pass null or empty
 		MutablePropertyValues mpv = new MutablePropertyValues(values);
 		binder.bind(mpv);

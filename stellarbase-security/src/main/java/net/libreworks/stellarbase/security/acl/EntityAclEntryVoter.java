@@ -17,6 +17,7 @@
  */
 package net.libreworks.stellarbase.security.acl;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.acls.AclEntryVoter;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.Permission;
@@ -44,8 +45,9 @@ public class EntityAclEntryVoter extends AclEntryVoter
 	}
 	
 	@Override
-	protected Object getDomainObjectInstance(Object secureObject)
+	protected Object getDomainObjectInstance(MethodInvocation secureObject)
 	{
+		// TODO redo this; see if it's necessary
         return getProcessDomainObjectClass().isInstance(secureObject) ? 
         	secureObject : super.getDomainObjectInstance(secureObject);
     }

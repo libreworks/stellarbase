@@ -18,6 +18,7 @@
 package net.libreworks.stellarbase.mail;
 
 import java.util.Map;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.beans.factory.InitializingBean;
@@ -43,10 +44,11 @@ public class VelocityTemplateEngine implements TemplateEngine, InitializingBean
 	/* (non-Javadoc)
 	 * @see net.libreworks.stellarbase.mail.TemplateEngine#mergeIntoString(java.lang.String, java.util.Map)
 	 */
+	@Deprecated
 	public String mergeIntoString(String name, Map<String,?> values) throws MailPreparationException
 	{
 		try {
-			return VelocityEngineUtils.mergeTemplateIntoString(engine, name, values);
+			return VelocityEngineUtils.mergeTemplateIntoString(engine, name, (Map<String, Object>) values);
 		} catch ( VelocityException e ) {
 			throw new MailPreparationException(e);
 		}
@@ -55,10 +57,11 @@ public class VelocityTemplateEngine implements TemplateEngine, InitializingBean
 	/* (non-Javadoc)
 	 * @see net.libreworks.stellarbase.mail.TemplateEngine#mergeIntoString(java.lang.String, java.util.Map, java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	public String mergeIntoString(String name, Map<String,?> values, String encoding) throws MailPreparationException
 	{
 		try {
-			return VelocityEngineUtils.mergeTemplateIntoString(engine, name, encoding, values);
+			return VelocityEngineUtils.mergeTemplateIntoString(engine, name, encoding, (Map<String,Object>)values);
 		} catch ( VelocityException e ) {
 			throw new MailPreparationException(e);
 		}

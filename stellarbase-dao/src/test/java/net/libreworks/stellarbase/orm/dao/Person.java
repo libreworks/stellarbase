@@ -3,7 +3,7 @@ package net.libreworks.stellarbase.orm.dao;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import net.libreworks.stellarbase.orm.model.Removable;
 

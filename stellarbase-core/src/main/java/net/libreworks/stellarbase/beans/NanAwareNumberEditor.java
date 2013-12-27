@@ -33,7 +33,7 @@ public class NanAwareNumberEditor extends CustomNumberEditor
 	 * @param numberClass Number subclass to generate
 	 * @param allowEmpty if empty strings should be allowed
 	 */
-	public NanAwareNumberEditor(Class<?> numberClass, boolean allowEmpty)
+	public NanAwareNumberEditor(Class<? extends Number> numberClass, boolean allowEmpty)
 	{
 		super(numberClass, allowEmpty);
 	}

@@ -23,9 +23,10 @@ import java.util.Collection;
 
 import net.libreworks.stellarbase.util.ValueUtils;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.math.NumberRange;
+import org.apache.commons.collections.comparators.ComparableComparator;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.Range;
 
 /**
  * An enum representing SQL operators: most of them, that is.
@@ -120,10 +121,10 @@ public enum Operator
 								: (Collection<?>) b);				
 				if ( a instanceof Number ) {
 					Number na = (Number)a;
-					NumberRange nr = new NumberRange(ValueUtils.value(
+					Range<Number> nr = Range.between(ValueUtils.value(
 							na.getClass(), values.get(0)), ValueUtils.value(
-							na.getClass(), values.get(1)));
-					result = nr.containsNumber(na);
+									na.getClass(), values.get(1)), ComparableComparator.getInstance());
+					result = nr.contains(na);
 				} else {
 					Comparable c1 = values.get(0) instanceof Comparable ?
 							(Comparable) values.get(0)

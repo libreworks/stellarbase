@@ -25,7 +25,7 @@ import java.util.Collections;
 
 import net.libreworks.stellarbase.collections.FluentValues;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
