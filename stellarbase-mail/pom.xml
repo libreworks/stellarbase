@@ -2,12 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<artifactId>stellarbase-parent</artifactId>
-		<groupId>net.libreworks.stellarbase</groupId>
-		<version>0.1.0-SNAPSHOT</version>
+		<groupId>com.libreworks.stellarbase</groupId>
+		<version>0.9.0-SNAPSHOT</version>
         <relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.libreworks.stellarbase</groupId>
 	<artifactId>stellarbase-mail</artifactId>
 	<name>stellarbase e-mail</name>
 	<dependencies>
@@ -39,7 +38,7 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.libreworks.stellarbase</groupId>
+			<groupId>com.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-core</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>

@@ -1,26 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.libreworks.stellarbase</groupId>
 	<artifactId>stellarbase-web</artifactId>
 	<parent>
-		<groupId>net.libreworks.stellarbase</groupId>
+		<groupId>com.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
         <relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-web</name>
 	<dependencies>
 		<dependency>
-			<groupId>net.libreworks.stellarbase</groupId>
+			<groupId>com.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>net.libreworks.stellarbase</groupId>
+			<groupId>com.libreworks.stellarbase</groupId>
 			<artifactId>stellarbase-security</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>

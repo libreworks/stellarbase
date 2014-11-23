@@ -1,27 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.libreworks.stellarbase</groupId>
 	<artifactId>stellarbase-core</artifactId>
 	<parent>
-		<groupId>net.libreworks.stellarbase</groupId>
+		<groupId>com.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
 		<relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-core</name>
 	<dependencies>
         <dependency>
-            <groupId>javassist</groupId>
+            <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.12.1.GA</version>
+            <version>3.18.2-GA</version>
             <scope>runtime</scope>
         </dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>3.3.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -39,8 +38,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
-			<artifactId>guava-collections</artifactId>
-			<version>r03</version>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	<tx:annotation-driven/>
+	<bean id="hibernateDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	   <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+	   <property name="url" value="jdbc:hsqldb:mem:testdb"/>
+	   <property name="username" value="sa"/>
+	   <property name="password" value=""/>
+	</bean>
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="hibernateDataSource" />
+        <property name="mappingLocations">
+            <list>
+                <value>classpath*:/com/libreworks/stellarbase/orm/dao/hibernate/*.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.HSQLDialect
+                hibernate.show_sql=false
+            </value>
+        </property>
+    </bean>
+    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="abstractHibernateDao" abstract="true"
+        class="com.libreworks.stellarbase.orm.dao.hibernate.AbstractHibernateDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <bean id="threadDao" class="com.libreworks.stellarbase.orm.dao.hibernate.HibernateThreadDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="title,sticky,announcement,closed,lastPostOn,postsSum"/>
+        <property name="allowedUpdateFields" value="title,sticky,announcement,closed,lastPostOn,postsSum"/>
+    </bean>
+    <bean id="postDao" class="com.libreworks.stellarbase.orm.dao.hibernate.HibernatePostDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="thread,author,title,body"/>
+        <property name="allowedUpdateFields" value="title,body"/>
+    </bean>
+    <bean id="personDao" class="com.libreworks.stellarbase.orm.dao.hibernate.HibernatePersonDao" parent="abstractHibernateDao">
+        <property name="allowedCreateFields" value="username,firstName,mi,lastName,suffix,birthday,bio,admin"/>
+        <property name="allowedUpdateFields" value="firstName,mi,lastName,suffix,birthday,bio,admin"/>
+    </bean>
+</beans>
