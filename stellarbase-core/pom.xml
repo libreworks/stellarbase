@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.9.0</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.2.6.RELEASE</version>
+			<version>4.1.2.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
 			<exclusions>

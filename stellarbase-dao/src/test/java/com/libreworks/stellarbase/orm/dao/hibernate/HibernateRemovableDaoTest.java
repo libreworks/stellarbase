@@ -11,7 +11,7 @@ import com.libreworks.stellarbase.orm.dao.Person;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateRemovableDaoTest extends AbstractHibernateTestSupport

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
-		<version>0.9.0</version>
+		<version>1.0.0-SNAPSHOT</version>
         <relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
@@ -34,19 +34,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.2.6.RELEASE</version>
+			<version>4.1.2.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>2.2.2</version>
+			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>3.2.6.RELEASE</version>
+			<version>4.1.2.RELEASE</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.6.10.Final</version>
+			<version>4.3.7.Final</version>
 			<optional>true</optional>
 			<scope>compile</scope>
 			<exclusions>
@@ -69,9 +69,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>hsqldb</groupId>
+			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
+			<version>2.3.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

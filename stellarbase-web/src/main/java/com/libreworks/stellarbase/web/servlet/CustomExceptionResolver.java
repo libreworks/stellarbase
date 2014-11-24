@@ -29,7 +29,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -52,7 +52,7 @@ public class CustomExceptionResolver implements HandlerExceptionResolver
 	private static final String DEFAULT_ERROR_VIEW_NAME = "_error";
 	private static final String DEFAULT_FORBIDDEN_VIEW_NAME = "_forbidden";
 	private static final String DEFAULT_AJAX_ERROR_VIEW_NAME = "_ajaxError";
-	private MappingJacksonJsonView view;
+	private MappingJackson2JsonView view;
 	private ErrorConverter errorConverter;
 	private String errorViewName = DEFAULT_ERROR_VIEW_NAME;
 	private String forbiddenViewName = DEFAULT_FORBIDDEN_VIEW_NAME;
@@ -137,7 +137,7 @@ public class CustomExceptionResolver implements HandlerExceptionResolver
 	/**
 	 * @param view the view to set
 	 */
-	public void setView(MappingJacksonJsonView view)
+	public void setView(MappingJackson2JsonView view)
 	{
 		this.view = view;
 	}

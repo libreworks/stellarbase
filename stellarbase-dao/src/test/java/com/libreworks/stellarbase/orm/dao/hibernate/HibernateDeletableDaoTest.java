@@ -10,7 +10,7 @@ import com.libreworks.stellarbase.orm.dao.ThreadDao;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateDeletableDaoTest extends AbstractHibernateTestSupport

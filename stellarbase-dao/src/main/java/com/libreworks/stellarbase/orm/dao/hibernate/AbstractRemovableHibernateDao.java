@@ -31,8 +31,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 
 /**
  * Abstract Hibernate DAO for entities which are removable.
@@ -52,7 +52,7 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 		return getHibernateTemplate().execute(new HibernateCallback<List<T>>()
 		{
 			@SuppressWarnings("unchecked")
-			public List<T> doInHibernate(Session session) throws HibernateException, SQLException
+			public List<T> doInHibernate(Session session) throws HibernateException
 			{
 				return session.createCriteria(entityClass)
 					.add(Restrictions.isNull("removedOn"))
@@ -72,7 +72,7 @@ public abstract class AbstractRemovableHibernateDao<T extends Removable<K>,K ext
 		return getHibernateTemplate().execute(new HibernateCallback<T>()
 		{
 			@SuppressWarnings("unchecked")
-			public T doInHibernate(Session session) throws HibernateException, SQLException
+			public T doInHibernate(Session session) throws HibernateException
 			{
 				return (T) session.createCriteria(entityClass)
 					.add(naturalId).add(Restrictions.isNull("removedOn"))

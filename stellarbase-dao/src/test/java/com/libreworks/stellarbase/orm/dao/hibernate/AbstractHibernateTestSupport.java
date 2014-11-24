@@ -3,12 +3,13 @@ package com.libreworks.stellarbase.orm.dao.hibernate;
 import java.util.Map;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.AfterTransaction;
@@ -30,7 +31,8 @@ public abstract class AbstractHibernateTestSupport
 	@BeforeTransaction
 	public void setUpTransaction()
 	{
-		localSessionFactoryBean.createDatabaseSchema();
+		SchemaExport export = new SchemaExport(localSessionFactoryBean.getConfiguration());
+	    export.create(false, true);
 	}
 
 	/**
@@ -39,7 +41,8 @@ public abstract class AbstractHibernateTestSupport
 	@AfterTransaction
 	public void tearDownTransaction()
 	{
-		localSessionFactoryBean.dropDatabaseSchema();
+		SchemaExport export = new SchemaExport(localSessionFactoryBean.getConfiguration());
+	    export.drop(false, true);
 	}
 
 	/**

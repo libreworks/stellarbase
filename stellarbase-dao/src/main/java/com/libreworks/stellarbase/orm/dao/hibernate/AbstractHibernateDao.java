@@ -46,9 +46,9 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyValues;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
 /**
  * Abstract base data access object for Hibernate.
@@ -92,7 +92,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return getHibernateTemplate().execute(new HibernateCallback<T>()
 		{
 			@SuppressWarnings("unchecked")
-			public T doInHibernate(Session session) throws HibernateException, SQLException
+			public T doInHibernate(Session session) throws HibernateException
 			{
 				return (T) session.createCriteria(entityClass).add(
 				    mapToCriterion(fields)).uniqueResult();
@@ -109,7 +109,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return getHibernateTemplate().execute(new HibernateCallback<List<T>>()
 		{
 			@SuppressWarnings("unchecked")
-			public List<T> doInHibernate(Session session) throws HibernateException, SQLException
+			public List<T> doInHibernate(Session session) throws HibernateException
 			{
 				return session.createCriteria(entityClass).add(
 				    mapToCriterion(fields)).list();
@@ -147,7 +147,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return getHibernateTemplate().execute(new HibernateCallback<List<T>>()
 		{
 			@SuppressWarnings("unchecked")
-			public List<T> doInHibernate(Session session) throws HibernateException, SQLException
+			public List<T> doInHibernate(Session session) throws HibernateException
 			{
 				return session.createCriteria(entityClass).add(
 				    Restrictions.in("id", ids)).setCacheable(true).list();
@@ -166,7 +166,7 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		return getHibernateTemplate().execute(new HibernateCallback<T>()
 		{
 			@SuppressWarnings("unchecked")
-			public T doInHibernate(Session session) throws HibernateException, SQLException
+			public T doInHibernate(Session session) throws HibernateException
 			{
 				return (T) session.createCriteria(entityClass).add(naturalId)
 					.setCacheable(true).uniqueResult();

@@ -23,9 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class MimeUtilDetectorTest
+public class TikaDetectorTest
 {
-	private MimeUtilDetector object;
+	private TikaDetector object;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -33,7 +33,7 @@ public class MimeUtilDetectorTest
 	@Before
 	public void setUp() throws Exception
 	{
-		object = new MimeUtilDetector();
+		object = new TikaDetector();
 		object.afterPropertiesSet();
 	}
 
@@ -47,10 +47,10 @@ public class MimeUtilDetectorTest
 		FluentValues types = new FluentValues()
 			.set("/mime/LICENSE.html", "text/html")
 			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/book1.xls", "application/excel")
+			.set("/mime/book1.xls", "application/vnd.ms-excel")
 			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-			.set("/mime/Example.jpg", "image/jpeg");
-			//.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text"); doesn't work on ubuntu 14.04 anymore
+			.set("/mime/Example.jpg", "image/jpeg")
+			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
 			File file = new File(getClass().getResource(entry.getKey()).toURI());
 			assertEquals(entry.getValue(), object.getMimeType(file).toString());
@@ -66,10 +66,10 @@ public class MimeUtilDetectorTest
 		FluentValues types = new FluentValues()
 			.set("/mime/license.html", "text/html")
 			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/book1.xls", "application/excel")
+			.set("/mime/book1.xls", "application/vnd.ms-excel")
 			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
+			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
 		for(Entry<String,Object> entry : types.entrySet()){
 			assertEquals(entry.getValue(), object.getMimeType(entry.getKey()).toString());
 		}
@@ -83,10 +83,10 @@ public class MimeUtilDetectorTest
 	public void testGetMimeTypeInputStream() throws FileNotFoundException
 	{
 		FluentValues types = new FluentValues()
-			.set("/mime/automaticTextIndent.odt", "application/zip") // yeah, that's what it shows up as
-			.set("/mime/butterfly.svg", "text/xml")
+			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
+			.set("/mime/butterfly.svg", "image/svg+xml")
 			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/book1.xls", "application/msword"); // different because of byte reading
+			.set("/mime/book1.xls", "application/vnd.ms-excel");
 		for(Entry<String,Object> entry : types.entrySet()){
 			InputStream file = getClass().getResourceAsStream(entry.getKey());
 			assertEquals(entry.getValue(), object.getMimeType(file).toString());
@@ -101,12 +101,12 @@ public class MimeUtilDetectorTest
 	public void testGetMimeTypeMultipartFile() throws URISyntaxException
 	{
 		FluentValues types = new FluentValues()
-			//.set("/mime/license.html", "text/html")
-			.set("/mime/book1.xls", "application/excel")
+			.set("/mime/LICENSE.html", "text/html")
+			.set("/mime/book1.xls", "application/vnd.ms-excel")
 			.set("/mime/Example.jpg", "image/jpeg")
 			.set("/mime/butterfly.svg", "image/svg+xml")
 			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-			.set("/mime/automaticTextIndent.odt", "application/vnd.oasis.opendocument.text");
+			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
 		for(final Entry<String,Object> entry : types.entrySet()){
 			final File file = new File(getClass().getResource(entry.getKey()).toURI());
 			MultipartFile mf = new MultipartFile() {

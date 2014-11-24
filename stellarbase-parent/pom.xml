@@ -4,7 +4,7 @@
 	<groupId>com.libreworks.stellarbase</groupId>
 	<artifactId>stellarbase-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.9.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Stellarbase Parent</name>
 	<description>Stellarbase is a starting point for Java applications using Spring. Using convention over configuration, we provide an infrastructure to get started with data entities, validation rules, data access objects, and services, as well as a cadre of utilities.</description>
 	<url>http://forge.libreworks.com/projects/stellarbase</url>
