@@ -17,9 +17,15 @@
  */
 package com.libreworks.stellarbase.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.Fraction;
 import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 
@@ -31,6 +37,10 @@ import org.springframework.util.NumberUtils;
  */
 public class ValueUtils
 {
+	protected static final Pattern ZERO = Pattern.compile("^(0)+(\\.0+)?$");
+	protected static final Pattern HEX = Pattern.compile("^0[xX][0-9A-Fa-f]+$");
+	protected static final Pattern OCT = Pattern.compile("^0[0-7]+$");
+	
 	/**
 	 * Method for comparing value equivalence between objects.
 	 *  
@@ -112,6 +122,9 @@ public class ValueUtils
 	 * otherwise it will be turned into a String and parsed. If the value cannot
 	 * be turned into the number for whatever reason, zero will be returned.
 	 * 
+	 * Unlike the Spring {@link NumberUtils} class, this method does indeed
+	 * support the Apache Commons {@link Fraction}.
+	 * 
 	 * @param <T> The number class
 	 * @param value The value to convert into a number
 	 * @param toClass The Number class to which the object will be converted
@@ -121,19 +134,117 @@ public class ValueUtils
 	public static <T extends Number> T value(Class<T> toClass, Object value)
 	{
 		Assert.notNull(toClass);
-		if ( value == null ) {
-			return NumberUtils.convertNumberToTargetClass(0, toClass);
+		if ( value == null || Boolean.FALSE.equals(value) ) {
+			return getZero(toClass);
 		} else if ( toClass.isInstance(value) ) {
 			return toClass.cast(value);
+		} else if ( Fraction.class.equals(toClass) ) {
+		// Since the Spring NumberUtils class doesn't support Fraction
+			if(value instanceof Number){
+				if(BigDecimal.ZERO.compareTo(NumberUtils.convertNumberToTargetClass((Number)value, BigDecimal.class)) == 0){
+					return getZero(toClass);
+				}
+				return (T) Fraction.getFraction(NumberUtils.convertNumberToTargetClass((Number)value, Double.class));
+			} else {
+				String toString = value.toString();
+				if(StringUtils.isBlank(toString)){
+					return getZero(toClass);
+				} else {
+					return (T) Fraction.getFraction(toString);
+				}
+			}
+		} else if ( value instanceof Fraction ) {
+			return NumberUtils.convertNumberToTargetClass(((Fraction)value).doubleValue(), toClass);
 	    } else if ( value instanceof Number ) {
 	    	return NumberUtils.convertNumberToTargetClass((Number)value, toClass);
 	    } else {
-	    	try {
-				return NumberUtils.parseNumber(ObjectUtils.toString(value), toClass);
+    		try {
+       			return NumberUtils.parseNumber(value.toString(), toClass);
 			} catch ( Exception e ) {
 				return NumberUtils.convertNumberToTargetClass(0, toClass);
 			}
 	    }
+	}
+	
+	/**
+	 * Gets a constant for zero if one exists.
+	 * 
+	 * @param toClass The destination number class
+	 * @return zero in that class (using a constant if available).
+	 */
+	@SuppressWarnings("unchecked")
+	protected static <T extends Number> T getZero(Class<T> toClass)
+	{
+		if(BigDecimal.class.isAssignableFrom(toClass)){
+			return (T) BigDecimal.ZERO;
+		} else if(BigInteger.class.isAssignableFrom(toClass)){
+			return (T) BigInteger.ZERO;
+		} else if(Byte.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+		} else if(Double.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.DOUBLE_ZERO;
+		} else if(Float.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.FLOAT_ZERO;
+		} else if(Fraction.class.equals(toClass)){
+			return (T) Fraction.ZERO;
+		} else if(Integer.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+		} else if(Long.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
+		} else if(Short.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.SHORT_ZERO;
+		} else {
+			return NumberUtils.convertNumberToTargetClass(0, toClass);
+		}
+	}
+	
+	/**
+	 * Determines whether the value supplied is zero-like.
+	 * 
+	 * <ul>
+	 * <li>Null</li>
+	 * <li>Empty and blank Strings</li>
+	 * <li>Strings with just zeros (e.g. 000) or zeros with decimal zeros (e.g. 000.0000)</li>
+	 * <li>Numbers that equal zero</li>
+	 * <li>false</li>
+	 * <li>Strings and other objects that don't evaluate as numbers</li>
+	 * </ul>
+	 * 
+	 * @param value Any value
+	 * @return Whether the object is zero-like
+	 */
+	public static boolean isZero(Object value) {
+		if (value == null || Boolean.FALSE.equals(value)) {
+			return true;
+		}
+		if (value instanceof CharSequence) {
+			if (StringUtils.isBlank((CharSequence) value)) {
+				return true;
+			} else if (ZERO.matcher((CharSequence) value).matches()) {
+				return true;
+			} else if (!org.apache.commons.lang3.math.NumberUtils.isNumber(value.toString())) {
+				return true;
+			}
+		}
+		if (value instanceof Number) {
+			if (value instanceof Fraction) {
+				return ((Fraction)value).getNumerator() == 0;
+			} else if (value instanceof BigDecimal) {
+				return BigDecimal.ZERO.compareTo((BigDecimal)value) == 0;
+			} else if (value instanceof BigInteger) {
+				return BigInteger.ZERO.compareTo((BigInteger)value) == 0;
+			} else {
+				Number nval = (Number)value;
+				return getZero(nval.getClass()).equals(nval);
+			}
+		} else {
+			String svalue = value.toString();
+			if (HEX.matcher(svalue).matches() || OCT.matcher(svalue).matches()) {
+				return BigInteger.ZERO.compareTo(value(BigInteger.class, svalue)) == 0;
+			} else {
+				return BigDecimal.ZERO.compareTo(value(BigDecimal.class, svalue)) == 0;
+			}
+		}
 	}
 	
 	protected static Date toDate(Object value)

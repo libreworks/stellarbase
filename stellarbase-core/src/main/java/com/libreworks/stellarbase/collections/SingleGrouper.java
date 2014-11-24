@@ -22,14 +22,21 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.google.common.collect.LinkedListMultimap;
+
 /**
  * A map wrapper which simplifies grouping values.
+ * 
+ * This class is deprecated. Developers should just use Guava's
+ * {@link LinkedListMultimap} alone.
  * 
  * @author Jonathan Hawk
  * @version $Id$
  * @param <K> The group type
  * @param <V> The element type
+ * @deprecated Just use {@link LinkedListMultimap}
  */
+@Deprecated
 public class SingleGrouper<K,V> extends AbstractMapDelegate<K,Collection<V>>
 {
     private static final long serialVersionUID = 1L;
