@@ -31,8 +31,11 @@ import com.google.common.collect.ImmutableSet;
  * 
  * @author Jonathan Hawk
  * @see {@link Characters}
+ * @see {@link Patterns}
+ * @since 1.0.0
  */
-public class Strings {
+public class Strings
+{
 	// whitespace
 	public static final String TAB = String.valueOf(Characters.TAB);
 	public static final String NL = String.valueOf(Characters.NL);
@@ -115,7 +118,8 @@ public class Strings {
 	 * @param value The value to test for "truthiness" or null
 	 * @return Whether the String is "truthy"
 	 */
-	public static boolean isTruthy(String value) {
+	public static boolean isTruthy(String value)
+	{
 		if (value == null) {
 			return false;
 		}

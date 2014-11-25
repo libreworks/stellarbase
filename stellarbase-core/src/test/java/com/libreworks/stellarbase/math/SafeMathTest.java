@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package com.libreworks.stellarbase.util;
+package com.libreworks.stellarbase.math;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

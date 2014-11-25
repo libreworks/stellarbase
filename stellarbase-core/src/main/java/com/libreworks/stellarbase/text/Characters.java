@@ -22,8 +22,10 @@ package com.libreworks.stellarbase.text;
  *
  * @author Jonathan Hawk
  * @see {@link Strings}
+ * @since 1.0.0
  */
-public class Characters {
+public class Characters
+{
 	// whitespace
 	public static final char TAB = '\t';
 	public static final char NL = '\n';

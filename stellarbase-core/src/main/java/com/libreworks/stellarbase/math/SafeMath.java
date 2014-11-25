@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package com.libreworks.stellarbase.util;
+package com.libreworks.stellarbase.math;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,11 +27,13 @@ import org.apache.commons.lang3.math.Fraction;
 import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 
+import com.libreworks.stellarbase.util.ValueUtils;
+
 /**
  * Utility class for safe math operations.
  * 
  * @author Jonathan Hawk
- * @version $Id$
+ * @since 1.0.0
  */
 public class SafeMath {
 	/**

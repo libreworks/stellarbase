@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.libreworks.stellarbase.util.MathUtils;
+import com.libreworks.stellarbase.math.SafeMath;
 
 /**
  * A Map that stores a running total for two groups.
@@ -78,7 +78,7 @@ public class DoubleGroupTotal extends AbstractMapDelegate<String,SingleGroupTota
 	 */
 	public void addAll(String key1, Comparable<?> key2, Collection<Double> values)
 	{
-		add(key1, key2, MathUtils.sum(values, Double.class));
+		add(key1, key2, SafeMath.sum(values, Double.class));
 	}
 	
 	/*

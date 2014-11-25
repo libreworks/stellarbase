@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.libreworks.stellarbase.util.MathUtils;
+import com.libreworks.stellarbase.math.SafeMath;
 import com.libreworks.stellarbase.util.ValueUtils;
 
 /**
@@ -69,7 +69,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<Comparable<?>,Double>
 		if (!containsKey(key)) {
 			delegate.put(key, 0.0);
 		}
-		delegate.put(key, MathUtils.add(get(key), ValueUtils.value(
+		delegate.put(key, SafeMath.add(get(key), ValueUtils.value(
 				Double.class, value), Double.class));
 	}
 
@@ -83,7 +83,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<Comparable<?>,Double>
 	 */
 	public void addAll(Comparable<?> key, Collection<Double> values)
 	{
-		add(key, MathUtils.sum(values, Double.class));
+		add(key, SafeMath.sum(values, Double.class));
 	}
 
 	/*

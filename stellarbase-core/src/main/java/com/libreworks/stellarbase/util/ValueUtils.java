@@ -181,7 +181,7 @@ public class ValueUtils
 	 * @return zero in that class (using a constant if available).
 	 */
 	@SuppressWarnings("unchecked")
-	protected static <T extends Number> T getZero(Class<T> toClass)
+	public static <T extends Number> T getZero(Class<T> toClass)
 	{
 		if(BigDecimal.class.isAssignableFrom(toClass)){
 			return (T) BigDecimal.ZERO;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
  * 
  * @author Jonathan Hawk
  */
-package com.libreworks.stellarbase.util;
+package com.libreworks.stellarbase.text;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
  * @author Jonathan Hawk
- * @version $Id$
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	FileUtilTest.class,
-	ValueUtilsTest.class
+	StringsTest.class
 })
 public class AllTests
 {
