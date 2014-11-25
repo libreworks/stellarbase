@@ -19,12 +19,17 @@ package com.libreworks.stellarbase.jdbc.symbols;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.text.Strings;
 
 /**
  * An expression is a boolean evaluation comparing a column against a value.
@@ -76,12 +81,12 @@ public class Expression extends Criterion
 	@Override
     public Collection<Field> getAllFields()
     {
-	    ArrayList<Field> fields = new ArrayList<Field>();
+		LinkedList<Field> fields = new LinkedList<Field>();
         fields.add(left);
         if ( right instanceof Field ) {
             fields.add((Field)right);
         }
-        return fields;
+        return ImmutableList.copyOf(fields);
     }
 
     /*
@@ -126,7 +131,7 @@ public class Expression extends Criterion
 	{
 		StringBuilder sb = new StringBuilder();
 		if (right == null) {
-			sb.append("NULL");
+			sb.append(Strings.NULL.toUpperCase());
 		} else if (right instanceof Object[]
 				&& (Operator.between.equals(operator) || Operator.notBetween
 						.equals(operator))) {
@@ -140,19 +145,20 @@ public class Expression extends Criterion
 			for (Object o : (Object[]) right) {
 				quoted.add(toStringScalar(o));
 			}
-			sb.append('(').append(StringUtils.join(quoted, ',')).append(')');
+			sb.append('(').append(StringUtils.join(quoted, Characters.COMMA)).append(')');
 		} else {
 			sb.append(toStringScalar(right));
 		}
-		return left.toString() + ' ' + operator.getSql() + ' '
-				+ sb.toString();
+		return new StringBuilder(left.toString()).append(Characters.SPACE)
+				.append(operator.getSql()).append(Characters.SPACE).append(sb)
+				.toString();
 	}
 
 	private String toStringScalar(Object value)
 	{
 		return value instanceof Number || value instanceof Field
 				|| NumberUtils.isNumber(value.toString()) ? value.toString()
-				: "'" + value.toString().replace("'", "''") + "'";
+				: Strings.APOSTROPHE + value.toString().replace(Strings.APOSTROPHE, "''") + Strings.APOSTROPHE;
 	}
 	
     /**

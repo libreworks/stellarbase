@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.ValueUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,7 +37,7 @@ import org.springframework.util.comparator.ComparableComparator;
  */
 public enum Operator
 {
-	eq("="),
+	eq(Strings.EQUALS),
 	neq("<>"),
 	ge(">="),
 	le("<="),

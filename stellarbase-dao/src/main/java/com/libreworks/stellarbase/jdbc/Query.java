@@ -34,6 +34,7 @@ import com.libreworks.stellarbase.jdbc.symbols.GroupField;
 import com.libreworks.stellarbase.jdbc.symbols.Junction;
 import com.libreworks.stellarbase.jdbc.symbols.Sort;
 import com.libreworks.stellarbase.jdbc.symbols.SymbolClause;
+import com.libreworks.stellarbase.text.Characters;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -381,7 +382,7 @@ public class Query
     	boolean quote = true;
     	// get columns
     	if ( select.isEmpty() ) {
-    		sql.append('*');
+    		sql.append(Characters.STAR);
     	} else {
         	ArrayList<String> columns = new ArrayList<String>();
 	    	for(Field field : select) {

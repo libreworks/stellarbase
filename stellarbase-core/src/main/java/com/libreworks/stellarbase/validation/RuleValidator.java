@@ -17,12 +17,14 @@
  */
 package com.libreworks.stellarbase.validation;
 
-import java.util.ArrayList;
 import java.util.Collection;
+
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * A validator which validates an object using a series of {@link Rule} objects.
@@ -32,17 +34,18 @@ import org.springframework.validation.Validator;
  */
 public class RuleValidator implements Validator
 {
-	protected ArrayList<Rule> rules = new ArrayList<Rule>();
+	protected Collection<Rule> rules = ImmutableList.of();
 	
 	/**
 	 * Creates a new RuleValidator.
 	 * 
 	 * @param rules The rules to use for validation
+	 * @throws NullPointerException if any {@link Rule} in the collection is null
 	 */
 	public RuleValidator(Collection<Rule> rules)
 	{
 		Assert.notNull(rules);
-		this.rules.addAll(rules);
+		this.rules = ImmutableList.copyOf(rules);
 	}
 	
 	/* (non-Javadoc)
@@ -69,6 +72,7 @@ public class RuleValidator implements Validator
 	 */
 	public String toString()
 	{
-		return ClassUtils.getShortName(getClass()) + "(" + rules + ")";
+		return new StringBuilder(ClassUtils.getShortName(getClass()))
+				.append('(').append(rules).append(')').toString();
 	}
 }

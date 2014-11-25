@@ -211,7 +211,7 @@ public class Junction extends Criterion implements Clause<Criterion>
 	@Override
 	public String toString()
 	{
-		ArrayList<String> strings = new ArrayList<String>();
+		ArrayList<String> strings = new ArrayList<String>(criteria.size());
 		for(Criterion c : criteria){
 			strings.add(c.toString());
 		}

@@ -21,7 +21,11 @@ import java.io.File;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import org.springframework.web.multipart.MultipartFile;
+
+import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.FileUtil;
 
 /**
@@ -56,7 +60,7 @@ public class DefaultNamingStrategy implements NamingStrategy
 		String hash = new BigInteger(1, m.digest()).toString(16);
 		// MD5 in Java leaves out a leading zero. Add it, when applicable.
 		if ( DEFAULT_DIGEST.equals(digest) && hash.length() == 31 ) {
-			hash = "0" + hash;
+			hash = Strings.ZERO + hash;
 		}
 		return hash;
 	}
@@ -69,14 +73,14 @@ public class DefaultNamingStrategy implements NamingStrategy
 	{
 		String fname = file.getOriginalFilename();
 		String extension = FileUtil.getExtension(fname);
-		String hash = doDigest(System.currentTimeMillis() + "_" + fname);
+		String hash = doDigest(System.currentTimeMillis() + Strings.UNDERSCORE + fname);
 		StringBuilder sb = new StringBuilder(destination)
 			.append(File.separatorChar);
 		if ( hashFolders ) {
 			sb.append(hash.substring(0, 1)).append(File.separatorChar)
 				.append(hash.substring(0, 2)).append(File.separatorChar);
 		}
-		return sb.append(hash).append('.').append(extension).toString();
+		return sb.append(hash).append(Characters.DOT).append(extension).toString();
 	}
 
 	/**

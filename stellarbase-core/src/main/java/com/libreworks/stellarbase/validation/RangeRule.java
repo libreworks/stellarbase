@@ -22,6 +22,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 import org.springframework.validation.Errors;
 
+import com.libreworks.stellarbase.text.Characters;
+
 /**
  * A rule for an inclusive range of numbers, a minimum, a maximum, or both.
  * 
@@ -76,7 +78,7 @@ public class RangeRule extends AbstractOneFieldRule<Number>
 		StringBuilder sb = new StringBuilder()
 			.append(ObjectUtils.toString(min));
 		if (min != null && max != null) {
-			sb.append('\u2013'); // unicode for the en-dash
+			sb.append(Characters.ENDASH);
 		}
 		return sb.append(ObjectUtils.toString(max)).toString();
 	}

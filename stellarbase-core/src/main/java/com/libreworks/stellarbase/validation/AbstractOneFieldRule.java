@@ -22,6 +22,8 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
+import com.libreworks.stellarbase.text.Characters;
+
 /**
  * An abstract rule to allow processing of one field.
  * 
@@ -45,7 +47,8 @@ public abstract class AbstractOneFieldRule<T> extends AbstractRule
 	@Override
 	public String getConstraints()
 	{
-		return field + ":" + getConstraintLabel();
+		return new StringBuilder(field).append(Characters.COLON)
+				.append(getConstraintLabel()).toString();
 	}
 	
 	/**

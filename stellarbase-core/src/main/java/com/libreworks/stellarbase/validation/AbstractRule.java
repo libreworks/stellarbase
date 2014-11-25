@@ -28,7 +28,8 @@ public abstract class AbstractRule implements Rule
 	@Override
 	public String toString()
 	{
-		return getLabel() + "[" + getConstraints() + "]";
+		return new StringBuilder(getLabel()).append('[')
+				.append(getConstraints()).append(']').toString();
 	}
 	
 	/**

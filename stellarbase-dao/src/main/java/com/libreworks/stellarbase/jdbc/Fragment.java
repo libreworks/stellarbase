@@ -19,7 +19,8 @@ package com.libreworks.stellarbase.jdbc;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Parameters for a SQL query.
@@ -50,7 +51,7 @@ public class Fragment
     
     public Collection<Object> getParameters()
     {
-        return Collections.unmodifiableCollection(parameters);
+        return ImmutableList.copyOf(parameters);
     }
     
     public void addParameters(Fragment fragment)

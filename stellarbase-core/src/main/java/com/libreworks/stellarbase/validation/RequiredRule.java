@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.libreworks.stellarbase.text.Characters;
+
 /**
  * A rule for required fields.
  * 
@@ -65,7 +67,7 @@ public class RequiredRule extends AbstractRule
 	
 	public String getConstraints()
 	{
-		return StringUtils.join(fields, ',');
+		return StringUtils.join(fields, Characters.COMMA);
 	}
 	
 	public String getLabel()

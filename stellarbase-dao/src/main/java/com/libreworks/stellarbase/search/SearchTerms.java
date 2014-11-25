@@ -23,6 +23,8 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.libreworks.stellarbase.text.Characters;
+
 /**
  * A data transfer object to hold search terms: required, optional, forbidden.
  * 
@@ -85,7 +87,7 @@ public class SearchTerms implements Serializable
      */
     public SearchTerms exact(String term)
     {
-        all.add('"' + term + '"');
+        all.add(Characters.QUOTE + term + Characters.QUOTE);
         return this;
     }
 
@@ -108,7 +110,7 @@ public class SearchTerms implements Serializable
             groups.add("(-" + StringUtils.join(not.toArray(), " -") + ")");
         }
         if (!any.isEmpty()) {
-            groups.add("(" + StringUtils.join(all.toArray(), ' ') + ")");
+            groups.add("(" + StringUtils.join(all.toArray(), Characters.SPACE) + ")");
         }
         if (groups.isEmpty()) {
             return StringUtils.EMPTY;

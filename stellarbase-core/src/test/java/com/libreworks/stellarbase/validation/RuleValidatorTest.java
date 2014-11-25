@@ -18,11 +18,13 @@
 package com.libreworks.stellarbase.validation;
 
 import static org.junit.Assert.*;
-import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Jonathan Hawk
@@ -39,7 +41,7 @@ public class RuleValidatorTest implements Rule
 	@Before
 	public void setUp()
 	{
-		object = new RuleValidator(Arrays.asList(new Rule[]{this}));
+		object = new RuleValidator(ImmutableList.<Rule>of(this));
 		called = 0;
 	}
 

@@ -64,6 +64,7 @@ public class SupportsDelegateValidator implements Validator
 	
 	public String toString()
 	{
-		return delegate.toString() + " supporting " + StringUtils.join(supports, ", ");
+		return new StringBuilder(delegate.toString()).append(" supporting ")
+				.append(StringUtils.join(supports, ", ")).toString();
 	}
 }

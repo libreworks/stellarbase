@@ -37,6 +37,8 @@ import com.libreworks.stellarbase.jdbc.symbols.Operator;
 import com.libreworks.stellarbase.jdbc.symbols.RawField;
 import com.libreworks.stellarbase.jdbc.symbols.Sort;
 import com.libreworks.stellarbase.jdbc.symbols.Symbol;
+import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.text.Strings;
 
 /**
  * Turns symbols into a SQL query
@@ -48,11 +50,11 @@ public class Translator
 {
 	protected String table;
 	protected String idQuote;
-	public static final char QMARK = '?';
-	public static final char COMMA = ',';
+	public static final char QMARK = Characters.QUESTION;
+	public static final char COMMA = Characters.COMMA;
 	public static final char LP = '(';
 	public static final char RP = ')';
-	public static final String NULL = "NULL";
+	public static final String NULL = Strings.NULL.toUpperCase();
 
 	/**
 	 * Creates a new Translator
@@ -121,7 +123,7 @@ public class Translator
 		String fieldName = quote && !(field instanceof RawField) ?
 		    idQuote + field.getName() + idQuote : field.getName();
 		if (!StringUtils.isBlank(table)) {
-			fieldName = table + "." + fieldName;
+			fieldName = table + Strings.DOT + fieldName;
 		}
 		return new Fragment(field instanceof AggregateField ?
 		    new StringBuilder().append(((AggregateField)field).getFunction())
@@ -179,7 +181,7 @@ public class Translator
 		Operator o = expression.getOperator();
 		StringBuilder sql = new StringBuilder()
 				.append(translateField(expression.getLeft(), quote).getSql())
-				.append(' ').append(o.getSql()).append(' ');
+				.append(Characters.SPACE).append(o.getSql()).append(Characters.SPACE);
 		if (NULL.equals(val) || val == null) {
 			sql.append(NULL);
 		} else if (val instanceof Field) {

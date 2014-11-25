@@ -25,6 +25,8 @@ import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * A collection of Symbols.
  * 
@@ -88,7 +90,7 @@ public class SymbolClause<T extends Symbol> implements Clause<T>
 
 	public Collection<T> getSymbols()
 	{
-		return Collections.unmodifiableCollection(items);
+		return ImmutableList.copyOf(items);
 	}
 
 	/* (non-Javadoc)
@@ -131,7 +133,7 @@ public class SymbolClause<T extends Symbol> implements Clause<T>
 	@Override
 	public String toString()
 	{
-		ArrayList<String> stringified = new ArrayList<String>();
+		ArrayList<String> stringified = new ArrayList<String>(items.size());
 		for(T item : items){
 			stringified.add(item.toString());
 		}
