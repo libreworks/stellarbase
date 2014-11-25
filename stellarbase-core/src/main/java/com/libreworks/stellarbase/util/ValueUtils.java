@@ -20,6 +20,7 @@ package com.libreworks.stellarbase.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -141,17 +142,12 @@ public class ValueUtils
 		} else if ( Fraction.class.equals(toClass) ) {
 		// Since the Spring NumberUtils class doesn't support Fraction
 			if(value instanceof Number){
-				if(BigDecimal.ZERO.compareTo(NumberUtils.convertNumberToTargetClass((Number)value, BigDecimal.class)) == 0){
-					return getZero(toClass);
-				}
-				return (T) Fraction.getFraction(NumberUtils.convertNumberToTargetClass((Number)value, Double.class));
+				return isZero(value) ? getZero(toClass) :
+					(T) Fraction.getFraction(NumberUtils.convertNumberToTargetClass((Number)value, Double.class));
 			} else {
 				String toString = value.toString();
-				if(StringUtils.isBlank(toString)){
-					return getZero(toClass);
-				} else {
-					return (T) Fraction.getFraction(toString);
-				}
+				return StringUtils.isBlank(toString) ? 
+					getZero(toClass) : (T) Fraction.getFraction(toString);
 			}
 		} else if ( value instanceof Fraction ) {
 			return NumberUtils.convertNumberToTargetClass(((Fraction)value).doubleValue(), toClass);
@@ -159,7 +155,19 @@ public class ValueUtils
 	    	return NumberUtils.convertNumberToTargetClass((Number)value, toClass);
 	    } else {
     		try {
-       			return NumberUtils.parseNumber(value.toString(), toClass);
+    			String svalue = value.toString();
+    			char dot = ((DecimalFormat)DecimalFormat.getInstance()).getDecimalFormatSymbols().getDecimalSeparator();
+    			if (svalue.indexOf(dot) > -1) {
+       			// if the number is a decimal, integer decoding will barf
+       			// decimals should be parsed into BigDecimal, then converted
+    				return NumberUtils.convertNumberToTargetClass(NumberUtils.parseNumber(svalue, BigDecimal.class), toClass);
+    			} else if (HEX.matcher(svalue).matches() || OCT.matcher(svalue).matches()) {
+    			// if the number is hexadecimal, decimal decoding will barf
+    			// hex numbers should be parsed into BigInteger, then converted
+    				return NumberUtils.convertNumberToTargetClass(NumberUtils.parseNumber(svalue, BigInteger.class), toClass);
+    			} else {
+    				return NumberUtils.parseNumber(svalue, toClass);
+    			}
 			} catch ( Exception e ) {
 				return NumberUtils.convertNumberToTargetClass(0, toClass);
 			}

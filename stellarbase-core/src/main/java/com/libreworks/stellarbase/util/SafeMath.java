@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 
 import org.apache.commons.lang3.math.Fraction;
@@ -203,10 +202,6 @@ public class SafeMath {
 	 */
 	public static <T extends Number> T add(Object a, Object b, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
-		if (a == null && b == null) {
-			return ValueUtils.getZero(toClass);
-		}
 		return doAdd(a, b, toClass, false);
 	}
 
@@ -228,16 +223,16 @@ public class SafeMath {
 	 */
 	public static <T extends Number> T subtract(Object a, Object b, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
-		if (a == null && b == null) {
-			return ValueUtils.getZero(toClass);
-		}
 		return doAdd(a, b, toClass, true);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	protected static <T extends Number> T doAdd(Object a, Object b, Class<T> toClass, boolean subtract)
 	{
+		Assert.notNull(toClass);
+		if (a == null && b == null) {
+			return ValueUtils.getZero(toClass);
+		}
 		if (Fraction.class.equals(toClass)) {
 			Fraction sum = ValueUtils.value(Fraction.class, a);
 			return (T) (subtract ?
@@ -256,7 +251,7 @@ public class SafeMath {
 			BigDecimal a1 = ValueUtils.value(BigDecimal.class, a);
 			BigDecimal b1 = ValueUtils.value(BigDecimal.class, b);
 			return NumberUtils.convertNumberToTargetClass(subtract ? a1.subtract(b1) : a1.add(b1), toClass);
-		}		
+		}
 	}
 
 	/**
@@ -278,6 +273,7 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T multiply(Object a, Object b, Class<T> toClass)
 	{
+		Assert.notNull(toClass);
 		if(a == null || b == null) {
 			return ValueUtils.getZero(toClass);
 		} else if (Fraction.class.equals(toClass)) {
@@ -330,6 +326,7 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T divide(Object a, Object b, Class<T> toClass)
 	{
+		Assert.notNull(toClass);
 		if(ValueUtils.isZero(a) || ValueUtils.isZero(b)) {
 			return ValueUtils.getZero(toClass);
 		} else if (Fraction.class.equals(toClass)) {
@@ -367,7 +364,8 @@ public class SafeMath {
 			if (BigDecimal.ZERO.compareTo(multiplicand) == 0 || BigDecimal.ZERO.compareTo(multiplier) == 0) {
 				return ValueUtils.getZero(toClass);
 			} else {
-				return NumberUtils.convertNumberToTargetClass(multiplicand.divide(multiplier, 10, RoundingMode.HALF_UP), toClass);
+				return NumberUtils.convertNumberToTargetClass(
+						multiplicand.divide(multiplier, 10, RoundingMode.HALF_UP).stripTrailingZeros(), toClass);
 			}
 		}
 	}
@@ -385,7 +383,7 @@ public class SafeMath {
 		if (value instanceof Byte || value instanceof Short || value instanceof Integer) {
 			return true;
 		} else if (value instanceof Fraction) {
-			return ((Fraction) value).getDenominator() == 1;
+			return ((Fraction) value).reduce().getDenominator() == 1;
 		} else if (value instanceof Long || value instanceof BigInteger) {
 			return ((Number) value).longValue() < Integer.MAX_VALUE &&
 					((Number) value).longValue() > Integer.MIN_VALUE;

@@ -19,7 +19,6 @@ package com.libreworks.stellarbase.util;
 
 import static org.junit.Assert.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -134,12 +133,14 @@ public class ValueUtilsTest
 		assertEquals(Float.valueOf(0.4f), ValueUtils.value(Float.class, in3));
 		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "24"));
 		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "24.0"));
+		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "0x18"));
 		
 		Integer in4 = Integer.valueOf(22);
 		assertEquals(in4, ValueUtils.value(Integer.class, in4));
 		assertEquals(in4, ValueUtils.value(Integer.class, "22"));
-		// assertEquals(in4, ValueUtils.value(Integer.class, "22.0")); FIXME
-		assertEquals(in4, ValueUtils.value(Integer.class, in4));		
+		assertEquals(in4, ValueUtils.value(Integer.class, "22.0"));
+		assertEquals(in4, ValueUtils.value(Integer.class, in4));
+		assertEquals(in4, ValueUtils.value(Integer.class, "0x16"));
 		
 		// Check zero
 		assertEquals(Fraction.ZERO, ValueUtils.value(Fraction.class, 0.0));
@@ -176,12 +177,12 @@ public class ValueUtilsTest
 	{
 		List<?> zeroes = Arrays.asList(null, "", "  ", "foobar", "0", "0x0",
 			"000", "0.0", "0000.000000", new ArrayList<Object>(), Boolean.FALSE,
-			0.0, 0, BigDecimal.ZERO, new BigDecimal("000.000"), Fraction.ZERO);
+			0.0, 0, BigDecimal.ZERO, new BigDecimal("000.000"), BigInteger.ZERO, Fraction.ZERO);
 		for (Object v : zeroes) {
 			assertTrue("Object " + v + " is not zero and should be", ValueUtils.isZero(v));
 		}
 		List<?> nons = ImmutableList.of("123", 123, "0x01", "0777", 1234L,
-				BigDecimal.ONE, Fraction.ONE_HALF, 123.5, 0.2f);
+				BigDecimal.ONE, Fraction.ONE_HALF, 123.5, 0.2f, BigInteger.ONE);
 		for (Object v : nons) {
 			assertFalse("Object " + v + " is zero and shouldn't be", ValueUtils.isZero(v));
 		}
