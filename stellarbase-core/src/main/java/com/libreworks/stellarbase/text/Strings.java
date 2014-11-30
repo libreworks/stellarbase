@@ -111,7 +111,7 @@ public class Strings
 	/**
 	 * Determines if the supplied string is "truthy".
 	 * 
-	 * A "truthy" string is one of {@code true}, {@code 1}, or {@code Y}
+	 * <p>A "truthy" string is one of {@code true}, {@code 1}, or {@code Y}
 	 * (determined in a case-insensitive manner). Anything else including
 	 * {@code null} will return false.
 	 * 
@@ -131,4 +131,39 @@ public class Strings
 		}
 		return false;
 	}
+	
+	/**
+	 * If a String, once trimmed, is longer than {@code length}, it will be trimmed and terminated with an ellipsis.
+	 * 
+	 * @param value The string value (if null is passed, null will be returned)
+	 * @param length The maximum length of string before cut
+	 * @throws IllegalArgumentException if length is negative or zero
+	 * @return A (potentially) cut String.
+	 */
+	public static String cut(String value, int length)
+	{
+		if (value == null) {
+			return null;
+		}
+		if (length < 1) {
+			throw new IllegalArgumentException("length must be greater than zero");
+		}
+		value = value.trim();
+		if (value.length() < length) {
+			return value;
+		} else {
+			return value.substring(0, length).concat(HELLIP);
+		}
+	}
+	
+	/**
+	 * Gets the file extension of the filename provided.
+	 * 
+	 * @param name The file name
+	 * @return The file extension
+	 */
+	public static String getExtension(String name)
+	{
+		return name == null ? null : name.substring(name.lastIndexOf('.') + 1);
+	}	
 }

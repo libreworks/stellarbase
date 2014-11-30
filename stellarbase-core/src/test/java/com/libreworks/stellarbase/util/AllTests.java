@@ -26,7 +26,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	FileUtilTest.class,
 	ValueUtilsTest.class
 })
 public class AllTests

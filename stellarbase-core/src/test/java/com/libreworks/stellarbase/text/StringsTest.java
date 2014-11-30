@@ -17,8 +17,7 @@
  */
 package com.libreworks.stellarbase.text;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,4 +38,28 @@ public class StringsTest
 			assertFalse("String " + v + " is truthy and shouldn't be", Strings.isTruthy(v));
 		}
 	}
+	
+	@Test
+	public void testCut()
+	{
+		assertNull(Strings.cut(null, 123));
+		assertEquals("123…", Strings.cut("123456", 3));
+		assertEquals("123456", Strings.cut("123456", 10));
+		assertEquals("123456", Strings.cut("123456            ", 10));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testCutIllegal()
+	{
+		Strings.cut("aoeu", -1);
+	}
+	
+	@Test
+	public void testGetExtension()
+	{
+		assertEquals("gz", Strings.getExtension("thing.tar.gz"));
+		assertEquals("txt", Strings.getExtension("what.txt"));
+		assertNull(Strings.getExtension(null));
+		assertEquals("everything", Strings.getExtension("everything"));
+	}	
 }

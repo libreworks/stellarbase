@@ -3,6 +3,7 @@ package com.libreworks.stellarbase.math;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.junit.Test;
 
@@ -78,4 +79,19 @@ public class BinaryMultiplierTest
 		assertEquals(BinaryMultiplier.from(SafeMath.divide(1.0, 3.0, BigDecimal.class)), b1.div(b2));
 		assertEquals(BinaryMultiplier.from(4.5), b3.minus(b4));
 	}
+
+	@Test
+	public void testGetPrettySizeNumber()
+	{
+		assertEquals("1.2 MiB", PrettyNumbers.bytes(1024 * 1024 * 1.2).toString());
+		assertEquals("1.3 KiB", PrettyNumbers.bytes(1024 * 1.3).toString());
+		assertEquals("657 B", PrettyNumbers.bytes(657).toString());
+		assertEquals("1.25 GiB", PrettyNumbers.bytes(1024 * 1024 * 1024 * 1.25).toString());
+	}
+
+	@Test
+	public void testGetPrettySizeNumberNumberFormat()
+	{
+		assertEquals("1.6 MiB", PrettyNumbers.bytes(1024 * 1024 * 1.6).format(new DecimalFormat("0.#")).toString());
+	}	
 }

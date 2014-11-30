@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.libreworks.stellarbase.text.Characters;
 import com.libreworks.stellarbase.text.Strings;
-import com.libreworks.stellarbase.util.FileUtil;
 
 /**
  * The default naming strategy for uploads.
@@ -72,7 +71,7 @@ public class DefaultNamingStrategy implements NamingStrategy
 	public String getName(String destination, MultipartFile file)
 	{
 		String fname = file.getOriginalFilename();
-		String extension = FileUtil.getExtension(fname);
+		String extension = Strings.getExtension(fname);
 		String hash = doDigest(System.currentTimeMillis() + Strings.UNDERSCORE + fname);
 		StringBuilder sb = new StringBuilder(destination)
 			.append(File.separatorChar);

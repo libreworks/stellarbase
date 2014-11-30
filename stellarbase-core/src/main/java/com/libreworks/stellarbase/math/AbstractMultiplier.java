@@ -105,7 +105,7 @@ public abstract class AbstractMultiplier<T extends Multiplier<T>> implements Mul
 	 */
 	public String getMultiplier()
 	{
-		return unit == null ? multiplier : multiplier.concat(unit);
+		return unit == null ? multiplier : (multiplier == null ? unit : multiplier.concat(unit));
 	}
 	
 	public String getUnit()
