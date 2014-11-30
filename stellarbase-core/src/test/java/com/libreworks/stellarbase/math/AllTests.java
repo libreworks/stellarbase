@@ -25,6 +25,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+	BinaryMultiplierTest.class,
+	DecimalMultiplierTest.class,
 	SafeMathTest.class
 })
 public class AllTests
