@@ -20,14 +20,12 @@ package com.libreworks.stellarbase.orm.dao.hibernate;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.orm.dao.ReadableDao;
 import com.libreworks.stellarbase.orm.model.Identifiable;
 
@@ -63,10 +61,10 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 	protected ApplicationEventPublisher eventPublisher;
 	protected Class<T> entityClass;
 	protected Class<K> identifierClass;
-	protected List<String> propertyNames = new ArrayList<String>();
-	protected List<String> naturalIdProperties = new ArrayList<String>();
+	protected ImmutableList<String> propertyNames = ImmutableList.of();
+	protected ImmutableList<String> naturalIdProperties = ImmutableList.of();
 	protected boolean hasNaturalId = false;
-	protected List<Type> propertyTypes = new ArrayList<Type>();
+	protected ImmutableList<Type> propertyTypes = ImmutableList.of();
 	
 	/*
 	 * (non-Javadoc)
@@ -224,13 +222,15 @@ public abstract class AbstractHibernateDao<T extends Identifiable<K>,K extends S
 		    .getGenericSuperclass()).getActualTypeArguments()[0];
 		ClassMetadata meta = getHibernateTemplate().getSessionFactory().getClassMetadata(entityClass);
 		identifierClass = meta.getIdentifierType().getReturnedClass();
-		propertyNames.addAll(Arrays.asList(meta.getPropertyNames()));
-		propertyTypes.addAll(Arrays.asList(meta.getPropertyTypes()));
+		propertyNames = ImmutableList.copyOf(meta.getPropertyNames());
+		propertyTypes = ImmutableList.copyOf(meta.getPropertyTypes());
 		hasNaturalId = meta.hasNaturalIdentifier();
 		if ( hasNaturalId ) {
+			ImmutableList.Builder<String> b = ImmutableList.builder();
 			for(int prop : meta.getNaturalIdentifierProperties()) {
-				naturalIdProperties.add(propertyNames.get(prop));
+				b.add(propertyNames.get(prop));
 			}
+			naturalIdProperties = b.build();
 		}
 	}
 

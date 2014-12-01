@@ -23,10 +23,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * A simple Data Transfer Object to ease e-mail sending.
@@ -215,7 +219,7 @@ public class MailParams implements Serializable
 	 */
 	public Collection<InternetAddress> getBcc()
 	{
-		return Collections.unmodifiableCollection(bcc);
+		return ImmutableList.copyOf(bcc);
 	}
 
 	/**
@@ -223,7 +227,7 @@ public class MailParams implements Serializable
 	 */
 	public Collection<InternetAddress> getCc()
 	{
-		return Collections.unmodifiableCollection(cc);
+		return ImmutableList.copyOf(cc);
 	}
 
 	/**
@@ -287,7 +291,7 @@ public class MailParams implements Serializable
 	 */
 	public Collection<InternetAddress> getTo()
 	{
-		return Collections.unmodifiableCollection(to);
+		return ImmutableList.copyOf(to);
 	}
 
 	/**

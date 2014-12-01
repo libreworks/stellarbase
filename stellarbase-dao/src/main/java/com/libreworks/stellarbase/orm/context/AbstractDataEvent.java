@@ -31,7 +31,7 @@ public abstract class AbstractDataEvent extends ApplicationEvent
 {
 	private static final long serialVersionUID = 1L;
 	
-	private String by;
+	private final String by;
 	
 	/**
 	 * Creates a new data event.

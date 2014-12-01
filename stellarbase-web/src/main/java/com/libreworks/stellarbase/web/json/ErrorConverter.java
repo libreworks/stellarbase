@@ -18,13 +18,14 @@
 package com.libreworks.stellarbase.web.json;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
+import com.libreworks.stellarbase.text.Strings;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.validation.BindException;
@@ -62,11 +63,13 @@ public class ErrorConverter implements MessageSourceAware
 		if ( e instanceof BindException ) {
 			return convert((BindException)e);
 		}
-		return Collections.singletonMap("error", new FluentValues()
-			.set("message", e.getMessage())
-			.set("type", e.getClass().getName())
-			.set("line", String.valueOf(e.getStackTrace()[0].getLineNumber()))
-			.set("file", e.getStackTrace()[0].getClassName()));
+		StackTraceElement[] st = e.getStackTrace();
+		return ImmutableMap.of("error", ImmutableMap.<String,String>builder()
+			.put("message", ObjectUtils.toString(e.getMessage()))
+			.put("type", e.getClass().getName())
+			.put("line", st.length > 0 ? String.valueOf(st[0].getLineNumber()) : Strings.EMPTY)
+			.put("file", st.length > 0 ? st[0].getClassName() : Strings.EMPTY)
+			.build());
 	}
 	
 	/**
@@ -99,17 +102,15 @@ public class ErrorConverter implements MessageSourceAware
 		List<?> globalErrors = e.getGlobalErrors();
 		for(Object o : globalErrors){
 			ObjectError err = (ObjectError)o;
-			jsonErrors.add(new FluentValues()
-				.set("message", messageSource.getMessage(err, locale)));
+			jsonErrors.add(ImmutableMap.of("message", ObjectUtils.toString(messageSource.getMessage(err, locale))));
 		}
 		List<?> errors = e.getFieldErrors();
 		for(Object o : errors) {
 			FieldError err = (FieldError)o;
-			jsonErrors.add(new FluentValues()
-				.set("field", err.getField())
-				.set("message", messageSource.getMessage(err, locale)));
+			jsonErrors.add(ImmutableMap.of("field", err.getField(), "message",
+				ObjectUtils.toString(messageSource.getMessage(err, locale))));
 		}
-		return Collections.singletonMap("errors", jsonErrors);
+		return ImmutableMap.of("errors", jsonErrors);
 	}
 	
 	/*

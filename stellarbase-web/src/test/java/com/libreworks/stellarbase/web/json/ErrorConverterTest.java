@@ -3,12 +3,11 @@ package com.libreworks.stellarbase.web.json;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -57,11 +56,12 @@ public class ErrorConverterTest
 			throw new IllegalArgumentException("You're illegal");
 		} catch ( IllegalArgumentException e ) {
 			Map<String,?> exported = object.convert(e);
-			Map<String,?> expected = Collections.singletonMap("error", new FluentValues()
-				.set("message", e.getMessage())
-				.set("type", e.getClass().getName())
-				.set("line", String.valueOf(e.getStackTrace()[0].getLineNumber()))
-				.set("file", e.getStackTrace()[0].getClassName()));
+			Map<String,?> expected = ImmutableMap.of("error", ImmutableMap.builder()
+				.put("message", e.getMessage())
+				.put("type", e.getClass().getName())
+				.put("line", String.valueOf(e.getStackTrace()[0].getLineNumber()))
+				.put("file", e.getStackTrace()[0].getClassName())
+				.build());
 			assertEquals(expected, exported);
 		}
 	}
@@ -81,17 +81,15 @@ public class ErrorConverterTest
 			List<?> globalErrors = e.getGlobalErrors();
 			for(Object o : globalErrors){
 				ObjectError err = (ObjectError)o;
-				jsonErrors.add(new FluentValues()
-					.set("message", messageSource.getMessage(err, locale)));
+				jsonErrors.add(ImmutableMap.of("message", messageSource.getMessage(err, locale)));
 			}
 			List<?> errors = e.getFieldErrors();
 			for(Object o : errors) {
 				FieldError err = (FieldError)o;
-				jsonErrors.add(new FluentValues()
-					.set("field", err.getField())
-					.set("message", messageSource.getMessage(err, locale)));
+				jsonErrors.add(ImmutableMap.of("field", err.getField(),
+					"message", messageSource.getMessage(err, locale)));
 			}
-			Map<String,?> expected = Collections.singletonMap("errors", jsonErrors);
+			Map<String,?> expected = ImmutableMap.of("errors", jsonErrors);
 			assertEquals(expected, object.convert((Throwable)e));
 		}
 	}

@@ -31,7 +31,7 @@ public class UpdateEvent extends AbstractDataEvent
 {
     private static final long serialVersionUID = 1L;
     
-	protected PropertyValues oldValues;
+	protected final PropertyValues oldValues;
 	
 	/**
 	 * Creates a new Update event.

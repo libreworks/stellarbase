@@ -19,11 +19,12 @@ package com.libreworks.stellarbase.jdbc.symbols;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * A Junction is an infix expression of {@link Xyster_Data_Criterion} objects.
@@ -168,16 +169,16 @@ public class Junction extends Criterion implements Clause<Criterion>
 	@Override
     public Collection<Field> getAllFields()
     {
-	    ArrayList<Field> fields = new ArrayList<Field>();
+		ImmutableList.Builder<Field> b = ImmutableList.builder();
         for(Criterion c : criteria) {
-            fields.addAll(c.getAllFields());
+            b.addAll(c.getAllFields());
         }
-        return fields;
+        return b.build();
     }
 
     public Collection<Criterion> getSymbols()
 	{
-		return Collections.unmodifiableCollection(criteria);
+		return ImmutableList.copyOf(criteria);
 	}
 	
 	/**

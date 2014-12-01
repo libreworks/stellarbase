@@ -19,7 +19,6 @@ package com.libreworks.stellarbase.jdbc.symbols;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -81,12 +80,11 @@ public class Expression extends Criterion
 	@Override
     public Collection<Field> getAllFields()
     {
-		LinkedList<Field> fields = new LinkedList<Field>();
-        fields.add(left);
+		ImmutableList.Builder<Field> b = ImmutableList.<Field>builder().add(left);
         if ( right instanceof Field ) {
-            fields.add((Field)right);
+            b.add((Field)right);
         }
-        return ImmutableList.copyOf(fields);
+        return b.build();
     }
 
     /*

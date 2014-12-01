@@ -20,9 +20,10 @@ package com.libreworks.stellarbase.web.upload;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+
+import com.google.common.collect.ImmutableSet;
 import com.libreworks.stellarbase.mime.MimeDetector;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -47,7 +48,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	private NamingStrategy namingStrategy;
 	private String destination;
 	private MimeDetector mimeDetector;
-	private HashSet<String> types = new HashSet<String>();
+	private ImmutableSet<String> types = ImmutableSet.of();
 	
 	public void afterPropertiesSet() throws Exception
 	{
@@ -91,7 +92,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	 */
 	public Collection<String> getTypes()
 	{
-		return Collections.unmodifiableSet(types);
+		return types;
 	}
 	
 	public void setBeanFactory(BeanFactory arg0) throws BeansException
@@ -137,7 +138,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	 */
 	public void setTypes(Collection<String> types)
 	{
-		this.types.addAll(types);
+		this.types = types == null ? ImmutableSet.<String>of() : ImmutableSet.copyOf(types);
 	}
 
 	/**
@@ -171,7 +172,7 @@ public class UploadManager implements BeanFactoryAware, InitializingBean
 	public UploadedFile upload(MultipartFile file, Collection<String> mimeTypes) throws IOException
 	{
 		String mimeType = getMimeDetector().getMimeType(file).toString();
-		if ( mimeTypes != null && !mimeTypes.isEmpty() && !mimeTypes.contains(mimeType) ) {
+		if (!mimeTypes.isEmpty() && !mimeTypes.contains(mimeType) ) {
 			throw new IllegalArgumentException("MIME type not allowed: " + mimeType);
 		}
 		File dest = new File(getNamingStrategy().getName(destination, file));

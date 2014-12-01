@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Before;
@@ -49,9 +49,9 @@ public class ExpressionTest
     @Test
     public void testEvaluate()
     {
-        assertTrue(object.evaluate(Collections.singletonMap("foo", "a")));
+        assertTrue(object.evaluate(ImmutableMap.of("foo", "a")));
         Expression b = new Expression(new Field("foo"), Operator.eq, new Field("bar"));
-        FluentValues values = new FluentValues().set("foo", "a").set("bar", "a");
+        Map<String,String> values = ImmutableMap.of("foo", "a", "bar", "a");
         assertTrue(b.evaluate(values));
     }
 

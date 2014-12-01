@@ -18,9 +18,13 @@
 package com.libreworks.stellarbase.search;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * A data transfer object responsible for holding a subset from a bigger result.
@@ -38,8 +42,8 @@ public class SearchResults<T> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private List<T> results;
-	private int count;
+	private final List<T> results;
+	private final int count;
 
 	/**
 	 * Creates a new ResultHolder for a list and count of total results.
@@ -51,9 +55,10 @@ public class SearchResults<T> implements Serializable
 	{
 		if (!(results instanceof Serializable)) {
 			Assert.isInstanceOf(Serializable.class, results);
-			
 		}
-		this.results = results;
+		this.results = results.contains(null) ?
+			Collections.unmodifiableList(new ArrayList<T>(results)) :
+			ImmutableList.copyOf(results);
 		this.count = count;
 	}
 	

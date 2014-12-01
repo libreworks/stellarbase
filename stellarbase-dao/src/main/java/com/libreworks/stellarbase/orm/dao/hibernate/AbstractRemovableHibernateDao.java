@@ -18,7 +18,6 @@
 package com.libreworks.stellarbase.orm.dao.hibernate;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
