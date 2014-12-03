@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.libreworks.stellarbase.collections.Maps;
 import com.libreworks.stellarbase.orm.dao.Thread;
 import com.libreworks.stellarbase.orm.dao.ThreadDao;
 
@@ -22,12 +22,12 @@ public class HibernateDeletableDaoTest extends AbstractHibernateTestSupport
 	@Transactional(rollbackFor=Throwable.class)
 	public void testDelete()
 	{
-		Thread entity = create(Thread.class, new FluentValues()
-			.set("title", "An example title")
-			.set("createdOn", new Date())
-			.set("createdBy", "foo")
-			.set("modifiedOn", new Date())
-			.set("modifiedBy", "foo"));
+		Thread entity = create(Thread.class, Maps.<String,Object>newLinked()
+			.add("title", "An example title")
+			.add("createdOn", new Date())
+			.add("createdBy", "foo")
+			.add("modifiedOn", new Date())
+			.add("modifiedBy", "foo").toMap());
 		assertNotNull(entity.getId());
 		HibernateTemplate ht = getHibernateTemplate();
 		assertTrue(ht.contains(entity));

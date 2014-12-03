@@ -4,7 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
+import com.libreworks.stellarbase.collections.Maps;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,14 +24,14 @@ public class JunctionTest
     public void testEvaluate()
     {
         Junction object = Junction.and(Expression.eq("foo", "bar"), Expression.eq("baz", "foo"));
-        assertTrue(object.evaluate(new FluentValues().set("foo", "bar").set("baz", "foo")));
-        assertFalse(object.evaluate(new FluentValues().set("foo", "bah").set("baz", "foo")));
-        assertFalse(object.evaluate(new FluentValues().set("foo", "bar").set("baz", "fop")));
+        assertTrue(object.evaluate(ImmutableMap.of("foo", "bar", "baz", "foo")));
+        assertFalse(object.evaluate(ImmutableMap.of("foo", "bah", "baz", "foo")));
+        assertFalse(object.evaluate(ImmutableMap.of("foo", "bar", "baz", "fop")));
         
         Junction object2 = Junction.or(Expression.isNull("foo"), Expression.isNull("bar"));
-        assertFalse(object2.evaluate(new FluentValues().set("foo", "b").set("bar", "a")));
-        assertTrue(object2.evaluate(new FluentValues().set("foo", null).set("bar", "a")));
-        assertTrue(object2.evaluate(new FluentValues().set("foo", "a").set("bar", null)));
+        assertFalse(object2.evaluate(ImmutableMap.of("foo", "b", "bar", "a")));
+        assertTrue(object2.evaluate(Maps.newLinked("foo", null).add("bar", "a").toMap()));
+        assertTrue(object2.evaluate(Maps.newLinked("foo", "a").add("bar", null).toMap()));
     }
 
     @Test

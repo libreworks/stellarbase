@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.Date;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 import com.libreworks.stellarbase.orm.dao.Person;
 
 import org.hibernate.criterion.Restrictions;
@@ -99,11 +99,11 @@ public class HibernateRemovableDaoTest extends AbstractHibernateTestSupport
 	
 	public Person getFixture(int seed)
 	{
-		return create(Person.class, new FluentValues()
-			.set("username", "foobar" + seed)
-			.set("createdOn", new Date())
-			.set("createdBy", "foobar")
-			.set("modifiedOn", new Date())
-			.set("modifiedBy", "foobar"));
+		return create(Person.class, ImmutableMap.<String,Object>builder()
+			.put("username", "foobar" + seed)
+			.put("createdOn", new Date())
+			.put("createdBy", "foobar")
+			.put("modifiedOn", new Date())
+			.put("modifiedBy", "foobar").build());
 	}
 }

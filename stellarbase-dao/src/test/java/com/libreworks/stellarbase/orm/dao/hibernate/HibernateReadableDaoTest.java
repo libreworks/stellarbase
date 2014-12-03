@@ -5,9 +5,11 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 import com.libreworks.stellarbase.orm.dao.Person;
 
 import org.hibernate.criterion.Conjunction;
@@ -46,7 +48,7 @@ public class HibernateReadableDaoTest extends AbstractHibernateTestSupport
 	public void testFind()
 	{
 		Person p = getFixture(6);
-		assertSame(p, object.find(new FluentValues().set("username", p.getUsername())));
+		assertSame(p, object.find(ImmutableMap.of("username", p.getUsername())));
 	}
 
 	@Test
@@ -55,21 +57,21 @@ public class HibernateReadableDaoTest extends AbstractHibernateTestSupport
 	{
 		Date now = new Date();
 		String by = "foobar1";
-		FluentValues base = new FluentValues()
-			.set("lastName", "Jones")
-			.set("createdOn", now)
-			.set("createdBy", by)
-			.set("modifiedBy", by)
-			.set("modifiedOn", now);
-		Person p1 = create(Person.class, new FluentValues()
-			.set("username", "indy")
-			.set("firstName", "Indiana")
-			.setAll(base));
-		Person p2 = create(Person.class, new FluentValues()
-			.set("username", "davy")
-			.set("firstName", "Davy")
-			.setAll(base));
-		Collection<Person> all = object.findAll(new FluentValues().set("lastName", "Jones"));
+		Map<String,?> base = ImmutableMap.<String,Object>builder()
+			.put("lastName", "Jones")
+			.put("createdOn", now)
+			.put("createdBy", by)
+			.put("modifiedBy", by)
+			.put("modifiedOn", now).build();
+		Person p1 = create(Person.class, ImmutableMap.<String,Object>builder()
+			.put("username", "indy")
+			.put("firstName", "Indiana")
+			.putAll(base).build());
+		Person p2 = create(Person.class, ImmutableMap.<String,Object>builder()
+			.put("username", "davy")
+			.put("firstName", "Davy")
+			.putAll(base).build());
+		Collection<Person> all = object.findAll(ImmutableMap.of("lastName", "Jones"));
 		assertTrue(all.contains(p1));
 		assertTrue(all.contains(p2));
 	}
@@ -131,14 +133,15 @@ public class HibernateReadableDaoTest extends AbstractHibernateTestSupport
 	{
 		Calendar c = Calendar.getInstance();
 		c.set(2010, 1, 19, 0, 0, 0);
-		FluentValues vals = new FluentValues()
-			.set("username", "foobar")
-			.set("firstName", "Bruce")
-			.set("mi", new Character('?'))
-			.set("lastName", "Wayne")
-			.set("bio", "The batman")
-			.set("birthday", c.getTime())
-			.set("admin", Boolean.TRUE);
+		Map<String,?> vals = ImmutableMap.<String,Object>builder()
+			.put("username", "foobar")
+			.put("firstName", "Bruce")
+			.put("mi", new Character('?'))
+			.put("lastName", "Wayne")
+			.put("bio", "The batman")
+			.put("birthday", c.getTime())
+			.put("admin", Boolean.TRUE)
+			.build();
 		Person p = new Person();
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(p);
 		bw.setPropertyValues(vals);
@@ -169,17 +172,17 @@ public class HibernateReadableDaoTest extends AbstractHibernateTestSupport
 	{
 		Conjunction a = new Conjunction();
 		a.add(Restrictions.isNull("foo"));
-		assertEquals(a.toString(), object.mapToCriterion(new FluentValues().set("foo", null)).toString());
+		assertEquals(a.toString(), object.mapToCriterion(Collections.singletonMap("foo", null)).toString());
 		Conjunction b = new Conjunction();
 		b.add(Restrictions.eq("bar", 7));
-		assertEquals(b.toString(), object.mapToCriterion(new FluentValues().set("bar", 7)).toString());
+		assertEquals(b.toString(), object.mapToCriterion(ImmutableMap.of("bar", 7)).toString());
 		String[] vals = new String[]{"A", "B", "C"};
 		Conjunction c = new Conjunction();
 		c.add(Restrictions.in("baz", vals));
-		assertEquals(c.toString(), object.mapToCriterion(new FluentValues().set("baz", vals)).toString());
+		assertEquals(c.toString(), object.mapToCriterion(ImmutableMap.of("baz", vals)).toString());
 		Conjunction d = new Conjunction();
 		d.add(Restrictions.in("the", Arrays.asList(vals)));
-		assertEquals(d.toString(), object.mapToCriterion(new FluentValues().set("the", vals)).toString());
+		assertEquals(d.toString(), object.mapToCriterion(ImmutableMap.of("the", vals)).toString());
 	}
 
 	@Test
@@ -196,11 +199,11 @@ public class HibernateReadableDaoTest extends AbstractHibernateTestSupport
 	
 	public Person getFixture(int seed)
 	{
-		return create(Person.class, new FluentValues()
-			.set("username", "foobar" + seed)
-			.set("createdOn", new Date())
-			.set("createdBy", "foobar")
-			.set("modifiedOn", new Date())
-			.set("modifiedBy", "foobar"));
+		return create(Person.class, ImmutableMap.<String,Object>builder()
+			.put("username", "foobar" + seed)
+			.put("createdOn", new Date())
+			.put("createdBy", "foobar")
+			.put("modifiedOn", new Date())
+			.put("modifiedBy", "foobar").build());
 	}
 }

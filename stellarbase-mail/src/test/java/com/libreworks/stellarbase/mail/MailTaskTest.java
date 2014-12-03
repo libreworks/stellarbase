@@ -26,7 +26,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.springframework.mail.MailPreparationException;
@@ -64,10 +64,7 @@ public class MailTaskTest
 			.setSubject("The subject")
 			.setTextTemplate("aoeu")
 			.setHtmlTemplate("htns")
-			.setValues(new FluentValues()
-				.set("foo", "bar")
-				.set("up", "down")
-				.set("yes", "no"));
+			.setValues(ImmutableMap.of("foo", "bar", "up", "down", "yes", "no"));
 		MailTask object = new MailTask(new StubJavaMailSender(), new StubTemplateEngine(), mp);
 		MimeMessage mm = new MimeMessage((Session)null);
 		object.prepare(mm);

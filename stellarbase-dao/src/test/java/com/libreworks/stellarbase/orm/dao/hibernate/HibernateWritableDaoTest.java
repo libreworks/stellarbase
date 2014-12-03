@@ -4,8 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 import com.libreworks.stellarbase.orm.dao.Person;
 
 import org.hibernate.Session;
@@ -33,14 +34,15 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 	{
 		Calendar bd = Calendar.getInstance();
 		bd.set(2010, 3, 19, 0, 0, 0);
-		FluentValues values = new FluentValues()
-			.set("username", "doublecompile")
-			.set("firstName", "Jonathan")
-			.set("mi", new Character('D'))
-			.set("lastName", "Hawk")
-			.set("birthday", bd.getTime())
-			.set("bio", "I am pretty cool")
-			.set("admin", Boolean.TRUE);
+		Map<String,?> values = ImmutableMap.<String,Object>builder()
+			.put("username", "doublecompile")
+			.put("firstName", "Jonathan")
+			.put("mi", new Character('D'))
+			.put("lastName", "Hawk")
+			.put("birthday", bd.getTime())
+			.put("bio", "I am pretty cool")
+			.put("admin", Boolean.TRUE)
+			.build();
 		HibernateTemplate ht = getHibernateTemplate();
 		Session s = sessionFactory.getCurrentSession();
 		assertNull(s.createCriteria(Person.class)
@@ -67,8 +69,7 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 	@Transactional(rollbackFor=Throwable.class)
 	public void testDuplicateNaturalKey() throws Exception
 	{
-		FluentValues values = new FluentValues()
-			.set("username", "doublecompile1");
+		Map<String,?> values = ImmutableMap.of("username", "doublecompile1");
 		create(Person.class, values);
 		object.create(values, "foo1");
 	}
@@ -85,25 +86,24 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 	{
 		Calendar bd = Calendar.getInstance();
 		bd.set(2010, 3, 19, 0, 0, 0);
-		FluentValues values = new FluentValues()
-			.set("username", "doublecompile")
-			.set("firstName", "Jonathan")
-			.set("mi", new Character('D'))
-			.set("lastName", "Hawk")
-			.set("birthday", bd.getTime())
-			.set("bio", "I am pretty cool")
-			.set("admin", Boolean.TRUE)
-			.set("createdOn", new Date())
-			.set("modifiedOn", new Date())
-			.set("modifiedBy", "foo")
-			.set("createdBy", "foo");
+		Map<String,?> values = ImmutableMap.<String,Object>builder()
+			.put("username", "doublecompile")
+			.put("firstName", "Jonathan")
+			.put("mi", new Character('D'))
+			.put("lastName", "Hawk")
+			.put("birthday", bd.getTime())
+			.put("bio", "I am pretty cool")
+			.put("admin", Boolean.TRUE)
+			.put("createdOn", new Date())
+			.put("modifiedOn", new Date())
+			.put("modifiedBy", "foo")
+			.put("createdBy", "foo").build();
 		Person entity = create(Person.class, values);
 		HibernateTemplate ht = getHibernateTemplate();
 		ht.refresh(entity);
 		Date then = entity.getModifiedOn();
 		Integer version = entity.getVersion();
-		FluentValues values2 = new FluentValues()
-			.set("username", "ANewUsername");
+		Map<String,?> values2 = ImmutableMap.of("username", "ANewUsername");
 		object.update(entity, values2, "foo1");
 		ht.flush();
 		ht.refresh(entity);
@@ -119,18 +119,18 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 	{
 		Calendar bd = Calendar.getInstance();
 		bd.set(2010, 3, 19, 0, 0, 0);
-		FluentValues values = new FluentValues()
-			.set("username", "doublecompile")
-			.set("firstName", "Jonathan")
-			.set("mi", new Character('D'))
-			.set("lastName", "Hawk")
-			.set("birthday", bd.getTime())
-			.set("bio", "I am pretty cool")
-			.set("admin", Boolean.TRUE)
-			.set("createdOn", new Date())
-			.set("modifiedOn", new Date())
-			.set("modifiedBy", "foo")
-			.set("createdBy", "foo");
+		Map<String,?> values = ImmutableMap.<String,Object>builder()
+			.put("username", "doublecompile")
+			.put("firstName", "Jonathan")
+			.put("mi", new Character('D'))
+			.put("lastName", "Hawk")
+			.put("birthday", bd.getTime())
+			.put("bio", "I am pretty cool")
+			.put("admin", Boolean.TRUE)
+			.put("createdOn", new Date())
+			.put("modifiedOn", new Date())
+			.put("modifiedBy", "foo")
+			.put("createdBy", "foo").build();
 		Person entity = create(Person.class, values);
 		HibernateTemplate ht = getHibernateTemplate();
 		ht.refresh(entity);
@@ -139,13 +139,14 @@ public class HibernateWritableDaoTest extends AbstractHibernateTestSupport
 		Calendar newBd = Calendar.getInstance();
 		newBd.set(2010, 2, 1, 0, 0, 0);
 		newBd.set(Calendar.MILLISECOND, 0);
-		FluentValues values2 = new FluentValues()
-			.set("firstName", "George")
-			.set("mi", new Character('O'))
-			.set("lastName", "Jungle")
-			.set("birthday", newBd.getTime())
-			.set("bio", "Hangs around with monkies")
-			.set("admin", Boolean.FALSE);
+		Map<String,?> values2 = ImmutableMap.<String,Object>builder()
+			.put("firstName", "George")
+			.put("mi", new Character('O'))
+			.put("lastName", "Jungle")
+			.put("birthday", newBd.getTime())
+			.put("bio", "Hangs around with monkies")
+			.put("admin", Boolean.FALSE)
+			.build();
 		object.update(entity, values2, "foo1");
 		ht.flush();
 		ht.refresh(entity);

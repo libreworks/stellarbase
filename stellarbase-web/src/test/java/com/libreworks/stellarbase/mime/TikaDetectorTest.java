@@ -11,9 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import com.libreworks.stellarbase.collections.FluentValues;
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,14 +45,15 @@ public class TikaDetectorTest
 	@Test
 	public void testGetMimeTypeFile() throws URISyntaxException
 	{
-		FluentValues types = new FluentValues()
-			.set("/mime/LICENSE.html", "text/html")
-			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/book1.xls", "application/vnd.ms-excel")
-			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
-		for(Entry<String,Object> entry : types.entrySet()){
+		Map<String,String> types = ImmutableMap.<String,String>builder()
+			.put("/mime/LICENSE.html", "text/html")
+			.put("/mime/butterfly.svg", "image/svg+xml")
+			.put("/mime/book1.xls", "application/vnd.ms-excel")
+			.put("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.put("/mime/Example.jpg", "image/jpeg")
+			.put("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
+			.build();
+		for(Entry<String,String> entry : types.entrySet()){
 			File file = new File(getClass().getResource(entry.getKey()).toURI());
 			assertEquals(entry.getValue(), object.getMimeType(file).toString());
 		}
@@ -63,14 +65,15 @@ public class TikaDetectorTest
 	@Test
 	public void testGetMimeTypeString()
 	{
-		FluentValues types = new FluentValues()
-			.set("/mime/license.html", "text/html")
-			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/book1.xls", "application/vnd.ms-excel")
-			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
-		for(Entry<String,Object> entry : types.entrySet()){
+		Map<String,String> types = ImmutableMap.<String,String>builder()
+			.put("/mime/license.html", "text/html")
+			.put("/mime/butterfly.svg", "image/svg+xml")
+			.put("/mime/book1.xls", "application/vnd.ms-excel")
+			.put("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.put("/mime/Example.jpg", "image/jpeg")
+			.put("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
+			.build();
+		for(Entry<String,String> entry : types.entrySet()){
 			assertEquals(entry.getValue(), object.getMimeType(entry.getKey()).toString());
 		}
 	}
@@ -82,12 +85,13 @@ public class TikaDetectorTest
 	@Test
 	public void testGetMimeTypeInputStream() throws FileNotFoundException
 	{
-		FluentValues types = new FluentValues()
-			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
-			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/book1.xls", "application/vnd.ms-excel");
-		for(Entry<String,Object> entry : types.entrySet()){
+		Map<String,String> types = ImmutableMap.<String,String>builder()
+			.put("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
+			.put("/mime/butterfly.svg", "image/svg+xml")
+			.put("/mime/Example.jpg", "image/jpeg")
+			.put("/mime/book1.xls", "application/vnd.ms-excel")
+			.build();
+		for(Entry<String,String> entry : types.entrySet()){
 			InputStream file = getClass().getResourceAsStream(entry.getKey());
 			assertEquals(entry.getValue(), object.getMimeType(file).toString());
 		}
@@ -100,14 +104,15 @@ public class TikaDetectorTest
 	@Test
 	public void testGetMimeTypeMultipartFile() throws URISyntaxException
 	{
-		FluentValues types = new FluentValues()
-			.set("/mime/LICENSE.html", "text/html")
-			.set("/mime/book1.xls", "application/vnd.ms-excel")
-			.set("/mime/Example.jpg", "image/jpeg")
-			.set("/mime/butterfly.svg", "image/svg+xml")
-			.set("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-			.set("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text");
-		for(final Entry<String,Object> entry : types.entrySet()){
+		Map<String,String> types = ImmutableMap.<String,String>builder()
+			.put("/mime/LICENSE.html", "text/html")
+			.put("/mime/book1.xls", "application/vnd.ms-excel")
+			.put("/mime/Example.jpg", "image/jpeg")
+			.put("/mime/butterfly.svg", "image/svg+xml")
+			.put("/mime/test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+			.put("/mime/ODF_text_reference_v3.odt", "application/vnd.oasis.opendocument.text")
+			.build();
+		for(final Entry<String,String> entry : types.entrySet()){
 			final File file = new File(getClass().getResource(entry.getKey()).toURI());
 			MultipartFile mf = new MultipartFile() {
 				public void transferTo(File dest) throws IOException, IllegalStateException {
