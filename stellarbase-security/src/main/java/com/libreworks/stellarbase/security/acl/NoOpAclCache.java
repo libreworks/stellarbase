@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  */
 package com.libreworks.stellarbase.security.acl;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -27,21 +27,20 @@ import org.springframework.security.acls.model.Sid;
  * An AclCache which does nothing.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public class NoOpAclCache implements AclCache
 {
-	public boolean contains(ObjectIdentity objId, Collection<Sid> sids)
+	public boolean contains(ObjectIdentity objId, List<Sid> sids)
 	{
 		return false;
 	}
 
-	public Acl get(ObjectIdentity objId, Collection<Sid> sids)
+	public Acl get(ObjectIdentity objId, List<Sid> sids)
 	{
 		return null;
 	}
 
-	public AclCache put(ObjectIdentity objId, Collection<Sid> sids, Acl acl)
+	public AclCache put(ObjectIdentity objId, List<Sid> sids, Acl acl)
 	{
 		return this;
 	}

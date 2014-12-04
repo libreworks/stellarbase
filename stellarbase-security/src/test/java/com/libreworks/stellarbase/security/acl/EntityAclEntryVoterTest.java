@@ -62,11 +62,9 @@ public class EntityAclEntryVoterTest
 			{
 				HashMap<ObjectIdentity,Acl> acls = new HashMap<ObjectIdentity,Acl>();
 				for(ObjectIdentity oi : objects) {
-					AclImpl acl = new AclImpl(oi, null, sids);
-					List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-					aces.add(new AccessControlEntryImpl(1, acl, sids.get(0), BasePermission.READ, true, false, false));
-					acl.setEntries(aces);
-					acls.put(oi, acl);
+					acls.put(oi, AccessControlList.builder(oi, null, sids)
+						.allow(sids.get(0), BasePermission.READ)
+						.build());
 				}
 				return acls;
 			}

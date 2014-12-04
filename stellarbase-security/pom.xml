@@ -12,6 +12,13 @@
 	<name>stellarbase-security</name>
 	<dependencies>
 		<dependency>
+			<groupId>com.libreworks.stellarbase</groupId>
+			<artifactId>stellarbase-core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>4.1.2.RELEASE</version>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@
 package com.libreworks.stellarbase.security.acl;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Table;
 
 /**
  * A non-thread safe HashMap-backed Acl Cache.
@@ -33,31 +36,26 @@ import org.springframework.security.acls.model.Sid;
  * behavior for expiration.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public class MapAclCache implements AclCache, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	final private Map<ObjectIdentity,Map<Collection<Sid>,Acl>> acls =
-		new HashMap<ObjectIdentity,Map<Collection<Sid>,Acl>>();
+	final private Table<ObjectIdentity, List<Sid>, Acl> acls = HashBasedTable.create();
 
-	public boolean contains(ObjectIdentity objId, Collection<Sid> sids)
+	public boolean contains(ObjectIdentity objId, List<Sid> sids)
 	{
-		return acls.containsKey(objId) && acls.get(objId).containsKey(sids);
+		return acls.contains(objId, sids);
 	}
 
-	public Acl get(ObjectIdentity objId, Collection<Sid> sids)
+	public Acl get(ObjectIdentity objId, List<Sid> sids)
 	{
-		return acls.containsKey(objId) ? acls.get(objId).get(sids) : null;
+		return acls.get(objId, sids);
 	}
 
-	public AclCache put(ObjectIdentity objId, Collection<Sid> sids, Acl acl)
+	public AclCache put(ObjectIdentity objId, List<Sid> sids, Acl acl)
 	{
-		if ( !acls.containsKey(objId) ) {
-			acls.put(objId, new HashMap<Collection<Sid>, Acl>());
-		}
-		acls.get(objId).put(sids, acl);
+		acls.put(objId, sids == null ? null : ImmutableList.copyOf(sids), acl);
 		return this;
 	}
 }

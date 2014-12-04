@@ -18,12 +18,14 @@
 package com.libreworks.stellarbase.security.acl;
 
 import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
@@ -34,6 +36,8 @@ import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Jonathan Hawk
@@ -58,7 +62,7 @@ public class LoadingAclServiceTest
 	@Test
 	public void testFindChildren()
 	{
-		assertEquals(Collections.emptyList(), object.findChildren(null));
+		assertEquals(ImmutableList.of(), object.findChildren(null));
 	}
 
 	/**
@@ -88,7 +92,7 @@ public class LoadingAclServiceTest
 		ObjectIdentityImpl oid = new ObjectIdentityImpl(String.class, new Integer(1));
 		ArrayList<Sid> sids = new ArrayList<Sid>();
 		sids.add(new PrincipalSid("foobar1"));		
-		AclImpl acl = new AclImpl(oid, null, sids);
+		EmptyAccessControlList acl = new EmptyAccessControlList(oid, null, sids);
 		aclCache.put(oid, sids, acl);
 		Acl result = object.loadAcl(oid, sids);
 		assertSame(result, acl);

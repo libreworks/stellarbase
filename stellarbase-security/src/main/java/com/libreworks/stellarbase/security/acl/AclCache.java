@@ -17,7 +17,8 @@
  */
 package com.libreworks.stellarbase.security.acl;
 
-import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
@@ -37,7 +38,7 @@ public interface AclCache
 	 * @param sids The SIDs
 	 * @return Whether the ACL is available
 	 */
-	public boolean contains(ObjectIdentity objId, Collection<Sid> sids);
+	public boolean contains(ObjectIdentity objId, List<Sid> sids);
 	
 	/**
 	 * Gets the ACL for an ObjectIdentity or null if one is not available.
@@ -46,7 +47,7 @@ public interface AclCache
 	 * @param sids The Sids
 	 * @return The ACL or null
 	 */
-	public Acl get(ObjectIdentity objId, Collection<Sid> sids);
+	public Acl get(ObjectIdentity objId, List<Sid> sids);
 	
 	/**
 	 * Puts an Acl in the cache.
@@ -56,5 +57,5 @@ public interface AclCache
 	 * @param acl The ACL
 	 * @return provides a fluent interface 
 	 */
-	public AclCache put(ObjectIdentity objId, Collection<Sid> sids, Acl acl);
+	public AclCache put(ObjectIdentity objId, List<Sid> sids, Acl acl);
 }

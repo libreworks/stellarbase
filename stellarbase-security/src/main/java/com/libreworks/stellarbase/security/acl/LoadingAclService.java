@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
@@ -30,6 +31,8 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * An AclService which delegates loading of AccessControlEntry objects to loaders.
@@ -46,7 +49,7 @@ public class LoadingAclService extends AbstractAclService
 	public List<ObjectIdentity> findChildren(ObjectIdentity arg0)
 	{
 		// if you want to override this, go right ahead
-		return Collections.emptyList();
+		return ImmutableList.of();
 	}
 
 	/**
@@ -62,14 +65,12 @@ public class LoadingAclService extends AbstractAclService
 		if ( acl == null ) {
 			ObjectIdentity parentOid = parentResolver.getParent(oid);
 			Acl parentAcl = parentOid != null ? loadAcl(parentOid, sids) : null;
-			acl = new AclImpl(oid, parentAcl, sids);
-			ArrayList<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
+			AccessControlList.Builder b = AccessControlList.builder(oid, parentAcl, sids);
 			for(AccessControlEntryLoader loader : loaders) {
 				if ( loader.supports(oid) ) {
-					aces.addAll(loader.getEntries(acl, oid, sids));
 				}
 			}
-			((AclImpl)acl).setEntries(aces);
+			acl = b.build();
 			aclCache.put(oid, sids, acl);
 		}
 		return acl;

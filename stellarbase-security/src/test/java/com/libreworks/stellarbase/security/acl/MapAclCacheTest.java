@@ -51,7 +51,7 @@ public class MapAclCacheTest
 		ArrayList<Sid> sids = new ArrayList<Sid>();
 		assertFalse(object.contains(objId, sids));
 		assertNull(object.get(objId, sids));
-		AclImpl acl = new AclImpl(objId);
+		EmptyAccessControlList acl = new EmptyAccessControlList(objId, null, sids);
 		object.put(objId, sids, acl);
 		assertTrue(object.contains(objId, sids));
 		assertEquals(acl, object.get(objId, sids));
