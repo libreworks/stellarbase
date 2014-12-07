@@ -42,7 +42,7 @@ public class DenyAccessControlEntry extends AbstractAccessControlEntry
 	{
 		return new StringBuilder(getSid().toString()).append(" cannot ")
 			.append(getPermission().getPattern()).append(" on ")
-			.append(getAcl().getObjectIdentity().toString());
+			.append(getAcl().getObjectIdentity().toString()).toString();
 	}
 
 	public boolean isGranting()

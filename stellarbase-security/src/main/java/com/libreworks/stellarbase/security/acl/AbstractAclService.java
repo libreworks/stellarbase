@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,31 @@ import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
+import org.springframework.util.Assert;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Base ACL Service just to make implementing easier.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public abstract class AbstractAclService implements AclService
 {
+	/**
+	 * Implementation that always returns an empty List.
+	 * 
+	 * <p>While the interface for the service states that if no children are
+	 * found, null should be returned, who really likes null? I sure don't.
+	 * 
+     * @param parentIdentity to locate children of
+     * @return always an empty List
+	 */
+	public List<ObjectIdentity> findChildren(ObjectIdentity arg0)
+	{
+		return ImmutableList.of();
+	}
+	
 	public Acl readAclById(ObjectIdentity object) throws NotFoundException
 	{
 		return readAclById(object, null);
@@ -43,6 +59,7 @@ public abstract class AbstractAclService implements AclService
 	public Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException
 	{
 		Map<ObjectIdentity,Acl> map = readAclsById(Arrays.asList(object), sids);
+        Assert.isTrue(map.containsKey(object), "There should have been an Acl entry for ObjectIdentity " + object);		
 		return map.get(object);
 	}
 

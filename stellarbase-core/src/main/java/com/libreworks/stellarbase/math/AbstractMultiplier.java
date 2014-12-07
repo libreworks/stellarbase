@@ -14,7 +14,6 @@
  * limitations under the License.
  * 
  * @author Jonathan Hawk
- * @
  */
 package com.libreworks.stellarbase.math;
 

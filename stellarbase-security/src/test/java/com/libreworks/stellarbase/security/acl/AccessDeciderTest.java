@@ -18,24 +18,23 @@
 package com.libreworks.stellarbase.security.acl;
 
 import static org.junit.Assert.*;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.acls.domain.AccessControlEntryImpl;
+import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -44,7 +43,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class AccessDeciderTest
 {
-	private AccessDecider object;
+	private Authentication authentication;
 	
 	/**
 	 * Sets up the test
@@ -52,12 +51,8 @@ public class AccessDeciderTest
 	@Before
 	public void setUp()
 	{
-		UsernamePasswordAuthenticationToken authentication =
-			new UsernamePasswordAuthenticationToken("alice", "aoeuhtns");
+		authentication = new UsernamePasswordAuthenticationToken("alice", "aoeuhtns");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		SimpleBean bean = new SimpleBean();
-		bean.setId((long)123456);
-		object = AccessDecider.factory(new StubAclService(), bean);
 	}
 
 	/**
@@ -69,32 +64,6 @@ public class AccessDeciderTest
 		SecurityContextHolder.getContext().setAuthentication(null);
 		SecurityContextHolder.clearContext();
 	}
-
-	/**
-	 * Test the ability to pass in an ObjectIdentity
-	 */
-	@Test
-	public void testFactory1()
-	{
-		SimpleBean bean = new SimpleBean();
-		bean.setId((long)987654);		
-		StubAclService aclService = new StubAclService();
-		AccessDecider ad = AccessDecider.factory(aclService, new ObjectIdentityImpl(bean));
-		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
-	}
-	
-	/**
-	 * Test the ability to pass in an entity
-	 */
-	@Test
-	public void testFactory2()
-	{
-		SimpleBean bean = new SimpleBean();
-		bean.setId((long)987654);		
-		StubAclService aclService = new StubAclService();
-		AccessDecider ad = AccessDecider.factory(aclService, bean);
-		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
-	}
 	
 	/**
 	 * Tests the simple constructor
@@ -103,25 +72,24 @@ public class AccessDeciderTest
 	public void testBasicConstructor()
 	{
 		SimpleBean bean = new SimpleBean();
-		bean.setId((long)987654);		
-		StubAclService aclService = new StubAclService();
-		List<ObjectIdentity> ois = new ArrayList<ObjectIdentity>();
-		ois.add(new ObjectIdentityImpl(bean));
-		List<Sid> sids = new ArrayList<Sid>();
-		sids.add(new PrincipalSid("alice"));
-		AccessDecider ad = new AccessDecider(aclService.readAclsById(ois, sids).get(ois.get(0)));
-		assertTrue(ad.isAllowed(BasePermission.ADMINISTRATION));
-	}
-	
-	/**
-	 * Test method for {@link com.libreworks.stellarbase.security.acl.AccessDecider#isAllowed(org.springframework.security.acls.model.Permission[])}.
-	 */
-	@Test
-	public void testIsAllowed()
-	{
+		bean.setId(987654L);
+		AccessDecider object = new AccessDecider(new AclPermissionEvaluator(new StubAclService()), bean, authentication);
 		assertTrue(object.isAllowed(BasePermission.ADMINISTRATION));
 		assertFalse(object.isAllowed(BasePermission.WRITE));
 	}
+
+	/**
+	 * Tests usage with an objectidentity
+	 */
+	@Test
+	public void testObjIdConstructor()
+	{
+		SimpleBean bean = new SimpleBean();
+		bean.setId(987654L);
+		AccessDecider object = new AccessDecider(new AclPermissionEvaluator(new StubAclService()), new ObjectIdentityImpl(bean));
+		assertTrue(object.isAllowed(BasePermission.ADMINISTRATION));
+		assertFalse(object.isAllowed(BasePermission.WRITE));
+	}	
 	
 	protected class SimpleBean
 	{
@@ -155,10 +123,6 @@ public class AccessDeciderTest
 					.build());
 			}
 			return acls;
-		}
-		public List<ObjectIdentity> findChildren(ObjectIdentity parentIdentity)
-		{
-			return Collections.emptyList();
 		}
 	}
 }

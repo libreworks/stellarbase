@@ -43,7 +43,6 @@ import com.google.common.collect.ImmutableList;
 public class EmptyAccessControlList extends AbstractAcl
 {
 	private static final long serialVersionUID = 1L;
-	private static final List<AccessControlEntry> ENTRIES = ImmutableList.of();
 	private static final EmptyPermissionGrantingStrategy STRATEGY = new EmptyPermissionGrantingStrategy();
 	
 	/**
@@ -55,7 +54,7 @@ public class EmptyAccessControlList extends AbstractAcl
 	 */
 	public EmptyAccessControlList(ObjectIdentity objectIdentity, Acl parentAcl, List<Sid> loadedSids)
 	{
-		super(objectIdentity, parentAcl, loadedSids, STRATEGY, true);
+		this(objectIdentity, parentAcl, loadedSids, true);
 	}
 	
 	/**
@@ -74,7 +73,7 @@ public class EmptyAccessControlList extends AbstractAcl
 	@Override
 	public List<AccessControlEntry> getEntries()
 	{
-		return ENTRIES;
+		return ImmutableList.of();
 	}
 	
 	static class EmptyPermissionGrantingStrategy implements PermissionGrantingStrategy

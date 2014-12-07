@@ -46,7 +46,7 @@ public abstract class AbstractAcl implements Acl
 	protected final ObjectIdentity objectIdentity;
 	protected final Acl parentAcl;
 	protected final List<Sid> loadedSids;
-	protected final transient PermissionGrantingStrategy permissionGrantingStrategy;
+	protected transient PermissionGrantingStrategy permissionGrantingStrategy;
     protected final boolean entriesInheriting;
 
     /**

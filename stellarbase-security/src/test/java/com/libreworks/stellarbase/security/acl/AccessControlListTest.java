@@ -12,8 +12,6 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.NotFoundException;
-import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.acls.model.Sid;
@@ -30,12 +28,13 @@ public class AccessControlListTest
 	public void testBasic()
 	{
 		ObjectIdentityImpl oi = new ObjectIdentityImpl(String.class, 2);
-		Acl parent = new StubAcl();
+		Acl parent = new StubAcl(oi);
 		ArrayList<Sid> sids = new ArrayList<Sid>();
 		AccessControlList acl = AccessControlList.builder(oi, parent, sids).build();
 		assertEquals(parent, acl.getParentAcl());
 		assertEquals(oi, acl.getObjectIdentity());
 		assertTrue(acl.isEntriesInheriting());
+		assertTrue(acl.equals(acl));
 	}
 	
 	/**
@@ -48,11 +47,16 @@ public class AccessControlListTest
 		PrincipalSid sid = new PrincipalSid("foobar1");
 		AccessControlList acl = AccessControlList.builder(oi, null, null)
 			.allow(sid, BasePermission.WRITE)
+			.deny(sid, BasePermission.DELETE)
 			.build();
 		AccessControlEntry ace = acl.getEntries().get(0);
 		assertEquals(BasePermission.WRITE, ace.getPermission());
 		assertEquals(sid, ace.getSid());
 		assertTrue(ace.isGranting());
+		AccessControlEntry ace2 = acl.getEntries().get(1);
+		assertEquals(BasePermission.DELETE, ace2.getPermission());
+		assertEquals(sid, ace2.getSid());
+		assertFalse(ace2.isGranting());
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class AccessControlListTest
 	public void testIsEntriesInheriting()
 	{
 		ObjectIdentityImpl oi = new ObjectIdentityImpl(String.class, 2);
-		Acl parent = new StubAcl();
+		Acl parent = new StubAcl(oi);
 		AccessControlList acl = AccessControlList.builder(oi, parent, null).setEntriesInheriting(true).build();
 		assertTrue(acl.isEntriesInheriting());
 		AccessControlList acl2 = AccessControlList.builder(oi, parent, null).setEntriesInheriting(false).build();
@@ -164,48 +168,6 @@ public class AccessControlListTest
 		public void setAllow(boolean allow)
 		{
 			this.allow = allow;
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class StubAcl implements Acl
-	{
-		
-		public boolean isSidLoaded(List<Sid> sids)
-		{
-			return false;
-		}
-		
-		public boolean isGranted(List<Permission> permission, List<Sid> sids,
-				boolean administrativeMode) throws NotFoundException,
-				UnloadedSidException
-		{
-			return false;
-		}
-		
-		public boolean isEntriesInheriting()
-		{
-			return false;
-		}
-		
-		public Acl getParentAcl()
-		{
-			return null;
-		}
-		
-		public Sid getOwner()
-		{
-			return null;
-		}
-		
-		public ObjectIdentity getObjectIdentity()
-		{
-			return null;
-		}
-		
-		public List<AccessControlEntry> getEntries()
-		{
-			return null;
 		}
 	}
 }

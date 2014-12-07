@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,58 +17,50 @@
  */
 package com.libreworks.stellarbase.security.acl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
-import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.AclService;
-import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
-import org.springframework.security.acls.model.SidRetrievalStrategy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.Assert;
 
 /**
  * A wrapper for an ACL to allow boolean testing instead of exceptions
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public class AccessDecider
 {
-	private Acl acl;
-	private ArrayList<Sid> sids = new ArrayList<Sid>();
+	private final PermissionEvaluator permissionEvaluator;
+	private final Object domainObject;
+	private final Authentication authentication;
 	
 	/**
 	 * Creates a new AccessDecider.
 	 * 
 	 * The currently authenticated user will be used to determine the Sids.
 	 * 
-	 * @param acl The ACL
+	 * @param permissionEvaluator The object to evaluate permissions
 	 */
-	public AccessDecider(Acl acl)
+	public AccessDecider(PermissionEvaluator permissionEvaluator, Object domainObject)
 	{
-		this(acl, new SidRetrievalStrategyImpl().getSids(
-				SecurityContextHolder.getContext().getAuthentication()));
+		this.permissionEvaluator = permissionEvaluator;
+		this.domainObject = domainObject;
+		this.authentication = SecurityContextHolder.getContext().getAuthentication();
 	}
-	
+
 	/**
 	 * Creates a new AccessDecider.
 	 * 
-	 * @param acl The ACL. Cannot be null.
-	 * @param sids The Sids of the users. Cannot be null.
+	 * The currently authenticated user will be used to determine the Sids.
+	 * 
+	 * @param permissionEvaluator The object to evaluate permissions
 	 */
-	public AccessDecider(Acl acl, List<Sid> sids)
+	public AccessDecider(PermissionEvaluator permissionEvaluator, Object domainObject, Authentication authentication)
 	{
-		Assert.notNull(acl);
-		Assert.notNull(sids);
-		this.acl = acl;
-		this.sids.addAll(sids);
-	}
+		this.permissionEvaluator = permissionEvaluator;
+		this.domainObject = domainObject;
+		this.authentication = authentication;
+	}	
 	
 	/**
 	 * Whether the current authenticated user is granted all of the permissions.
@@ -78,40 +70,8 @@ public class AccessDecider
 	 */
 	public boolean isAllowed(Permission... permission)
 	{
-		try {
-			return acl.isGranted(Arrays.asList(permission), sids, false);
-		} catch ( NotFoundException nfe ) {
-			// just return false below
-		}
-		return false;
-	}
-	
-	/**
-	 * Creates an AccessDecider.
-	 * 
-	 * @param aclService The ACL Service from which the ACL will be retrieved
-	 * @param entity The domain entity or an {@link ObjectIdentity}.
-	 * @return The AccessDecider created
-	 */
-	public static AccessDecider factory(AclService aclService, Object entity)
-	{
-		return factory(aclService, entity, new SidRetrievalStrategyImpl());
-	}
-	
-	/**
-	 * Creates an AccessDecider.
-	 * 
-	 * @param aclService The ACL Service from which the ACL will be retrieved
-	 * @param entity The domain entity or an {@link ObjectIdentity}.
-	 * @param sidRetrievalStrategy The {@link Sid} retrieval strategy
-	 * @return The AccessDecider created
-	 */
-	public static AccessDecider factory(AclService aclService, Object entity, SidRetrievalStrategy sidRetrievalStrategy)
-	{
-		List<Sid> sids = sidRetrievalStrategy.getSids(
-			SecurityContextHolder.getContext().getAuthentication());
-		return new AccessDecider(aclService.readAclById(
-			entity instanceof ObjectIdentity ? (ObjectIdentity)entity :
-				new ObjectIdentityImpl(entity), sids), sids);
+		return domainObject instanceof ObjectIdentity ?
+			permissionEvaluator.hasPermission(authentication, ((ObjectIdentity)domainObject).getIdentifier(), ((ObjectIdentity)domainObject).getType(), permission) :
+			permissionEvaluator.hasPermission(authentication, domainObject, permission);
 	}
 }
