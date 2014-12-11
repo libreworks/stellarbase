@@ -11,12 +11,11 @@
 	<name>stellarbase e-mail</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
+			<groupId>com.libreworks.stellarbase</groupId>
+			<artifactId>stellarbase-core</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>	
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
@@ -38,10 +37,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.libreworks.stellarbase</groupId>
-			<artifactId>stellarbase-core</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>		
 	</dependencies>
 </project>
