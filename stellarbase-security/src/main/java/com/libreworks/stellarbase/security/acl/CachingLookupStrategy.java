@@ -25,9 +25,9 @@ import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableMap;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A decorator which caches Acls returned from a delegate LookupStrategy.
@@ -48,10 +48,8 @@ public class CachingLookupStrategy implements RecursiveLookupStrategy
 	 */
 	public CachingLookupStrategy(RecursiveLookupStrategy delegate, AclCache aclCache)
 	{
-		Assert.notNull(delegate);
-		Assert.notNull(aclCache);
-		this.delegate = delegate;
-		this.aclCache = aclCache;
+		this.delegate = Arguments.checkNull(delegate);
+		this.aclCache = Arguments.checkNull(aclCache);
 	}
 	
 	public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids, AclService aclService)

@@ -18,9 +18,10 @@
 package com.libreworks.stellarbase.validation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A delegating validator that overrides the supports method.
@@ -41,10 +42,8 @@ public class SupportsDelegateValidator implements Validator
 	 */
 	public SupportsDelegateValidator(Validator delegate, Class<?>... supports)
 	{
-		Assert.notNull(delegate);
-		this.delegate = delegate;
-		Assert.notEmpty(supports);
-		this.supports = supports;
+		this.delegate = Arguments.checkNull(delegate);
+		this.supports = Arguments.checkEmpty(supports);
 	}
 	
 	public boolean supports(Class<?> clazz)

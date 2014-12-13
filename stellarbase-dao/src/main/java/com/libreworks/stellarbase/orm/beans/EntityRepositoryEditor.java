@@ -25,10 +25,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.util.Assert;
 
 import com.libreworks.stellarbase.orm.model.EntityRepository;
 import com.libreworks.stellarbase.orm.model.Identifiable;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A PropertyEditor that converts identifiers into entities using an {@link EntityRepository}.
@@ -53,8 +53,7 @@ public class EntityRepositoryEditor<T extends Identifiable<K>, K extends Seriali
      */
     protected EntityRepositoryEditor(EntityRepository<T,K> repository)
     {
-        Assert.notNull(repository);
-        this.repository = repository;
+        this.repository = Arguments.checkNull(repository);
     }
 
     /**
@@ -69,7 +68,7 @@ public class EntityRepositoryEditor<T extends Identifiable<K>, K extends Seriali
      */
     public static void register(PropertyEditorRegistry propertyEditor, EntityRepository<?,?>... repos)
     {
-    	Assert.notNull(propertyEditor, "propertyEditor must not be null");
+    	Arguments.checkNull(propertyEditor, "propertyEditor must not be null");
     	for(EntityRepository<?,?> repo : repos) {
     		propertyEditor.registerCustomEditor(repo.getEntityClass(),
     				factory(repo));

@@ -23,12 +23,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.math.Fraction;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 
 public class SafeMathTest {
@@ -159,4 +163,69 @@ public class SafeMathTest {
 		assertEquals(0, SafeMath.percentify(0, 1, Double.class), 0);
 		assertEquals(25, SafeMath.percentify("2", 8f, Double.class), 0);
 	}
+	
+
+	/**
+	 * Test method for {@link com.libreworks.stellarbase.util.ValueUtils#toNumber(Object, Class)}
+	 */
+	@Test
+	public void testToNumber()
+	{
+		BigInteger in1 = new BigInteger("12345");
+		assertEquals(in1, SafeMath.value(BigInteger.class, in1));
+		Long out1 = SafeMath.value(Long.class, in1);
+		assertEquals(in1.longValue(), out1.longValue());
+		Long out2 = SafeMath.value(Long.class, "12345");
+		assertEquals(in1.longValue(), out2.longValue());
+		
+		BigDecimal in2 = new BigDecimal("9876.54321");
+		assertEquals(in2, SafeMath.value(BigDecimal.class, in2));
+		assertEquals(Double.valueOf(9876.54321), SafeMath.value(Double.class, in2));
+		assertEquals(in2, SafeMath.value(BigDecimal.class, "9876.54321"));
+		
+		Double in3 = Double.valueOf(0.4);
+		assertEquals(in3, SafeMath.value(Double.class, in3));
+		assertEquals(in3, SafeMath.value(Double.class, "0.4"));
+		assertEquals(Float.valueOf(0.4f), SafeMath.value(Float.class, in3));
+		assertEquals(Double.valueOf(24.0), SafeMath.value(Double.class, "24"));
+		assertEquals(Double.valueOf(24.0), SafeMath.value(Double.class, "24.0"));
+		assertEquals(Double.valueOf(24.0), SafeMath.value(Double.class, "0x18"));
+		
+		Integer in4 = Integer.valueOf(22);
+		assertEquals(in4, SafeMath.value(Integer.class, in4));
+		assertEquals(in4, SafeMath.value(Integer.class, "22"));
+		assertEquals(in4, SafeMath.value(Integer.class, "22.0"));
+		assertEquals(in4, SafeMath.value(Integer.class, in4));
+		assertEquals(in4, SafeMath.value(Integer.class, "0x16"));
+		
+		// Check zero
+		assertEquals(Fraction.ZERO, SafeMath.value(Fraction.class, 0.0));
+		assertEquals(Fraction.ZERO, SafeMath.value(Fraction.class, ""));
+		assertEquals(Fraction.ZERO, SafeMath.value(Fraction.class, "0.0"));
+		assertEquals(Fraction.ZERO, SafeMath.value(Fraction.class, Fraction.ZERO));
+		assertEquals(BigDecimal.ZERO, SafeMath.value(BigDecimal.class, ""));
+		assertEquals(BigInteger.ZERO, SafeMath.value(BigInteger.class, 0L));
+		assertEquals(NumberUtils.DOUBLE_ZERO, SafeMath.value(Double.class, null));
+		assertEquals(NumberUtils.INTEGER_ZERO, SafeMath.value(Integer.class, 0.0));
+		assertEquals(NumberUtils.SHORT_ZERO, SafeMath.value(Short.class, "   "));
+		assertEquals(NumberUtils.BYTE_ZERO, SafeMath.value(Byte.class, BigDecimal.ZERO));		
+		assertEquals(NumberUtils.LONG_ZERO, SafeMath.value(Long.class, 0));
+		assertEquals(NumberUtils.FLOAT_ZERO, SafeMath.value(Float.class, "foo"));
+	}
+	
+	@Test
+	public void testIsZero()
+	{
+		List<?> zeroes = Arrays.asList(null, "", "  ", "foobar", "0", "0x0",
+			"000", "0.0", "0000.000000", new ArrayList<Object>(), Boolean.FALSE,
+			0.0, 0, BigDecimal.ZERO, new BigDecimal("000.000"), BigInteger.ZERO, Fraction.ZERO);
+		for (Object v : zeroes) {
+			assertTrue("Object " + v + " is not zero and should be", SafeMath.isZero(v));
+		}
+		List<?> nons = ImmutableList.of("123", 123, "0x01", "0777", 1234L,
+				BigDecimal.ONE, Fraction.ONE_HALF, 123.5, 0.2f, BigInteger.ONE);
+		for (Object v : nons) {
+			assertFalse("Object " + v + " is zero and shouldn't be", SafeMath.isZero(v));
+		}
+	}	
 }

@@ -27,10 +27,9 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.springframework.util.Assert;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Provides builders that create {@link Map}s using a fluent interface.
@@ -297,9 +296,7 @@ public class Maps
 		 */
 		public T combine(K[] keys, V[] values)
 		{
-			Assert.notNull(keys);
-			Assert.notNull(values);
-			if (keys.length != values.length) {
+			if (Arguments.checkNull(keys).length != Arguments.checkNull(values).length) {
 				throw new IllegalArgumentException("The provided arrays must be the same length");
 			}
 			for (int i=0; i<keys.length; ++i) {
@@ -318,9 +315,7 @@ public class Maps
 		 */
 		public T combine(Collection<K> keys, Collection<V> values)
 		{
-			Assert.notNull(keys);
-			Assert.notNull(values);
-			if (keys.size() != values.size()) {
+			if (Arguments.checkNull(keys).size() != Arguments.checkNull(values).size()) {
 				throw new IllegalArgumentException("The provided collections must be the same length");
 			}
 			Iterator<K> kit = keys.iterator();

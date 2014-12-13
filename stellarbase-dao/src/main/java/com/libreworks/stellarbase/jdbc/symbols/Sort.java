@@ -19,7 +19,8 @@ package com.libreworks.stellarbase.jdbc.symbols;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A struct containing a field and a sorting direction.
@@ -41,8 +42,7 @@ public class Sort implements Symbol
 
     protected Sort(Field field, boolean ascending)
     {
-        Assert.notNull(field);
-        this.field = field;
+        this.field = Arguments.checkNull(field);
         this.ascending = ascending;
     }
     

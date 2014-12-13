@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.libreworks.stellarbase.math.SafeMath;
-import com.libreworks.stellarbase.util.ValueUtils;
 
 /**
  * A Map that stores a running total for a group name.
@@ -69,7 +68,7 @@ public class SingleGroupTotal extends AbstractMapDelegate<Comparable<?>,Double>
 		if (!containsKey(key)) {
 			delegate.put(key, 0.0);
 		}
-		delegate.put(key, SafeMath.add(get(key), ValueUtils.value(
+		delegate.put(key, SafeMath.add(get(key), SafeMath.value(
 				Double.class, value), Double.class));
 	}
 

@@ -29,9 +29,9 @@ import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Immutable, thread-safe implementation of the Spring Security ACL
@@ -108,8 +108,7 @@ public class AccessControlList extends AbstractAcl
 	    
 		private Builder(ObjectIdentity objectIdentity, Acl parentAcl, List<Sid> loadedSids)
 		{
-			Assert.notNull(objectIdentity);
-			this.objectIdentity = objectIdentity;
+			this.objectIdentity = Arguments.checkNull(objectIdentity);
 			this.parentAcl = parentAcl;
 			this.loadedSids = loadedSids == null ? null : ImmutableList.copyOf(loadedSids);
 		}
@@ -166,8 +165,7 @@ public class AccessControlList extends AbstractAcl
 		 */
 		public Builder setPermissionGrantingStrategy(PermissionGrantingStrategy permissionGrantingStrategy)
 		{
-			Assert.notNull(permissionGrantingStrategy);
-			this.permissionGrantingStrategy = permissionGrantingStrategy;
+			this.permissionGrantingStrategy = Arguments.checkNull(permissionGrantingStrategy);
 			return this;
 		}
 		

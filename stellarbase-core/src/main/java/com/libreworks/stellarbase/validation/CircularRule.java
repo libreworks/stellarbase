@@ -20,8 +20,9 @@ package com.libreworks.stellarbase.validation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A rule that validates an object doesn't reference itself in a given field.
@@ -45,8 +46,7 @@ public class CircularRule extends AbstractRule
 	 */
 	public CircularRule(String field)
 	{
-		Assert.notNull(field);
-		this.field = field;
+		this.field = Arguments.checkNull(field);
 	}
 
 	@Override

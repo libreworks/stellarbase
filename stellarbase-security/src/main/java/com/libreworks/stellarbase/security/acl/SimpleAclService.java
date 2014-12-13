@@ -24,7 +24,8 @@ import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * An extremely simple implementation of {@link AclService}.
@@ -41,8 +42,7 @@ public class SimpleAclService extends AbstractAclService
 	 */
 	public SimpleAclService(RecursiveLookupStrategy lookupStrategy)
 	{
-		Assert.notNull(lookupStrategy);
-		this.lookupStrategy = lookupStrategy;
+		this.lookupStrategy = Arguments.checkNull(lookupStrategy);
 	}
 	
 	public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) throws NotFoundException

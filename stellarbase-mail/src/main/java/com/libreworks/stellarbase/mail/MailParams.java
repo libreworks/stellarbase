@@ -28,9 +28,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A simple Data Transfer Object to ease e-mail sending.
@@ -61,8 +61,7 @@ public class MailParams implements Serializable
 	 */
 	public MailParams(InternetAddress from)
 	{
-		Assert.notNull(from);
-		this.from = from;
+		this.from = Arguments.checkNull(from);
 	}
 	
 	/**

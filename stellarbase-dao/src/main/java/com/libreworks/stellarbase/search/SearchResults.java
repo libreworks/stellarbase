@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.util.Assert;
-
 import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A data transfer object responsible for holding a subset from a bigger result.
  * 
- * This is typically used with paged searches in which the current batch of
+ * <p>This is typically used with paged searches in which the current batch of
  * results is a subset of a larger result set. Using this object, a repository
  * can provide a result subset with a count of all results to allow the front-
  * end to provide pagination.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  * @param <T> The type of result contained within
  */
 public class SearchResults<T> implements Serializable
@@ -53,10 +51,7 @@ public class SearchResults<T> implements Serializable
 	 */
 	public SearchResults(List<T> results, int count)
 	{
-		if (!(results instanceof Serializable)) {
-			Assert.isInstanceOf(Serializable.class, results);
-		}
-		this.results = results.contains(null) ?
+		this.results = Arguments.checkInstanceOf(Serializable.class, results).contains(null) ?
 			Collections.unmodifiableList(new ArrayList<T>(results)) :
 			ImmutableList.copyOf(results);
 		this.count = count;

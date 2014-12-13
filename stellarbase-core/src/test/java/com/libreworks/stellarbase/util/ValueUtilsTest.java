@@ -24,16 +24,8 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.math.Fraction;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Jonathan Hawk
@@ -108,54 +100,6 @@ public class ValueUtilsTest
 		assertEquals(tots, nowd);
 		assertNull(ValueUtils.toDate("not a date, clearly"));
 	}
-
-	/**
-	 * Test method for {@link com.libreworks.stellarbase.util.ValueUtils#toNumber(Object, Class)}
-	 */
-	@Test
-	public void testToNumber()
-	{
-		BigInteger in1 = new BigInteger("12345");
-		assertEquals(in1, ValueUtils.value(BigInteger.class, in1));
-		Long out1 = ValueUtils.value(Long.class, in1);
-		assertEquals(in1.longValue(), out1.longValue());
-		Long out2 = ValueUtils.value(Long.class, "12345");
-		assertEquals(in1.longValue(), out2.longValue());
-		
-		BigDecimal in2 = new BigDecimal("9876.54321");
-		assertEquals(in2, ValueUtils.value(BigDecimal.class, in2));
-		assertEquals(Double.valueOf(9876.54321), ValueUtils.value(Double.class, in2));
-		assertEquals(in2, ValueUtils.value(BigDecimal.class, "9876.54321"));
-		
-		Double in3 = Double.valueOf(0.4);
-		assertEquals(in3, ValueUtils.value(Double.class, in3));
-		assertEquals(in3, ValueUtils.value(Double.class, "0.4"));
-		assertEquals(Float.valueOf(0.4f), ValueUtils.value(Float.class, in3));
-		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "24"));
-		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "24.0"));
-		assertEquals(Double.valueOf(24.0), ValueUtils.value(Double.class, "0x18"));
-		
-		Integer in4 = Integer.valueOf(22);
-		assertEquals(in4, ValueUtils.value(Integer.class, in4));
-		assertEquals(in4, ValueUtils.value(Integer.class, "22"));
-		assertEquals(in4, ValueUtils.value(Integer.class, "22.0"));
-		assertEquals(in4, ValueUtils.value(Integer.class, in4));
-		assertEquals(in4, ValueUtils.value(Integer.class, "0x16"));
-		
-		// Check zero
-		assertEquals(Fraction.ZERO, ValueUtils.value(Fraction.class, 0.0));
-		assertEquals(Fraction.ZERO, ValueUtils.value(Fraction.class, ""));
-		assertEquals(Fraction.ZERO, ValueUtils.value(Fraction.class, "0.0"));
-		assertEquals(Fraction.ZERO, ValueUtils.value(Fraction.class, Fraction.ZERO));
-		assertEquals(BigDecimal.ZERO, ValueUtils.value(BigDecimal.class, ""));
-		assertEquals(BigInteger.ZERO, ValueUtils.value(BigInteger.class, 0L));
-		assertEquals(NumberUtils.DOUBLE_ZERO, ValueUtils.value(Double.class, null));
-		assertEquals(NumberUtils.INTEGER_ZERO, ValueUtils.value(Integer.class, 0.0));
-		assertEquals(NumberUtils.SHORT_ZERO, ValueUtils.value(Short.class, "   "));
-		assertEquals(NumberUtils.BYTE_ZERO, ValueUtils.value(Byte.class, BigDecimal.ZERO));		
-		assertEquals(NumberUtils.LONG_ZERO, ValueUtils.value(Long.class, 0));
-		assertEquals(NumberUtils.FLOAT_ZERO, ValueUtils.value(Float.class, "foo"));
-	}
 	
 	/**
 	 * Test method for {@link com.libreworks.stellarbase.util.ValueUtils#toNumberOrNan(java.lang.Object, java.lang.Class)}.
@@ -170,21 +114,5 @@ public class ValueUtilsTest
 		BigDecimal in2 = new BigDecimal("987.654");
 		Double out2 = ValueUtils.toNumberOrNan(in2, Double.class);
 		assertEquals(out2.doubleValue(), in2.doubleValue(), 0);
-	}
-	
-	@Test
-	public void testIsZero()
-	{
-		List<?> zeroes = Arrays.asList(null, "", "  ", "foobar", "0", "0x0",
-			"000", "0.0", "0000.000000", new ArrayList<Object>(), Boolean.FALSE,
-			0.0, 0, BigDecimal.ZERO, new BigDecimal("000.000"), BigInteger.ZERO, Fraction.ZERO);
-		for (Object v : zeroes) {
-			assertTrue("Object " + v + " is not zero and should be", ValueUtils.isZero(v));
-		}
-		List<?> nons = ImmutableList.of("123", 123, "0x01", "0777", 1234L,
-				BigDecimal.ONE, Fraction.ONE_HALF, 123.5, 0.2f, BigInteger.ONE);
-		for (Object v : nons) {
-			assertFalse("Object " + v + " is zero and shouldn't be", ValueUtils.isZero(v));
-		}
 	}
 }

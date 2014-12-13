@@ -17,6 +17,7 @@
  */
 package com.libreworks.stellarbase.jdbc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,10 +29,12 @@ import com.google.common.collect.ImmutableList;
  * @author Jonathan Hawk
  * @version $Id$
  */
-public class Fragment
+public class Fragment implements Serializable
 {
-    private String sql;
-    private ArrayList<Object> parameters = new ArrayList<Object>();
+	private static final long serialVersionUID = 1L;
+	
+	private final String sql;
+    private final ArrayList<Object> parameters = new ArrayList<Object>();
     
     public Fragment(String sql)
     {

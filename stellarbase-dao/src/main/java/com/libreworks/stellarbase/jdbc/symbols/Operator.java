@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.libreworks.stellarbase.math.SafeMath;
 import com.libreworks.stellarbase.text.Strings;
-import com.libreworks.stellarbase.util.ValueUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -122,8 +122,8 @@ public enum Operator
 								: (Collection<?>) b);				
 				if ( a instanceof Number ) {
 					Number na = (Number)a;
-					Range<Number> nr = Range.between(ValueUtils.value(
-							na.getClass(), values.get(0)), ValueUtils.value(
+					Range<Number> nr = Range.between(SafeMath.value(
+							na.getClass(), values.get(0)), SafeMath.value(
 									na.getClass(), values.get(1)), ComparableComparator.INSTANCE);
 					result = nr.contains(na);
 				} else {

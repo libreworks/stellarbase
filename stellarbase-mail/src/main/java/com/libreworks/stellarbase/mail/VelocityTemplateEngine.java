@@ -24,7 +24,9 @@ import org.apache.velocity.exception.VelocityException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.util.Assert;
+
+import com.google.common.base.Verify;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A simple front-end to Velocity for e-mail content.
@@ -38,7 +40,7 @@ public class VelocityTemplateEngine implements TemplateEngine, InitializingBean
 	
 	public void afterPropertiesSet() throws Exception
     {
-		Assert.notNull(engine, "VelocityEngine must not be null");
+		Verify.verifyNotNull(engine, "VelocityEngine must not be null");
     }
 	
 	/* (non-Javadoc)
@@ -72,6 +74,6 @@ public class VelocityTemplateEngine implements TemplateEngine, InitializingBean
 	 */
 	public void setVelocityEngine(VelocityEngine engine)
 	{
-		this.engine = engine;
+		this.engine = Arguments.checkNull(engine);
 	}
 }

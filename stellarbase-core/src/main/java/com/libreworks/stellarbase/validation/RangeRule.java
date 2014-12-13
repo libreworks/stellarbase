@@ -18,7 +18,6 @@
 package com.libreworks.stellarbase.validation;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 import org.springframework.validation.Errors;
 
@@ -67,7 +66,9 @@ public class RangeRule extends AbstractOneFieldRule<Number>
 	public RangeRule(String field, Double min, Double max)
 	{
 		super(field);
-		Assert.isTrue(min != null || max != null, "You must specify at least one range limit");
+		if (min != null || max != null) {
+			throw new IllegalArgumentException("You must specify at least one range limit");
+		}
 		this.min = min;
 		this.max = max;
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,21 @@
 package com.libreworks.stellarbase.web.json;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableMap;
+
 /**
- * Provides an API to easily create dojo.data.ItemFileReadStore JSON feeds.
+ * Provides an API to easily create JSON feeds compatible with {@code dojo.data.ItemFileReadStore}.
+ * 
+ * <p>Since the Dojo Toolkit has deprecated this format in favor of
+ * {@code dojo.store}, this class will fall into disuse and will later be marked
+ * deprecated.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public class DojoData implements Serializable
 {
@@ -36,7 +40,7 @@ public class DojoData implements Serializable
 
 	protected String identifier;
 	protected String label;
-	protected LinkedHashMap<Serializable,Map<String,?>> items = new LinkedHashMap<Serializable,Map<String,?>>();
+	protected final LinkedHashMap<Serializable,Map<String,?>> items = new LinkedHashMap<Serializable,Map<String,?>>();
 	
 	public DojoData()
 	{
@@ -58,7 +62,7 @@ public class DojoData implements Serializable
 		this.identifier = identifier;
 		this.label = label;
 		if ( items != null ) {
-			
+			addAll(items);
 		}
 	}
 
@@ -67,13 +71,15 @@ public class DojoData implements Serializable
 	 * 
 	 * @param item The item to add
 	 * @return provides a fluent interface
+	 * @throws IllegalStateException if the {@code identifier} property hasn't been set
+	 * @throws IllegalArgumentException if {@code item} doesn't have an identifier key
 	 */
 	public DojoData add(Map<String,?> item)
 	{
 		if ( StringUtils.isBlank(identifier) ) {
 			throw new IllegalStateException("You must set an identifier prior to adding items");
 		} else if ( !item.containsKey(identifier) ) {
-			throw new IllegalStateException("The item must have an entry containing the identifier");
+			throw new IllegalArgumentException("The item must have an entry containing the identifier");
 		} else if ( items.containsKey(item.get(identifier)) ) {
 			throw new IllegalArgumentException("Overwriting items using addItem is not allowed");
 		}
@@ -86,6 +92,8 @@ public class DojoData implements Serializable
 	 * 
 	 * @param items The items to add
 	 * @return provides a fluent interface
+	 * @throws IllegalStateException if the {@code identifier} property hasn't been set
+	 * @throws IllegalArgumentException if an item doesn't have an identifier key
 	 */
 	public DojoData addAll(Iterable<Map<String,?>> items)
 	{
@@ -124,6 +132,7 @@ public class DojoData implements Serializable
 	 * return the {@code MappingJacksonJsonView} from your controller methods.
 	 * 
 	 * @return The data container
+	 * @throws IllegalStateException if the {@code identifier} property hasn't been set
 	 */
 	public Map<String,?> export()
 	{
@@ -154,7 +163,7 @@ public class DojoData implements Serializable
 	 */
 	public Map<Serializable,Map<String,?>> getItems()
 	{
-		return Collections.unmodifiableMap(items);
+		return ImmutableMap.copyOf(items);
 	}
 
 	/**
@@ -184,13 +193,15 @@ public class DojoData implements Serializable
 	 * 
 	 * @param item The item to set
 	 * @return provides a fluent interface
+	 * @throws IllegalStateException if the {@code identifier} property hasn't been set
+	 * @throws IllegalArgumentException if {@code item} doesn't have an identifier key
 	 */
 	public DojoData set(Map<String,?> item)
 	{
 		if ( StringUtils.isBlank(identifier) ) {
 			throw new IllegalStateException("You must set an identifier prior to adding items");
 		} else if ( !item.containsKey(identifier) ) {
-			throw new IllegalStateException("The item must have an entry containing the identifier");
+			throw new IllegalArgumentException("The item must have an entry containing the identifier");
 		}
 		items.put((Serializable)item.get(identifier), item);
 		return this;
@@ -198,6 +209,9 @@ public class DojoData implements Serializable
 
 	/**
 	 * @param items the items to set
+	 * @return provides a fluent interface
+	 * @throws IllegalStateException if the {@code identifier} property hasn't been set
+	 * @throws IllegalArgumentException if an item doesn't have an identifier key
 	 */
 	public DojoData setAll(Iterable<Map<String,?>> items)
 	{
@@ -208,6 +222,7 @@ public class DojoData implements Serializable
 	
 	/**
 	 * @param identifier the identifier to set
+	 * @return provides a fluent interface
 	 */
 	public DojoData setIdentifier(String identifier)
 	{
@@ -217,6 +232,7 @@ public class DojoData implements Serializable
 	
 	/**
 	 * @param label the label to set
+	 * @return provides a fluent interface
 	 */
 	public DojoData setLabel(String label)
 	{

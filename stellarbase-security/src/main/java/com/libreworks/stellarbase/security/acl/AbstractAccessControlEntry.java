@@ -23,7 +23,8 @@ import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Abstract super class for immutable AccessControlEntry rules.
@@ -40,12 +41,9 @@ public abstract class AbstractAccessControlEntry implements AccessControlEntry
 	
 	protected AbstractAccessControlEntry(Acl acl, Sid sid, Permission permission)
 	{
-		Assert.notNull(acl);
-		Assert.notNull(sid);
-		Assert.notNull(permission);
-		this.acl = acl;
-		this.sid = sid;
-		this.permission = permission;
+		this.acl = Arguments.checkNull(acl);
+		this.sid = Arguments.checkNull(sid);
+		this.permission = Arguments.checkNull(permission);
 	}
 
 	@Override

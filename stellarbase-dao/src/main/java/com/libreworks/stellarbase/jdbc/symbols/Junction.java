@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A Junction is an infix expression of {@link Xyster_Data_Criterion} objects.
@@ -118,8 +118,8 @@ public class Junction extends Criterion implements Clause<Criterion>
 	protected Junction(Criterion a, Criterion b, boolean isConjunction)
 	{
 		this.conjunction = isConjunction;
-		Assert.notNull(a);
-		Assert.notNull(b);
+		Arguments.checkNull(a);
+		Arguments.checkNull(b);
 		if ( a instanceof Junction && conjunction == ((Junction) a).isConjunction() ) {
 			criteria.addAll(((Junction)a).getSymbols());
 		} else {
@@ -134,7 +134,7 @@ public class Junction extends Criterion implements Clause<Criterion>
 	
 	public Junction add(Criterion c)
 	{
-		Assert.notNull(c);
+		Arguments.checkNull(c);
 		if ( c instanceof Junction && conjunction == ((Junction) c).isConjunction() ) {
 			criteria.addAll(((Junction)c).getSymbols());
 		} else {

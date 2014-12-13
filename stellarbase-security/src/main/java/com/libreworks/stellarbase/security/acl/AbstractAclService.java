@@ -26,8 +26,8 @@ import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.util.Assert;
 
+import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -59,7 +59,8 @@ public abstract class AbstractAclService implements AclService
 	public Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException
 	{
 		Map<ObjectIdentity,Acl> map = readAclsById(Arrays.asList(object), sids);
-        Assert.isTrue(map.containsKey(object), "There should have been an Acl entry for ObjectIdentity " + object);		
+		// to safeguard poor implementations
+		Verify.verify(map.containsKey(object), "There should have been an Acl entry for ObjectIdentity %s", new Object[]{object});
 		return map.get(object);
 	}
 

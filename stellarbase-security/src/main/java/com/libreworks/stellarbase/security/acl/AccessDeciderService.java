@@ -19,7 +19,8 @@ package com.libreworks.stellarbase.security.acl;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.Permission;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A service to generate or query {@link AccessDecider} objects.
@@ -38,8 +39,7 @@ public class AccessDeciderService
 	 */
 	public AccessDeciderService(PermissionEvaluator permissionEvaluator)
 	{
-		Assert.notNull(permissionEvaluator, "permissionEvaluator must not be null");
-		this.permissionEvaluator = permissionEvaluator;
+		this.permissionEvaluator = Arguments.checkNull(permissionEvaluator, "permissionEvaluator must not be null");
 	}
 	
 	/**

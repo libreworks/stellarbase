@@ -20,7 +20,9 @@ package com.libreworks.stellarbase.mail;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.util.Assert;
+
+import com.google.common.base.Verify;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A service for sending email to which you pass a MailParams object. A task
@@ -34,12 +36,13 @@ public class MailService implements InitializingBean
 	protected JavaMailSender mailSender;
 	protected TemplateEngine templateEngine;
 	protected TaskExecutor taskExecutor;
-
+	
 	public void afterPropertiesSet() throws Exception
     {
-		Assert.notNull(mailSender, "mailSender must not be null");
-		Assert.notNull(templateEngine, "templateEngine must not be null");
-		Assert.notNull(taskExecutor, "taskExecutor must not be null");
+		final String format = "%s must not be null";
+		Verify.verifyNotNull(mailSender, format, "mailSender");
+		Verify.verifyNotNull(templateEngine, format, "templateEngine");
+		Verify.verifyNotNull(taskExecutor, format, "taskExecutor");
     }
 
 	/**
@@ -73,7 +76,7 @@ public class MailService implements InitializingBean
 	 */
 	public void setMailSender(JavaMailSender mailSender)
 	{
-		this.mailSender = mailSender;
+		this.mailSender = Arguments.checkNull(mailSender);
 	}
 
 	/**
@@ -83,7 +86,7 @@ public class MailService implements InitializingBean
 	 */
 	public void setTaskExecutor(TaskExecutor taskExecutor)
 	{
-		this.taskExecutor = taskExecutor;
+		this.taskExecutor = Arguments.checkNull(taskExecutor);
 	}
 
 	/**
@@ -93,6 +96,6 @@ public class MailService implements InitializingBean
 	 */
 	public void setTemplateEngine(TemplateEngine templateEngine)
 	{
-		this.templateEngine = templateEngine;
+		this.templateEngine = Arguments.checkNull(templateEngine);
 	}
 }

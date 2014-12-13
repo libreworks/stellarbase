@@ -24,11 +24,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.text.Characters;
 import com.libreworks.stellarbase.text.Strings;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * An expression is a boolean evaluation comparing a column against a value.
@@ -412,8 +412,7 @@ public class Expression extends Criterion
      */
     public static Expression notIn(Field field, Collection<?> values)
     {
-        Assert.notNull(values);
-        return notIn(field, values.toArray());
+        return notIn(field, Arguments.checkNull(values).toArray());
     }
     
     /**
@@ -437,8 +436,7 @@ public class Expression extends Criterion
      */
     public static Expression notIn(String name, Collection<?> values)
     {
-        Assert.notNull(values);
-        return notIn(name, values.toArray());
+        return notIn(name, Arguments.checkNull(values).toArray());
     }
     
     /**
@@ -462,8 +460,7 @@ public class Expression extends Criterion
      */
     public static Expression in(Field field, Collection<?> values)
     {
-        Assert.notNull(values);
-        return in(field, values.toArray());
+        return in(field, Arguments.checkNull(values).toArray());
     }
     
     /**
@@ -487,8 +484,7 @@ public class Expression extends Criterion
      */
     public static Expression in(String name, Collection<?> values)
     {
-        Assert.notNull(values);
-        return in(name, values.toArray());
+        return in(name, Arguments.checkNull(values).toArray());
     }
     
     /**

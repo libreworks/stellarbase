@@ -19,11 +19,13 @@ package com.libreworks.stellarbase.mail;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * 
@@ -45,12 +47,9 @@ public class MailTask implements Runnable, MimeMessagePreparator
 	 */
 	public MailTask(JavaMailSender mailSender, TemplateEngine engine, MailParams params)
 	{
-		Assert.notNull(mailSender);
-		Assert.notNull(engine);
-		Assert.notNull(params);
-		this.mailSender = mailSender;
-		this.engine = engine;
-		this.params = params;
+		this.mailSender = Arguments.checkNull(mailSender);
+		this.engine = Arguments.checkNull(engine);
+		this.params = Arguments.checkNull(params);
 	}
 	
 	public void prepare(MimeMessage mimeMessage) throws Exception

@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.springframework.util.NumberUtils;
 
 /**
  * Stores a number and presents it as a reduced multiplier (e.g 1,234,567 as 1.2 M).
@@ -67,7 +66,7 @@ public class DecimalMultiplier extends AbstractMultiplier<DecimalMultiplier>
 		} else if (number instanceof BigDecimal) {
 			value = (BigDecimal) number;
 		} else {
-			value = NumberUtils.convertNumberToTargetClass(number, BigDecimal.class);
+			value = new BigDecimal(number.toString());
 		}
 		BigDecimal adjust = BigDecimal.ONE;
 		if (BigDecimal.ZERO.compareTo(value) > 0) {

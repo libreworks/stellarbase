@@ -21,7 +21,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.util.Assert;
+
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Simple Map delegate class.
@@ -43,11 +44,8 @@ public abstract class AbstractMapDelegate<K,V> implements Map<K,V>, Serializable
 	 */
 	public AbstractMapDelegate(Map<K,V> delegate)
 	{
-		Assert.notNull(delegate);
-		if (!(delegate instanceof Serializable)){
-			throw new IllegalArgumentException("Delegate map must be Serializable");
-		}
-		this.delegate = delegate;
+		this.delegate = Arguments.checkInstanceOf(Serializable.class, delegate,
+			"Delegate map must be Serializable");
 	}
 
 	/**

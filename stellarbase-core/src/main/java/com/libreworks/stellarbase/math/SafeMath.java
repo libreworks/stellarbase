@@ -22,12 +22,13 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.Fraction;
-import org.springframework.util.Assert;
 import org.springframework.util.NumberUtils;
 
-import com.libreworks.stellarbase.util.ValueUtils;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Utility class for safe math operations.
@@ -35,7 +36,151 @@ import com.libreworks.stellarbase.util.ValueUtils;
  * @author Jonathan Hawk
  * @since 1.0.0
  */
-public class SafeMath {
+public class SafeMath
+{
+	protected static final Pattern ZERO = Pattern.compile("^(0)+(\\.0+)?$");
+	protected static final Pattern HEX = Pattern.compile("^0[xX][0-9A-Fa-f]+$");
+	protected static final Pattern OCT = Pattern.compile("^0[0-7]+$");
+	
+	/**
+	 * Gets a constant for zero if one exists.
+	 * 
+	 * @param toClass The destination number class
+	 * @return zero in that class (using a constant if available).
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Number> T getZero(Class<T> toClass)
+	{
+		if(BigDecimal.class.isAssignableFrom(toClass)){
+			return (T) BigDecimal.ZERO;
+		} else if(BigInteger.class.isAssignableFrom(toClass)){
+			return (T) BigInteger.ZERO;
+		} else if(Byte.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+		} else if(Double.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.DOUBLE_ZERO;
+		} else if(Float.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.FLOAT_ZERO;
+		} else if(Fraction.class.equals(toClass)){
+			return (T) Fraction.ZERO;
+		} else if(Integer.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+		} else if(Long.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
+		} else if(Short.class.equals(toClass)){
+			return (T) org.apache.commons.lang3.math.NumberUtils.SHORT_ZERO;
+		} else {
+			return NumberUtils.convertNumberToTargetClass(0, toClass);
+		}
+	}
+
+	/**
+	 * Determines whether the value supplied is zero-like.
+	 * 
+	 * <ul>
+	 * <li>Null</li>
+	 * <li>Empty and blank Strings</li>
+	 * <li>Strings with just zeros (e.g. 000) or zeros with decimal zeros (e.g. 000.0000)</li>
+	 * <li>Numbers that equal zero</li>
+	 * <li>false</li>
+	 * <li>Strings and other objects that don't evaluate as numbers</li>
+	 * </ul>
+	 * 
+	 * @param value Any value
+	 * @return Whether the object is zero-like
+	 */
+	public static boolean isZero(Object value) {
+		if (value == null || Boolean.FALSE.equals(value)) {
+			return true;
+		}
+		if (value instanceof CharSequence) {
+			if (StringUtils.isBlank((CharSequence) value)) {
+				return true;
+			} else if (ZERO.matcher((CharSequence) value).matches()) {
+				return true;
+			} else if (!org.apache.commons.lang3.math.NumberUtils.isNumber(value.toString())) {
+				return true;
+			}
+		}
+		if (value instanceof Number) {
+			if (value instanceof Fraction) {
+				return ((Fraction)value).getNumerator() == 0;
+			} else if (value instanceof BigDecimal) {
+				return BigDecimal.ZERO.compareTo((BigDecimal)value) == 0;
+			} else if (value instanceof BigInteger) {
+				return BigInteger.ZERO.compareTo((BigInteger)value) == 0;
+			} else {
+				Number nval = (Number)value;
+				return SafeMath.getZero(nval.getClass()).equals(nval);
+			}
+		} else {
+			String svalue = value.toString();
+			if (HEX.matcher(svalue).matches() || OCT.matcher(svalue).matches()) {
+				return BigInteger.ZERO.compareTo(value(BigInteger.class, svalue)) == 0;
+			} else {
+				return BigDecimal.ZERO.compareTo(value(BigDecimal.class, svalue)) == 0;
+			}
+		}
+	}	
+	
+	/**
+	 * Tries to convert any object into a Number.
+	 * 
+	 * If the value is a Number, it will be converted or cast appropriately,
+	 * otherwise it will be turned into a String and parsed. If the value cannot
+	 * be turned into the number for whatever reason, zero will be returned.
+	 * 
+	 * Unlike the Spring {@link NumberUtils} class, this method does indeed
+	 * support the Apache Commons {@link Fraction}.
+	 * 
+	 * @param <T> The number class
+	 * @param value The value to convert into a number
+	 * @param toClass The Number class to which the object will be converted
+	 * @return The number
+	 * @throws IllegalArgumentException if the value could not be converted
+	 */
+	public static <T extends Number> T value(Class<T> toClass, Object value)
+	{
+		Arguments.checkNull(toClass);
+		if ( value == null || Boolean.FALSE.equals(value) ) {
+			return SafeMath.getZero(toClass);
+		} else if ( toClass.isInstance(value) ) {
+			return toClass.cast(value);
+		} else if ( Fraction.class.equals(toClass) ) {
+		// Since the Spring NumberUtils class doesn't support Fraction
+			if(value instanceof Number){
+				return isZero(value) ? SafeMath.getZero(toClass) :
+					(T) Fraction.getFraction(NumberUtils.convertNumberToTargetClass((Number)value, Double.class));
+			} else {
+				String toString = value.toString();
+				return StringUtils.isBlank(toString) ? 
+					SafeMath.getZero(toClass) : (T) Fraction.getFraction(toString);
+			}
+		} else if ( value instanceof Fraction ) {
+			return NumberUtils.convertNumberToTargetClass(((Fraction)value).doubleValue(), toClass);
+	    } else if ( value instanceof Number ) {
+	    	return NumberUtils.convertNumberToTargetClass((Number)value, toClass);
+	    } else {
+    		try {
+    			String svalue = value.toString();
+    			char dot = ((DecimalFormat)DecimalFormat.getInstance()).getDecimalFormatSymbols().getDecimalSeparator();
+    			if (svalue.indexOf(dot) > -1) {
+       			// if the number is a decimal, integer decoding will barf
+       			// decimals should be parsed into BigDecimal, then converted
+    				return NumberUtils.convertNumberToTargetClass(NumberUtils.parseNumber(svalue, BigDecimal.class), toClass);
+    			} else if (HEX.matcher(svalue).matches() || OCT.matcher(svalue).matches()) {
+    			// if the number is hexadecimal, decimal decoding will barf
+    			// hex numbers should be parsed into BigInteger, then converted
+    				return NumberUtils.convertNumberToTargetClass(NumberUtils.parseNumber(svalue, BigInteger.class), toClass);
+    			} else {
+    				return NumberUtils.parseNumber(svalue, toClass);
+    			}
+			} catch ( Exception e ) {
+				return NumberUtils.convertNumberToTargetClass(0, toClass);
+			}
+	    }
+	}
+	
 	/**
 	 * Sums the values in a collection returning zero if empty or null.
 	 * 
@@ -51,32 +196,30 @@ public class SafeMath {
 	 */
 	public static <T extends Number> T sum(Collection<? extends Number> values, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
-		if (BigInteger.class.isAssignableFrom(toClass)
+		Arguments.checkNull(toClass);
+		if (values == null || values.isEmpty()) {
+			return getZero(toClass);
+		} else if (BigInteger.class.isAssignableFrom(toClass)
 				|| BigDecimal.class.isAssignableFrom(toClass)) {
 			BigDecimal sum = BigDecimal.ZERO;
-			if (values != null && !values.isEmpty()) {
-				for (Number v : values) {
-					if (v != null) {
-						if (v instanceof BigDecimal) {
-							sum = sum.add((BigDecimal) v);
-						} else if (v instanceof Short || v instanceof Long
-								|| v instanceof Integer) {
-							sum = sum.add(BigDecimal.valueOf(v.longValue()));
-						} else {
-							sum = sum.add(NumberUtils.convertNumberToTargetClass(v, BigDecimal.class));
-						}
+			for (Number v : values) {
+				if (v != null) {
+					if (v instanceof BigDecimal) {
+						sum = sum.add((BigDecimal) v);
+					} else if (v instanceof Short || v instanceof Long
+							|| v instanceof Integer) {
+						sum = sum.add(BigDecimal.valueOf(v.longValue()));
+					} else {
+						sum = sum.add(NumberUtils.convertNumberToTargetClass(v, BigDecimal.class));
 					}
 				}
 			}
 			return NumberUtils.convertNumberToTargetClass(sum, toClass);
 		} else {
 			double sum = 0.0;
-			if (values != null && !values.isEmpty()) {
-				for (Number v : values) {
-					if (v != null) {
-						sum += v.doubleValue();
-					}
+			for (Number v : values) {
+				if (v != null) {
+					sum += v.doubleValue();
 				}
 			}
 			return NumberUtils.convertNumberToTargetClass(sum, toClass);
@@ -99,9 +242,9 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T product(Collection<? extends Number> values, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
+		Arguments.checkNull(toClass);
 		if (values == null || values.isEmpty()) {
-			return ValueUtils.getZero(toClass);
+			return getZero(toClass);
 		}
 		boolean typeMatch = true;
 		for (Number v : values){
@@ -146,11 +289,11 @@ public class SafeMath {
 				long product = 1L;
 				for (Number v : values) {
 					if(v == null) {
-						return ValueUtils.getZero(toClass);
+						return getZero(toClass);
 					}
 					long multiplier = v.longValue();
 					if(multiplier == 0) {
-						return ValueUtils.getZero(toClass);
+						return getZero(toClass);
 					}
 					product *= multiplier;
 				}
@@ -159,11 +302,11 @@ public class SafeMath {
 				double product = 1.0;
 				for (Number v : values) {
 					if (v == null) {
-						return ValueUtils.getZero(toClass);
+						return getZero(toClass);
 					}
 					double multiplier = v.doubleValue();
 					if (multiplier == 0.0) {
-						return ValueUtils.getZero(toClass);
+						return getZero(toClass);
 					}
 					product *= multiplier;
 				}
@@ -174,16 +317,16 @@ public class SafeMath {
 		BigDecimal product = BigDecimal.ONE;
 		for (Number v : values) {
 			if(v == null){
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
-				BigDecimal multiplier = v instanceof BigDecimal ? (BigDecimal) v : ValueUtils.value(BigDecimal.class, v); 
+				BigDecimal multiplier = v instanceof BigDecimal ? (BigDecimal) v : value(BigDecimal.class, v); 
 				if (BigDecimal.ZERO.compareTo(multiplier) == 0) {
-					return ValueUtils.getZero(toClass);
+					return getZero(toClass);
 				}
 				product = product.multiply(multiplier);
 			}
 		}
-		return ValueUtils.value(toClass, product);
+		return value(toClass, product);
 	}
 	
 	/**
@@ -231,27 +374,27 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	protected static <T extends Number> T doAdd(Object a, Object b, Class<T> toClass, boolean subtract)
 	{
-		Assert.notNull(toClass);
+		Arguments.checkNull(toClass);
 		if (a == null && b == null) {
-			return ValueUtils.getZero(toClass);
+			return getZero(toClass);
 		}
 		if (Fraction.class.equals(toClass)) {
-			Fraction sum = ValueUtils.value(Fraction.class, a);
+			Fraction sum = value(Fraction.class, a);
 			return (T) (subtract ?
-					sum.subtract(ValueUtils.value(Fraction.class, b)) :
-					sum.add(ValueUtils.value(Fraction.class, b)));
+					sum.subtract(value(Fraction.class, b)) :
+					sum.add(value(Fraction.class, b)));
 		} else if (Byte.class.equals(toClass) || Integer.class.equals(toClass)
 				|| Long.class.equals(toClass) || Short.class.equals(toClass)) {
-			long a1 = ValueUtils.value(Long.class, a);
-			long b1 = ValueUtils.value(Long.class, b);
+			long a1 = value(Long.class, a);
+			long b1 = value(Long.class, b);
 			return NumberUtils.convertNumberToTargetClass(subtract ? a1 - b1 : a1 + b1, toClass);
 		} else if(Float.class.equals(toClass) || Double.class.equals(toClass)) {
-			double a1 = ValueUtils.value(Double.class, a);
-			double b1 = ValueUtils.value(Double.class, b);
+			double a1 = value(Double.class, a);
+			double b1 = value(Double.class, b);
 			return NumberUtils.convertNumberToTargetClass(subtract ? a1 - b1 : a1 + b1, toClass);
 		} else {
-			BigDecimal a1 = ValueUtils.value(BigDecimal.class, a);
-			BigDecimal b1 = ValueUtils.value(BigDecimal.class, b);
+			BigDecimal a1 = value(BigDecimal.class, a);
+			BigDecimal b1 = value(BigDecimal.class, b);
 			return NumberUtils.convertNumberToTargetClass(subtract ? a1.subtract(b1) : a1.add(b1), toClass);
 		}
 	}
@@ -275,34 +418,34 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T multiply(Object a, Object b, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
+		Arguments.checkNull(toClass);
 		if(a == null || b == null) {
-			return ValueUtils.getZero(toClass);
+			return getZero(toClass);
 		} else if (Fraction.class.equals(toClass)) {
 			// Fraction has a short-circuit to send ZERO if either numerator is zero
-			return (T) ValueUtils.value(Fraction.class, a).multiplyBy(ValueUtils.value(Fraction.class, b));
+			return (T) value(Fraction.class, a).multiplyBy(value(Fraction.class, b));
 		} else if (Byte.class.equals(toClass) || Integer.class.equals(toClass)
 				|| Long.class.equals(toClass) || Short.class.equals(toClass)) {
-			long multiplicand = ValueUtils.value(Long.class, a);
-			long multiplier = ValueUtils.value(Long.class, b);
+			long multiplicand = value(Long.class, a);
+			long multiplier = value(Long.class, b);
 			if (multiplicand == 0L || multiplier == 0L) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(multiplicand * multiplier, toClass);
 			}
 		} else if (Float.class.equals(toClass) || Double.class.equals(toClass)) {
-			double multiplicand = ValueUtils.value(Double.class, a);
-			double multiplier = ValueUtils.value(Double.class, b);
+			double multiplicand = value(Double.class, a);
+			double multiplier = value(Double.class, b);
 			if (multiplicand == 0.0 || multiplier == 0.0) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(multiplicand * multiplier, toClass);
 			}
 		} else {
-			BigDecimal multiplicand = ValueUtils.value(BigDecimal.class, a);
-			BigDecimal multiplier = ValueUtils.value(BigDecimal.class, b);
+			BigDecimal multiplicand = value(BigDecimal.class, a);
+			BigDecimal multiplier = value(BigDecimal.class, b);
 			if (BigDecimal.ZERO.compareTo(multiplicand) == 0 || BigDecimal.ZERO.compareTo(multiplier) == 0) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(multiplicand.multiply(multiplier), toClass);
 			}
@@ -328,15 +471,15 @@ public class SafeMath {
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T divide(Object a, Object b, Class<T> toClass)
 	{
-		Assert.notNull(toClass);
-		if(ValueUtils.isZero(a) || ValueUtils.isZero(b)) {
-			return ValueUtils.getZero(toClass);
+		Arguments.checkNull(toClass);
+		if(isZero(a) || isZero(b)) {
+			return getZero(toClass);
 		} else if (Fraction.class.equals(toClass)) {
 			if (isInteger(a) && isInteger(b)) {
-				return (T) Fraction.getFraction(ValueUtils.value(Integer.class, a), ValueUtils.value(Integer.class, b));
+				return (T) Fraction.getFraction(value(Integer.class, a), value(Integer.class, b));
 			} else {
-				Fraction dividend = ValueUtils.value(Fraction.class, a);
-				Fraction divisor = ValueUtils.value(Fraction.class, b);
+				Fraction dividend = value(Fraction.class, a);
+				Fraction divisor = value(Fraction.class, b);
 				if (dividend.getNumerator() == 0 || divisor.getNumerator() == 0) {
 					return (T) Fraction.ZERO;
 				} else {
@@ -345,26 +488,26 @@ public class SafeMath {
 			}
 		} else if (Byte.class.equals(toClass) || Integer.class.equals(toClass)
 				|| Long.class.equals(toClass) || Short.class.equals(toClass)) {
-			long dividend = ValueUtils.value(Long.class, a);
-			long divisor = ValueUtils.value(Long.class, b);
+			long dividend = value(Long.class, a);
+			long divisor = value(Long.class, b);
 			if (dividend == 0L || divisor == 0L) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(dividend / divisor, toClass);
 			}
 		} else if (Float.class.equals(toClass) || Double.class.equals(toClass)) {
-			double dividend = ValueUtils.value(Double.class, a);
-			double divisor = ValueUtils.value(Double.class, b);
+			double dividend = value(Double.class, a);
+			double divisor = value(Double.class, b);
 			if (dividend == 0.0 || divisor == 0.0) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(dividend / divisor, toClass);
 			}
 		} else {
-			BigDecimal multiplicand = ValueUtils.value(BigDecimal.class, a);
-			BigDecimal multiplier = ValueUtils.value(BigDecimal.class, b);
+			BigDecimal multiplicand = value(BigDecimal.class, a);
+			BigDecimal multiplier = value(BigDecimal.class, b);
 			if (BigDecimal.ZERO.compareTo(multiplicand) == 0 || BigDecimal.ZERO.compareTo(multiplier) == 0) {
-				return ValueUtils.getZero(toClass);
+				return getZero(toClass);
 			} else {
 				return NumberUtils.convertNumberToTargetClass(
 						multiplicand.divide(multiplier, 10, RoundingMode.HALF_UP).stripTrailingZeros(), toClass);
@@ -378,8 +521,8 @@ public class SafeMath {
 			if (org.apache.commons.lang3.math.NumberUtils.isNumber(svalue)) {
 				char dot = ((DecimalFormat)DecimalFormat.getInstance()).getDecimalFormatSymbols().getDecimalSeparator();
 				value = svalue.indexOf(dot) > -1 ?
-						ValueUtils.value(BigDecimal.class, svalue) :
-						ValueUtils.value(BigInteger.class, svalue);
+						value(BigDecimal.class, svalue) :
+						value(BigInteger.class, svalue);
 			}
 		}
 		if (value instanceof Byte || value instanceof Short || value instanceof Integer) {

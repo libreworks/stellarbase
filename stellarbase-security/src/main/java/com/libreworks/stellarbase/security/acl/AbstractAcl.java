@@ -29,10 +29,10 @@ import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.acls.model.UnloadedSidException;
-import org.springframework.util.Assert;
 
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.text.Strings;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * Abstract super class for immutable {@link Acl} implementations.
@@ -120,8 +120,8 @@ public abstract class AbstractAcl implements Acl
 
 	public boolean isGranted(List<Permission> permission, List<Sid> sids, boolean administrativeMode) throws NotFoundException, UnloadedSidException
 	{
-		Assert.notEmpty(permission);
-        Assert.notEmpty(sids);
+		Arguments.checkEmpty(permission);
+        Arguments.checkEmpty(sids);
 
         if (!this.isSidLoaded(sids)) {
             throw new UnloadedSidException("ACL was not loaded for one or more SID");

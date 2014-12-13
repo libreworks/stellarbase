@@ -19,10 +19,10 @@ package com.libreworks.stellarbase.validation;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * An abstract rule to allow processing of one field.
@@ -40,8 +40,7 @@ public abstract class AbstractOneFieldRule<T> extends AbstractRule
 	 */
 	public AbstractOneFieldRule(String field)
 	{
-		Assert.notNull(field);
-		this.field = field;
+		this.field = Arguments.checkBlank(field);
 	}
 	
 	@Override

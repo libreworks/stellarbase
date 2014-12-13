@@ -19,12 +19,12 @@ package com.libreworks.stellarbase.validation;
 
 import java.util.Collection;
 
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.google.common.collect.ImmutableList;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A validator which validates an object using a series of {@link Rule} objects.
@@ -44,8 +44,7 @@ public class RuleValidator implements Validator
 	 */
 	public RuleValidator(Collection<Rule> rules)
 	{
-		Assert.notNull(rules);
-		this.rules = ImmutableList.copyOf(rules);
+		this.rules = ImmutableList.copyOf(Arguments.checkContainsNull(rules));
 	}
 	
 	/* (non-Javadoc)
