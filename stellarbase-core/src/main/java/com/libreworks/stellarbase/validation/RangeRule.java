@@ -66,7 +66,7 @@ public class RangeRule extends AbstractOneFieldRule<Number>
 	public RangeRule(String field, Double min, Double max)
 	{
 		super(field);
-		if (min != null || max != null) {
+		if (min == null || max == null) {
 			throw new IllegalArgumentException("You must specify at least one range limit");
 		}
 		this.min = min;

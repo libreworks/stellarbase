@@ -33,6 +33,9 @@ import com.libreworks.stellarbase.util.Arguments;
  * can provide a result subset with a count of all results to allow the front-
  * end to provide pagination.
  * 
+ * <p>{@code SearchResult} objects are Serializable so long as the objects
+ * contained in the {@code results} list are also Serializable.
+ * 
  * @author Jonathan Hawk
  * @param <T> The type of result contained within
  */
@@ -51,7 +54,7 @@ public class SearchResults<T> implements Serializable
 	 */
 	public SearchResults(List<T> results, int count)
 	{
-		this.results = Arguments.checkInstanceOf(Serializable.class, results).contains(null) ?
+		this.results = Arguments.checkNull(results).contains(null) ?
 			Collections.unmodifiableList(new ArrayList<T>(results)) :
 			ImmutableList.copyOf(results);
 		this.count = count;

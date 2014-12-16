@@ -26,8 +26,8 @@ import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-import com.libreworks.stellarbase.orm.model.EntityRepository;
-import com.libreworks.stellarbase.orm.model.Identifiable;
+import com.libreworks.stellarbase.persistence.model.EntityRepository;
+import com.libreworks.stellarbase.persistence.model.Identifiable;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**

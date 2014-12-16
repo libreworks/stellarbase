@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.libreworks.stellarbase.orm.model.EntityRepository;
-import com.libreworks.stellarbase.orm.model.Identifiable;
+import com.libreworks.stellarbase.persistence.model.EntityRepository;
+import com.libreworks.stellarbase.persistence.model.Identifiable;
 
 import org.junit.Before;
 import org.junit.Test;
