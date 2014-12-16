@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package com.libreworks.stellarbase.orm.beans;
+package com.libreworks.stellarbase.persistence.beans;
 
 import static org.junit.Assert.*;
 
@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.libreworks.stellarbase.persistence.beans.EntityRepositoryEditor;
 import com.libreworks.stellarbase.persistence.model.EntityRepository;
 import com.libreworks.stellarbase.persistence.model.Identifiable;
 

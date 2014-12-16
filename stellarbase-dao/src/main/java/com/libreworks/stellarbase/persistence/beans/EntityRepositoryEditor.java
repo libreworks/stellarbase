@@ -15,7 +15,7 @@
  * 
  * @author Jonathan Hawk
  */
-package com.libreworks.stellarbase.orm.beans;
+package com.libreworks.stellarbase.persistence.beans;
 
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
