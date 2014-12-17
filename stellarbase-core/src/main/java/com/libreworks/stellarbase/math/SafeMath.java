@@ -24,10 +24,10 @@ import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.Fraction;
 import org.springframework.util.NumberUtils;
 
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -56,19 +56,19 @@ public class SafeMath
 		} else if(BigInteger.class.isAssignableFrom(toClass)){
 			return (T) BigInteger.ZERO;
 		} else if(Byte.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+			return (T) Byte.valueOf((byte)0);
 		} else if(Double.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.DOUBLE_ZERO;
+			return (T) Double.valueOf(0.0d);
 		} else if(Float.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.FLOAT_ZERO;
+			return (T) Float.valueOf(0.0f);
 		} else if(Fraction.class.equals(toClass)){
 			return (T) Fraction.ZERO;
 		} else if(Integer.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+			return (T) Integer.valueOf(0);
 		} else if(Long.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
+			return (T) Long.valueOf(0L);
 		} else if(Short.class.equals(toClass)){
-			return (T) org.apache.commons.lang3.math.NumberUtils.SHORT_ZERO;
+			return (T) Short.valueOf((short) 0);
 		} else {
 			return NumberUtils.convertNumberToTargetClass(0, toClass);
 		}
@@ -94,7 +94,7 @@ public class SafeMath
 			return true;
 		}
 		if (value instanceof CharSequence) {
-			if (StringUtils.isBlank((CharSequence) value)) {
+			if (Strings.isBlank((CharSequence) value)) {
 				return true;
 			} else if (ZERO.matcher((CharSequence) value).matches()) {
 				return true;
@@ -153,7 +153,7 @@ public class SafeMath
 					(T) Fraction.getFraction(NumberUtils.convertNumberToTargetClass((Number)value, Double.class));
 			} else {
 				String toString = value.toString();
-				return StringUtils.isBlank(toString) ? 
+				return Strings.isBlank(toString) ? 
 					SafeMath.getZero(toClass) : (T) Fraction.getFraction(toString);
 			}
 		} else if ( value instanceof Fraction ) {

@@ -20,7 +20,7 @@ package com.libreworks.stellarbase.math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import com.google.common.base.Objects;
 
 /**
  * Stores a number and presents it as a reduced multiplier (e.g 1,234,567 as 1.2 M).
@@ -99,15 +99,13 @@ public class DecimalMultiplier extends AbstractMultiplier<DecimalMultiplier>
 	{
 		if (this == obj) {
 			return true;
-		} else if (obj == null || !(obj instanceof DecimalMultiplier)) {
-			return false;
+		} else if (obj instanceof DecimalMultiplier) {
+			DecimalMultiplier other = (DecimalMultiplier) obj;
+			return Objects.equal(getValue(), other.getValue()) &&
+				Objects.equal(getUnit(), other.getUnit()) &&
+				Objects.equal(getPrefix(), other.getPrefix());
 		}
-		DecimalMultiplier other = (DecimalMultiplier) obj;
-		return new EqualsBuilder()
-			.append(getValue(), other.getValue())
-			.append(getUnit(), other.getUnit())
-			.append(getPrefix(), other.getPrefix())
-			.isEquals();
+		return false;
 	}
 		
 	/**

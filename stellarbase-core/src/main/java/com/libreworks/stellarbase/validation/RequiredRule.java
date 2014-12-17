@@ -17,12 +17,12 @@
  */
 package com.libreworks.stellarbase.validation;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.google.common.base.Joiner;
 import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.util.Arguments;
 
 /**
  * A rule for required fields.
@@ -58,16 +58,13 @@ public class RequiredRule extends AbstractRule
 	 */
 	public RequiredRule(String[] fields, String errorCode)
 	{
-		if ( ArrayUtils.isEmpty(fields) ) {
-			throw new IllegalArgumentException("Must specify at least one field");
-		}
-		this.fields = fields;
+		this.fields = Arguments.checkEmpty(fields, "Must specify at least one field");
 		this.errorCode = errorCode;
 	}
 	
 	public String getConstraints()
 	{
-		return StringUtils.join(fields, Characters.COMMA);
+		return Joiner.on(Characters.COMMA).join(fields);
 	}
 	
 	public String getLabel()

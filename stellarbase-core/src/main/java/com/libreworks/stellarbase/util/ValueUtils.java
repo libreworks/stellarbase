@@ -20,8 +20,10 @@ package com.libreworks.stellarbase.util;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.NumberUtils;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 
 /**
  * Utility class for value conversion and comparison.
@@ -64,7 +66,7 @@ public class ValueUtils
 			return equivalentNumbers(a, b);
 		}
 		
-		return ObjectUtils.toString(a).equals(ObjectUtils.toString(b));
+		return a.toString().equals(b.toString());
 	}
 	
 	/**
@@ -102,23 +104,24 @@ public class ValueUtils
 		if ( a == null || b == null ) {
 			return false;
 		}
-		return ObjectUtils.equals(toDate(a), toDate(b));
+		return Objects.equal(toDate(a), toDate(b));
 	}
 	
 	/**
 	 * Compares two objects for null equivalence.
 	 * 
-	 * <p>This method considers {@code null} as equivalent to {@link ObjectUtils#NULL}.
+	 * <p>This method considers {@code null} as equivalent to {@link Optional#absent()}.
 	 * 
 	 * @param a The first value
 	 * @param b The second value
 	 * @return Whether the objects are considered equivalent
 	 */
+	@SuppressWarnings("rawtypes")
 	public static boolean equivalentNull(Object a, Object b)
 	{
 		return a == b ||
-			ObjectUtils.NULL.equals(a) && b == null ||
-			ObjectUtils.NULL.equals(b) && a == null;
+			(a instanceof Optional && !((Optional)a).isPresent()) && b == null ||
+			(b instanceof Optional && !((Optional)b).isPresent()) && a == null;
 	}
 	
 	protected static Date toDate(Object value)
@@ -145,7 +148,7 @@ public class ValueUtils
 	{
 		Number nvalue = value instanceof Number ? (Number)value : Double.NaN;
 		if (!(value instanceof Number)){
-			String svalue = ObjectUtils.toString(value);
+			String svalue = value == null ? "" : value.toString();
 			if(org.apache.commons.lang3.math.NumberUtils.isNumber(svalue)) {
 				nvalue = NumberUtils.parseNumber(svalue, toClass);
 			}

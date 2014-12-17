@@ -17,10 +17,10 @@
  */
 package com.libreworks.stellarbase.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.libreworks.stellarbase.text.Strings;
 
 /**
  * A utility to assist in parameter validation.
@@ -198,7 +198,7 @@ public class Arguments
 	 */
 	public static <T> T[] checkContainsNull(T[] object, String message)
 	{
-		if (ArrayUtils.contains(checkNull(object, message), null)) {
+		if (Arrays.asList(checkNull(object, message)).contains(null)) {
 			throw new IllegalArgumentException(message);
 		}
 		return object;
@@ -226,7 +226,7 @@ public class Arguments
 	 */
 	public static <T extends CharSequence> T checkBlank(T object, String message)
 	{
-		if (StringUtils.isBlank(object)) {
+		if (Strings.isBlank(object)) {
 			throw new IllegalArgumentException(message);
 		}
 		return object;

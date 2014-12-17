@@ -40,10 +40,10 @@ import com.libreworks.stellarbase.persistence.criteria.Query;
 import com.libreworks.stellarbase.persistence.criteria.QueryBuilder;
 import com.libreworks.stellarbase.persistence.criteria.ValueExpression;
 import com.libreworks.stellarbase.text.Characters;
+import com.libreworks.stellarbase.text.Strings;
 
 import static com.libreworks.stellarbase.util.Arguments.*;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -594,7 +594,7 @@ public class SimpleQuery implements Query
 		@Override
 		public Query build()
 		{
-			if (StringUtils.isBlank(from)) {
+			if (Strings.isBlank(from)) {
 				throw new IllegalStateException("You must specify a table");
 			}
 			return new SimpleQuery(this);

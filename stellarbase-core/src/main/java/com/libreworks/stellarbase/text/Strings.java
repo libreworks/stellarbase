@@ -37,53 +37,53 @@ import com.google.common.collect.ImmutableSet;
 public class Strings
 {
 	// whitespace
-	public static final String TAB = String.valueOf(Characters.TAB);
-	public static final String NL = String.valueOf(Characters.NL);
-	public static final String CR = String.valueOf(Characters.CR);
-	public static final String SPACE = String.valueOf(Characters.SPACE);
+	public static final String TAB = "\t";
+	public static final String NL = "\n";
+	public static final String CR = "\r";
+	public static final String SPACE = " ";
 
 	// for those silly people who think Y and N make a good boolean. silly.
-	public static final String Y = String.valueOf(Characters.Y);
-	public static final String N = String.valueOf(Characters.N);
+	public static final String Y = "Y";
+	public static final String N = "N";
 	
 	// Maths
-	public static final String MINUS = String.valueOf(Characters.MINUS);
-	public static final String PLUS = String.valueOf(Characters.PLUS);
-	public static final String TIMES = String.valueOf(Characters.TIMES);
-	public static final String DIVIDE = String.valueOf(Characters.DIVIDE);
-	public static final String EQUALS = String.valueOf(Characters.EQUALS);
+	public static final String MINUS = "\u2212";
+	public static final String PLUS = "+";
+	public static final String TIMES = "\u00d7";
+	public static final String DIVIDE = "\u00f7";
+	public static final String EQUALS = "=";
 	
 	// numbers
-	public static final String DOLLAR = String.valueOf(Characters.DOLLAR);
-	public static final String PERCENT = String.valueOf(Characters.PERCENT);
-	public static final String ZERO = String.valueOf(Characters.ZERO);
-	public static final String ONE = String.valueOf(Characters.ONE);
+	public static final String DOLLAR = "$";
+	public static final String PERCENT = "%";
+	public static final String ZERO = "0";
+	public static final String ONE = "1";
 	
 	// punctuation
-	public static final String DOT = String.valueOf(Characters.DOT);
-	public static final String COMMA = String.valueOf(Characters.COMMA);
-	public static final String QUESTION = String.valueOf(Characters.QUESTION);
-	public static final String COLON = String.valueOf(Characters.COLON);
-	public static final String SEMICOLON = String.valueOf(Characters.SEMICOLON);
-	public static final String BANG = String.valueOf(Characters.BANG);
-	public static final String QUOTE = String.valueOf(Characters.QUOTE);
-	public static final String APOSTROPHE = String.valueOf(Characters.APOSTROPHE);
-	public static final String SLASH = String.valueOf(Characters.SLASH);
-	public static final String DASH = String.valueOf(Characters.DASH);
-	public static final String ENDASH = String.valueOf(Characters.ENDASH);
-	public static final String EMDASH = String.valueOf(Characters.EMDASH);
-	public static final String HELLIP = String.valueOf(Characters.HELLIP);
+	public static final String DOT = ".";
+	public static final String COMMA = ",";
+	public static final String QUESTION = "?";
+	public static final String COLON = ":";
+	public static final String SEMICOLON = ";";
+	public static final String BANG = "!";
+	public static final String QUOTE = "\"";
+	public static final String APOSTROPHE = "'";
+	public static final String SLASH = "/";
+	public static final String DASH = "-";
+	public static final String ENDASH = "\u2013";
+	public static final String EMDASH = "\u2014";
+	public static final String HELLIP = "\u2026";
 
 	// typography
-	public static final String BACKSLASH = String.valueOf(Characters.BACKSLASH);
-	public static final String PIPE = String.valueOf(Characters.PIPE);
-	public static final String HASH = String.valueOf(Characters.HASH);
-	public static final String AT = String.valueOf(Characters.AT);
-	public static final String CARET = String.valueOf(Characters.CARET);
-	public static final String STAR = String.valueOf(Characters.STAR);
-	public static final String AMPERSAND = String.valueOf(Characters.AMPERSAND);
-	public static final String TILDE = String.valueOf(Characters.TILDE);
-	public static final String UNDERSCORE = String.valueOf(Characters.UNDERSCORE);
+	public static final String BACKSLASH = "\\";
+	public static final String PIPE = "|";
+	public static final String HASH = "#";
+	public static final String AT = "@";
+	public static final String CARET = "^";
+	public static final String STAR = "*";
+	public static final String AMPERSAND = "&";
+	public static final String TILDE = "~";
+	public static final String UNDERSCORE = "_";
 	
 	// common synonyms
 	public static final String PERIOD = DOT;
@@ -92,9 +92,9 @@ public class Strings
 	public static final String ASTERISK = STAR;
 	
 	// because everybody loves The Cloud!
-	public static final String CLOUD = String.valueOf(Characters.CLOUD);
+	public static final String CLOUD = "\u2601";
 	// seriously! SSV! Snowman Separated Values. Stop laughing.
-	public static final String SNOWMAN = String.valueOf(Characters.SNOWMAN);
+	public static final String SNOWMAN = "\u2603";
 	// you never know when this will come in handy
 	public static final String POO = "\uD83D\uDCA9";
 	
@@ -102,11 +102,21 @@ public class Strings
 	public static final String TRUE = Boolean.TRUE.toString();
 	public static final String FALSE = Boolean.FALSE.toString();
 	public static final String NULL = "null";
-	public static final String EMPTY = StringUtils.EMPTY;
+	public static final String EMPTY = "";
 	
 	public static final Set<String> TRUTHY = ImmutableSet.of(TRUE, ONE, Y);
 	
 	private Strings() {}
+	
+	public static boolean isBlank(Object object)
+	{
+		return object == null || isBlank(object.toString()); 
+	}
+	
+	public static boolean isBlank(CharSequence cs)
+	{
+		return StringUtils.isBlank(cs);
+	}
 	
 	/**
 	 * Determines if the supplied string is "truthy".
@@ -164,6 +174,6 @@ public class Strings
 	 */
 	public static String getExtension(String name)
 	{
-		return name == null ? null : name.substring(name.lastIndexOf('.') + 1);
+		return name == null ? null : name.substring(name.lastIndexOf(Characters.DOT) + 1);
 	}	
 }

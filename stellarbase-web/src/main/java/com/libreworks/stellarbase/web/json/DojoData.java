@@ -21,9 +21,8 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableMap;
+import com.libreworks.stellarbase.text.Strings;
 
 /**
  * Provides an API to easily create JSON feeds compatible with {@code dojo.data.ItemFileReadStore}.
@@ -76,7 +75,7 @@ public class DojoData implements Serializable
 	 */
 	public DojoData add(Map<String,?> item)
 	{
-		if ( StringUtils.isBlank(identifier) ) {
+		if ( Strings.isBlank(identifier) ) {
 			throw new IllegalStateException("You must set an identifier prior to adding items");
 		} else if ( !item.containsKey(identifier) ) {
 			throw new IllegalArgumentException("The item must have an entry containing the identifier");
@@ -137,13 +136,13 @@ public class DojoData implements Serializable
 	public Map<String,?> export()
 	{
 		String identifier = getIdentifier();
-		if ( StringUtils.isBlank(identifier) ) {
+		if ( Strings.isBlank(identifier) ) {
 			throw new IllegalStateException("You must specify an identifier before you export");
 		}
 		LinkedHashMap<String,Object> map = new LinkedHashMap<String,Object>(3);
 		map.put("identifier", identifier);
 		String label = getLabel();
-		if ( !StringUtils.isBlank(label) ) {
+		if ( !Strings.isBlank(label) ) {
 			map.put("label", label);
 		}
 		map.put("items", items.values());
@@ -198,7 +197,7 @@ public class DojoData implements Serializable
 	 */
 	public DojoData set(Map<String,?> item)
 	{
-		if ( StringUtils.isBlank(identifier) ) {
+		if ( Strings.isBlank(identifier) ) {
 			throw new IllegalStateException("You must set an identifier prior to adding items");
 		} else if ( !item.containsKey(identifier) ) {
 			throw new IllegalArgumentException("The item must have an entry containing the identifier");

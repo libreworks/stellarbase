@@ -20,11 +20,11 @@ package com.libreworks.stellarbase.mail;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -54,8 +54,8 @@ public class MailTask implements Runnable, MimeMessagePreparator
 	
 	public void prepare(MimeMessage mimeMessage) throws Exception
     {
-		boolean hasMultipart = !StringUtils.isBlank(params.getTextTemplate()) &&
-			!StringUtils.isBlank(params.getHtmlTemplate());
+		boolean hasMultipart = !Strings.isBlank(params.getTextTemplate()) &&
+			!Strings.isBlank(params.getHtmlTemplate());
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, hasMultipart, params.getEncoding());
 		final InternetAddress[] EMPTY = new InternetAddress[0];
 		helper.setFrom(params.getFrom());
@@ -77,7 +77,7 @@ public class MailTask implements Runnable, MimeMessagePreparator
 			String html = engine.mergeIntoString(params.getHtmlTemplate(),
 				params.getValues(), params.getEncoding());
 			helper.setText(text, html);
-		} else if ( !StringUtils.isBlank(params.getTextTemplate()) ) {
+		} else if ( !Strings.isBlank(params.getTextTemplate()) ) {
 			String text = engine.mergeIntoString(params.getTextTemplate(),
 				params.getValues(), params.getEncoding());
 			helper.setText(text);

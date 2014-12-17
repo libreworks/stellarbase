@@ -17,11 +17,11 @@
  */
 package com.libreworks.stellarbase.validation;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
 
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -64,7 +64,7 @@ public class CircularRule extends AbstractRule
 	public void validate(Object target, Errors errors)
 	{
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(target);
-		if ( ObjectUtils.equals(target, bw.getPropertyValue(field)) ) {
+		if ( Objects.equal(target, bw.getPropertyValue(field)) ) {
 			errors.rejectValue(field, FIELD_INVALID);
 		}
 	}

@@ -9,9 +9,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.google.common.collect.ImmutableSet;
@@ -105,7 +102,7 @@ public class PaginationFactory
 			}				
 		}
 		
-		Map<String,Boolean> order = new LinkedHashMap<>();
+		Map<String,Boolean> order = new LinkedHashMap<String,Boolean>();
 		// formats:
 		// Dojo - &sort(+foo,-bar)
 		// Dojo w/field - &[field]=+foo,-bar
@@ -140,7 +137,7 @@ public class PaginationFactory
 	
 	private void parseSort(String sort, Map<String,Boolean> sorts)
 	{
-		if (StringUtils.isBlank(sort)) {
+		if (Strings.isBlank(sort)) {
 			return;
 		}
 		if (sort.startsWith("[")) {
@@ -186,7 +183,8 @@ public class PaginationFactory
 	{
 		for (String name : names) {
 			String value = request.getParameter(name);
-			if (NumberUtils.isDigits(value)) {
+			Integer parsed = parseOrNull(value);
+			if (parsed != null) {
 				return Integer.valueOf(value);
 			}
 		}
@@ -195,7 +193,19 @@ public class PaginationFactory
 	
 	private static Integer parse(String value, Integer defaultValue)
 	{
-		return NumberUtils.isDigits(value) ? Integer.valueOf(value) : defaultValue;
+		Integer parsed = parseOrNull(value);
+		return parsed == null ? defaultValue : parsed;
+	}
+	
+	private static Integer parseOrNull(String value)
+	{
+		if (value != null) {
+			try {
+				return Integer.valueOf(value.trim());
+			} catch (NumberFormatException e) {
+			}
+		}
+		return null;
 	}
 	
 	public static class ExtSort

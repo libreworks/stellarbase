@@ -19,7 +19,6 @@ package com.libreworks.stellarbase.persistence.criteria;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 
 public class ComparisonPredicateTest
@@ -30,8 +29,10 @@ public class ComparisonPredicateTest
     public void testHashCode()
     {
         object = new ComparisonPredicate(ComparisonPredicate.Operator.EQ, fieldNamed("foo"), ValueExpression.of("a"), null, false);
-        int hashCode = new HashCodeBuilder().append(ComparisonPredicate.Operator.EQ).append(fieldNamed("foo")).append(ValueExpression.of("a")).append((Object)null).append(false).toHashCode();
-        assertEquals(hashCode, object.hashCode());
+        Object object2 = new ComparisonPredicate(ComparisonPredicate.Operator.EQ, fieldNamed("foo"), ValueExpression.of("a"), null, false);
+        Object object3 = new ComparisonPredicate(ComparisonPredicate.Operator.EQ, fieldNamed("foo"), ValueExpression.of("b"), null, false);
+        assertEquals(object2.hashCode(), object.hashCode());
+        assertNotEquals(object3.hashCode(), object.hashCode());
     }
 
     @Test

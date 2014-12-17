@@ -20,11 +20,9 @@ package com.libreworks.stellarbase.persistence.criteria;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.math.SafeMath;
 import com.libreworks.stellarbase.util.Arguments;
 
@@ -65,16 +63,14 @@ public class AggregateExpression<T> extends AbstractExpression<T>
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof AggregateExpression) {
+			@SuppressWarnings("rawtypes")
+			AggregateExpression other = (AggregateExpression) obj;
+			return Objects.equal(function, other.function) &&
+				Objects.equal(argument, other.argument) &&
+				Objects.equal(getJavaType(), getJavaType());
 		}
-		if (obj == null || !(obj instanceof AggregateExpression))
-			return false;
-		@SuppressWarnings("rawtypes")
-		AggregateExpression other = (AggregateExpression) obj;
-		return new EqualsBuilder()
-			.append(function, other.function)
-			.append(argument, other.argument)
-			.append(getJavaType(), getJavaType())
-			.isEquals();		
+		return false;
 	}
 	
 	/*
@@ -84,11 +80,7 @@ public class AggregateExpression<T> extends AbstractExpression<T>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(function)
-			.append(argument)
-			.append(getJavaType())
-			.toHashCode();
+		return Objects.hashCode(function, argument, getJavaType());
 	}
 	
 	/**
@@ -137,17 +129,16 @@ public class AggregateExpression<T> extends AbstractExpression<T>
 			return getJavaType().cast(Function.AVG == function ?
 				SafeMath.divide(sum, objects.size(), nc) : sum);
 		} else {
-			Comparable[] evals = new Comparable[objects.size()];
-			int i = -1;
+			ArrayList<Comparable> evals = new ArrayList<Comparable>(objects.size());
 			for (Object o : objects) {
 				Object eval = argument.evaluate(o);
 				if (eval != null && !Comparable.class.isAssignableFrom(eval.getClass())) {
 					throw new IllegalStateException("The " + function.name() + " function can only operate on Comparable objects");
 				}				
-				evals[++i] = (Comparable) eval; // safe cast because we would have thrown the exception otherwise
+				evals.add((Comparable) eval); // safe cast because we would have thrown the exception otherwise
 			}
 			// might throw ClassCastException
-			return (T) (Function.MAX == function ? ObjectUtils.max(evals) : ObjectUtils.min(evals));
+			return (T) (Function.MAX == function ? Collections.max(evals) : Collections.min(evals));
 		}
 	}
 	

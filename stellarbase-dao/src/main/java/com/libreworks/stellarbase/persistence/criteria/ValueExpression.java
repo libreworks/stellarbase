@@ -17,9 +17,7 @@
  */
 package com.libreworks.stellarbase.persistence.criteria;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
 import com.libreworks.stellarbase.util.Arguments;
 
@@ -60,15 +58,13 @@ public class ValueExpression<T> extends AbstractExpression<T> implements Supplie
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof ValueExpression) {
+			@SuppressWarnings("rawtypes")
+			ValueExpression other = (ValueExpression) obj;
+			return Objects.equal(value, other.value) &&
+				Objects.equal(getJavaType(), other.getJavaType());
 		}
-		if (obj == null || !(obj instanceof ValueExpression))
-			return false;
-		@SuppressWarnings("rawtypes")
-		ValueExpression other = (ValueExpression) obj;
-		return new EqualsBuilder()
-			.append(value, other.value)
-			.append(getJavaType(), other.getJavaType())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -78,10 +74,7 @@ public class ValueExpression<T> extends AbstractExpression<T> implements Supplie
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(value)
-			.append(getJavaType())
-			.toHashCode();
+		return Objects.hashCode(value, getJavaType());
 	}
 	
 	/**

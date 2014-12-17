@@ -20,10 +20,9 @@ package com.libreworks.stellarbase.persistence.criteria;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.util.ObjectUtils;
 
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.text.Characters;
 import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
@@ -64,15 +63,13 @@ public class LikePredicate extends AbstractPredicate
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof LikePredicate) {
+			LikePredicate other = (LikePredicate) obj;
+			return Objects.equal(inner, other.inner) &&
+				Objects.equal(pattern, other.pattern) &&
+				isNegated() == other.isNegated();
 		}
-		if (obj == null || !(obj instanceof LikePredicate))
-			return false;
-		LikePredicate other = (LikePredicate) obj;
-		return new EqualsBuilder()
-			.append(inner, other.inner)
-			.append(pattern, other.pattern)
-			.append(isNegated(), other.isNegated())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -82,11 +79,7 @@ public class LikePredicate extends AbstractPredicate
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(inner)
-			.append(pattern)
-			.append(isNegated())
-			.toHashCode();
+		return Objects.hashCode(inner, pattern, isNegated());
 	}
 	
 	/**
@@ -120,11 +113,10 @@ public class LikePredicate extends AbstractPredicate
 	 * @see com.libreworks.stellarbase.persistence.criteria.Expression#evaluate(java.lang.Object)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
 	public Boolean evaluate(Object object)
 	{
-		String a = ObjectUtils.toString(inner.evaluate(object));
-		String p = ObjectUtils.toString(pattern.evaluate(object));
+		String a = ObjectUtils.getDisplayString(inner.evaluate(object));
+		String p = ObjectUtils.getDisplayString(pattern.evaluate(object));
 		if (a.equalsIgnoreCase(p)) {
 			return !isNegated();
 		} else {

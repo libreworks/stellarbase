@@ -19,7 +19,6 @@ package com.libreworks.stellarbase.persistence.criteria;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,11 +35,10 @@ public class FieldImplTest
     @Test
     public void testHashCode()
     {
-        int hashCode = new HashCodeBuilder()
-            .append("foo")
-            .append(Object.class)
-            .toHashCode();
-        assertEquals(hashCode, object.hashCode());
+    	Object object2 = new FieldImpl<Object>("foo", Object.class);
+    	Object object3 = new FieldImpl<Object>("bar", Object.class);
+        assertEquals(object2.hashCode(), object.hashCode());
+        assertNotEquals(object3.hashCode(), object.hashCode());
     }
 
     @Test

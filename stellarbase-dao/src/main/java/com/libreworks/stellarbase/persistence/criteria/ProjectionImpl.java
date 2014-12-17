@@ -17,10 +17,8 @@
  */
 package com.libreworks.stellarbase.persistence.criteria;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -48,7 +46,7 @@ public class ProjectionImpl<T> implements Projection<T>
 	public ProjectionImpl(Expression<T> expression, String alias, boolean grouped)
 	{
 		this.expression = Arguments.checkNull(expression);
-		this.alias = StringUtils.isBlank(alias) ? null : alias.trim();
+		this.alias = Strings.isBlank(alias) ? null : alias.trim();
 		this.grouped = grouped;
 	}
 	
@@ -61,16 +59,14 @@ public class ProjectionImpl<T> implements Projection<T>
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof Projection) {
+			@SuppressWarnings("rawtypes")
+			Projection other = (Projection) obj;
+			return Objects.equal(expression, other.getExpression()) &&
+				Objects.equal(alias, other.getAlias()) &&
+				grouped == other.isGrouped();
 		}
-		if (obj == null || !(obj instanceof Projection))
-			return false;
-		@SuppressWarnings("rawtypes")
-		Projection other = (Projection) obj;
-		return new EqualsBuilder()
-			.append(expression, other.getExpression())
-			.append(alias, other.getAlias())
-			.append(grouped, other.isGrouped())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -80,11 +76,7 @@ public class ProjectionImpl<T> implements Projection<T>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(expression)
-			.append(alias)
-			.append(grouped)
-			.toHashCode();
+		return Objects.hashCode(expression, alias, grouped);
 	}
 	
 	/*

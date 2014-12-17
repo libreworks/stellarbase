@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.libreworks.stellarbase.persistence.model.Modifiable;
 
@@ -252,6 +252,6 @@ public class Thread implements Modifiable<Long>
 	public void setVersion(Serializable version)
 	{
 		this.version = version instanceof Integer ? (Integer) version : Integer
-				.valueOf(ObjectUtils.toString(version));
+				.valueOf(ObjectUtils.getDisplayString(version));
 	}
 }

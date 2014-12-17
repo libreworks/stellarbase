@@ -20,14 +20,14 @@ package com.libreworks.stellarbase.persistence.beans;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.util.ObjectUtils;
 
 import com.libreworks.stellarbase.persistence.model.EntityRepository;
 import com.libreworks.stellarbase.persistence.model.Identifiable;
+import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -89,14 +89,13 @@ public class EntityRepositoryEditor<T extends Identifiable<K>, K extends Seriali
     public String getAsText()
     {
     	Identifiable<?> entity = (Identifiable<?>) getValue();
-		return entity != null ? ObjectUtils.toString(entity.getId())
-				: StringUtils.EMPTY;
+		return entity != null ? ObjectUtils.getDisplayString(entity.getId()) : "";
     }
     
     @Override
     public void setAsText(String text)
     {
-    	setValue(StringUtils.isBlank(text) ? null :
+    	setValue(Strings.isBlank(text) ? null :
     		repository.convert(conversionService.convert(text,
 					repository.getIdentifierClass())));
     }

@@ -17,9 +17,7 @@
  */
 package com.libreworks.stellarbase.persistence.criteria;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -57,15 +55,14 @@ public class OrderImpl implements Order
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || !(obj instanceof Order))
-            return false;
-        Order other = (Order) obj;
-        return new EqualsBuilder()
-            .append(ascending, other.isAscending())
-            .append(expression, other.getExpression())
-            .isEquals();
+        } else if (obj instanceof Order) {
+            Order other = (Order) obj;
+            return ascending == other.isAscending() &&
+            	Objects.equal(expression, other.getExpression());
+        }
+        return false;
     }
     
     /*
@@ -75,10 +72,7 @@ public class OrderImpl implements Order
     @Override
     public int hashCode()
     {
-        return new HashCodeBuilder()
-            .append(ascending)
-            .append(expression)
-            .toHashCode();
+        return Objects.hashCode(Boolean.valueOf(ascending), expression);
     }
     
     /*

@@ -20,11 +20,8 @@ package com.libreworks.stellarbase.persistence.criteria;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.util.Arguments;
 import com.libreworks.stellarbase.util.ValueUtils;
@@ -65,15 +62,13 @@ public class InPredicate extends AbstractPredicate
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof InPredicate) {
+			InPredicate other = (InPredicate) obj;
+			return Objects.equal(inner, other.inner) &&
+				Objects.equal(values, other.values) &&
+				isNegated() == other.isNegated();
 		}
-		if (obj == null || !(obj instanceof InPredicate))
-			return false;
-		InPredicate other = (InPredicate) obj;
-		return new EqualsBuilder()
-			.append(inner, other.inner)
-			.append(values, other.values)
-			.append(isNegated(), other.isNegated())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -83,11 +78,7 @@ public class InPredicate extends AbstractPredicate
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(inner)
-			.append(values)
-			.append(isNegated())
-			.toHashCode();
+		return Objects.hashCode(inner, values,isNegated());
 	}
 	
 	/**
@@ -143,9 +134,8 @@ public class InPredicate extends AbstractPredicate
 			Joiner.on(", ").join(values) + ")"; 
 	}
 	
-	@SuppressWarnings("deprecation")
 	private boolean nullSafeEquals(Object a, Object b)
 	{
-		return ObjectUtils.equals(a, b) || ValueUtils.equivalentNull(a, b);
+		return Objects.equal(a, b) || ValueUtils.equivalentNull(a, b);
 	}
 }

@@ -19,9 +19,8 @@ package com.libreworks.stellarbase.persistence;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableMap;
+import com.libreworks.stellarbase.text.Strings;
 
 /**
  * A data transfer object that holds pagination information (i.e. items per page, item offset, field sort order)
@@ -90,7 +89,7 @@ public class Pagination
 		ImmutableMap.Builder<String,Boolean> sort = ImmutableMap.<String, Boolean>builder();
 		if (order != null) {
 			for (Map.Entry<String,Boolean> entry : order.entrySet()) {
-				if (!StringUtils.isBlank(entry.getKey())) {
+				if (!Strings.isBlank(entry.getKey())) {
 					sort.put(entry.getKey(), Boolean.TRUE.equals(entry.getValue())
 						? Boolean.TRUE : Boolean.FALSE);
 				}

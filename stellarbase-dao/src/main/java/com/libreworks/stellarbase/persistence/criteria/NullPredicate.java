@@ -17,9 +17,7 @@
  */
 package com.libreworks.stellarbase.persistence.criteria;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.util.Arguments;
 import com.libreworks.stellarbase.util.ValueUtils;
 
@@ -56,14 +54,12 @@ public class NullPredicate extends AbstractPredicate
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof NullPredicate) {
+			NullPredicate other = (NullPredicate) obj;
+			return Objects.equal(inner, other.inner) &&
+				isNegated() == other.isNegated();
 		}
-		if (obj == null || !(obj instanceof NullPredicate))
-			return false;
-		NullPredicate other = (NullPredicate) obj;
-		return new EqualsBuilder()
-			.append(inner, other.inner)
-			.append(isNegated(), other.isNegated())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -73,10 +69,7 @@ public class NullPredicate extends AbstractPredicate
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(inner)
-			.append(isNegated())
-			.toHashCode();
+		return Objects.hashCode(inner, isNegated());
 	}
 	
 	/**

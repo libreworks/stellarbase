@@ -19,11 +19,8 @@ package com.libreworks.stellarbase.persistence.criteria;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
+import com.google.common.collect.Ordering;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -40,6 +37,8 @@ public class ComparisonPredicate extends AbstractPredicate
 	private final Expression<?> a;
 	private final Expression<?> b;
 	private final Expression<?> c;
+	
+	private static final Ordering<Comparable<?>> COMPARATOR = Ordering.natural().nullsFirst();
 	
 	/**
 	 * Creates a new ComparisonPredicate.
@@ -66,18 +65,17 @@ public class ComparisonPredicate extends AbstractPredicate
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null || !(obj instanceof ComparisonPredicate))
-			return false;
-		ComparisonPredicate other = (ComparisonPredicate) obj;
-		return new EqualsBuilder()
-			.append(operator, other.operator)
-			.append(a, other.a)
-			.append(b, other.b)
-			.append(c, other.c)
-			.append(isNegated(), other.isNegated())
-			.isEquals();		
+		} else if (obj instanceof ComparisonPredicate) {
+			ComparisonPredicate other = (ComparisonPredicate) obj;
+			return Objects.equal(operator, other.operator) &&
+				Objects.equal(a, other.a) &&
+				Objects.equal(b, other.b) &&
+				Objects.equal(c, other.c) &&
+				isNegated() == other.isNegated();
+		}
+		return false;
 	}
 	
 	/*
@@ -87,13 +85,7 @@ public class ComparisonPredicate extends AbstractPredicate
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(operator)
-			.append(a)
-			.append(b)
-			.append(c)
-			.append(isNegated())
-			.toHashCode();
+		return Objects.hashCode(operator, a, b, c, isNegated());
 	}
 	
 	/**
@@ -151,30 +143,33 @@ public class ComparisonPredicate extends AbstractPredicate
 		return isNegated() ? !result : result;
 	}
 	
-	@SuppressWarnings("deprecation")
 	protected static boolean evaluate(Operator operator, Object ea, Object eb, Object ec)
 	{
 		boolean result = false;
 		if (Operator.EQ == operator) {
-			result = ObjectUtils.equals(ea, eb);
+			result = Objects.equal(ea, eb);
 		} else if (Operator.NE == operator) {
-			result = !ObjectUtils.equals(ea, eb);
+			result = !Objects.equal(ea, eb);
 		} else if (Operator.GE == operator || Operator.GT == operator ||
 			Operator.LT == operator || Operator.LE == operator) {
 			if ((Operator.GE == operator || Operator.LE == operator) &&
-				ObjectUtils.equals(ea, eb)) {
+				Objects.equal(ea, eb)) {
 				result = true;
 			} else {
-				int compare = new CompareToBuilder()
-					.append(ea, eb).toComparison();
+				int compare = compare(ea, eb); 
 				result = ((Operator.GE == operator || Operator.GT == operator) && compare > 0)
 						|| ((Operator.LE == operator || Operator.LT == operator) && compare < 0);
 			}
 		} else if (Operator.BETWEEN == operator) {
-			result = (new CompareToBuilder().append(eb, ea).toComparison()) <= 0 &&
-				(new CompareToBuilder().append(ea, ec).toComparison()) <= 0;
+			result = compare(eb, ea) <= 0 && compare(ea, ec) <= 0;
 		}
 		return result;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private static int compare(Object a, Object b)
+	{
+		return COMPARATOR.compare((Comparable)a, (Comparable)b);
 	}
 	
 	/*

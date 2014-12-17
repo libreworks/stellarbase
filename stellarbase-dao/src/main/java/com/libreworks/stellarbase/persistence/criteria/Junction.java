@@ -22,10 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.util.Arguments;
 
@@ -100,15 +98,13 @@ public class Junction extends AbstractPredicate implements PredicateClause
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof PredicateClause) {
+			PredicateClause other = (PredicateClause) obj;
+			return Objects.equal(symbols, other.getSymbols()) &&
+				conjunction == other.isConjunction() &&
+				isNegated() == other.isNegated();
 		}
-		if (obj == null || !(obj instanceof PredicateClause))
-			return false;
-		PredicateClause other = (PredicateClause) obj;
-		return new EqualsBuilder()
-			.append(symbols, other.getSymbols())
-			.append(conjunction, other.isConjunction())
-			.append(isNegated(), other.isNegated())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -118,11 +114,7 @@ public class Junction extends AbstractPredicate implements PredicateClause
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(symbols)
-			.append(conjunction)
-			.append(isNegated())
-			.toHashCode();
+		return Objects.hashCode(symbols, conjunction, isNegated());
 	}
 	
 	/*

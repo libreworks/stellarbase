@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 LibreWorks contributors
+ * Copyright 2014 LibreWorks contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
  */
 package com.libreworks.stellarbase.validation;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.util.NumberUtils;
 import org.springframework.validation.Errors;
 
 import com.libreworks.stellarbase.text.Characters;
@@ -33,7 +31,6 @@ import com.libreworks.stellarbase.text.Characters;
  * 4, 4.5, 6, 8, 9.5, and 10.
  * 
  * @author Jonathan Hawk
- * @version $Id$
  */
 public class RangeRule extends AbstractOneFieldRule<Number>
 {
@@ -77,11 +74,11 @@ public class RangeRule extends AbstractOneFieldRule<Number>
 	public String getConstraintLabel()
 	{
 		StringBuilder sb = new StringBuilder()
-			.append(ObjectUtils.toString(min));
+			.append(min == null ? "" : min);
 		if (min != null && max != null) {
 			sb.append(Characters.ENDASH);
 		}
-		return sb.append(ObjectUtils.toString(max)).toString();
+		return sb.append(max == null ? "" : max).toString();
 	}
 
 	@Override
@@ -94,7 +91,7 @@ public class RangeRule extends AbstractOneFieldRule<Number>
     protected void validateField(Number value, Errors errors)
     {
 	    if ( value != null ) {
-			Double cvalue = NumberUtils.convertNumberToTargetClass(value, Double.class);
+			Double cvalue = new Double(value.doubleValue());
 	    	if ( min != null && min.compareTo(cvalue) > 0 ) {
 	    		errors.rejectValue(field, FIELD_INVALID);
 	    	} else if ( max != null && max.compareTo(cvalue) < 0 ) {

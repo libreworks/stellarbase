@@ -17,10 +17,10 @@
  */
 package com.libreworks.stellarbase.validation;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.google.common.base.Joiner;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -64,6 +64,6 @@ public class SupportsDelegateValidator implements Validator
 	public String toString()
 	{
 		return new StringBuilder(delegate.toString()).append(" supporting ")
-				.append(StringUtils.join(supports, ", ")).toString();
+				.append(Joiner.on(", ").join(supports)).toString();
 	}
 }

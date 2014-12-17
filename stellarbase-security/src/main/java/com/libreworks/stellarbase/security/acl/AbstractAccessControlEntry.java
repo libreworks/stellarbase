@@ -17,13 +17,12 @@
  */
 package com.libreworks.stellarbase.security.acl;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -49,29 +48,23 @@ public abstract class AbstractAccessControlEntry implements AccessControlEntry
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null || !(obj instanceof AbstractAccessControlEntry))
-			return false;
-		AbstractAccessControlEntry other = (AbstractAccessControlEntry)obj;
-		return new EqualsBuilder()
-			.append(isGranting(), other.isGranting())
-			.append(sid, other.sid)
-			.append(permission, other.permission)
-			.append(acl.getObjectIdentity(),
-				other.getAcl() == null ? null : other.getAcl().getObjectIdentity())
-			.isEquals();
+		} else if (obj instanceof AbstractAccessControlEntry) {
+			AbstractAccessControlEntry other = (AbstractAccessControlEntry)obj;
+			return isGranting() == other.isGranting() &&
+				Objects.equal(sid, other.sid) &&
+				Objects.equal(permission, other.permission) &&
+				Objects.equal(acl.getObjectIdentity(),
+					other.getAcl() == null ? null : other.getAcl().getObjectIdentity());
+		}
+		return false;
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(isGranting())
-			.append(sid)
-			.append(permission)
-			.append(acl.getObjectIdentity())
-			.toHashCode();
+		return Objects.hashCode(Boolean.valueOf(isGranting()), sid, permission, acl.getObjectIdentity());
 	}
 	
 	public Acl getAcl()

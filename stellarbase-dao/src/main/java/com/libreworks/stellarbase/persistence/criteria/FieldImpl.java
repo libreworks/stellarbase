@@ -19,10 +19,9 @@ package com.libreworks.stellarbase.persistence.criteria;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.PropertyAccessorFactory;
 
+import com.google.common.base.Objects;
 import com.libreworks.stellarbase.util.Arguments;
 
 /**
@@ -59,15 +58,13 @@ public class FieldImpl<T> extends AbstractField<T>
 	{
 		if (obj == null) {
 			return false;
+		} else if (obj instanceof FieldImpl) {
+			@SuppressWarnings("rawtypes")
+			FieldImpl other = (FieldImpl) obj;
+			return Objects.equal(name, other.name) &&
+				Objects.equal(getJavaType(), other.getJavaType());
 		}
-		if (obj == null || !(obj instanceof FieldImpl))
-			return false;
-		@SuppressWarnings("rawtypes")
-		FieldImpl other = (FieldImpl) obj;
-		return new EqualsBuilder()
-			.append(name, other.name)
-			.append(getJavaType(), other.getJavaType())
-			.isEquals();
+		return false;
 	}
 	
 	/*
@@ -77,10 +74,7 @@ public class FieldImpl<T> extends AbstractField<T>
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(name)
-			.append(getJavaType())
-			.toHashCode();
+		return Objects.hashCode(name, getJavaType());
 	}
 	
 	/*

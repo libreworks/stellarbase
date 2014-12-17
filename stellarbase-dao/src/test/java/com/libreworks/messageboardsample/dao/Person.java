@@ -3,7 +3,7 @@ package com.libreworks.messageboardsample.dao;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.libreworks.stellarbase.persistence.model.Removable;
 
@@ -318,6 +318,6 @@ public class Person implements Removable<Long>
 	public void setVersion(Serializable version)
 	{
 		this.version = version instanceof Integer ?
-				(Integer)version : Integer.valueOf(ObjectUtils.toString(version));
+				(Integer)version : Integer.valueOf(ObjectUtils.getDisplayString(version));
 	}
 }

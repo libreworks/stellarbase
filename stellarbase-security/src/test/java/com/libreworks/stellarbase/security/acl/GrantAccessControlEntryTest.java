@@ -2,7 +2,6 @@ package com.libreworks.stellarbase.security.acl;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -36,13 +35,10 @@ public class GrantAccessControlEntryTest
 		PrincipalSid sid = new PrincipalSid("foobar");
 		Permission permission = BasePermission.CREATE;
 		GrantAccessControlEntry object = new GrantAccessControlEntry(acl, sid, permission);		
-		int hashCode = new HashCodeBuilder()
-			.append(true)
-			.append(sid)
-			.append(permission)
-			.append(acl.getObjectIdentity())
-			.toHashCode();
-		assertEquals(hashCode, object.hashCode());
+		GrantAccessControlEntry object2 = new GrantAccessControlEntry(acl, sid, permission);		
+		GrantAccessControlEntry object3 = new GrantAccessControlEntry(acl, sid, BasePermission.DELETE);		
+		assertEquals(object2.hashCode(), object.hashCode());
+		assertNotEquals(object3.hashCode(), object.hashCode());
 	}
 
 	/**

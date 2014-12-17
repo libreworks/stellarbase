@@ -20,9 +20,9 @@ package com.libreworks.stellarbase.math;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.libreworks.stellarbase.text.Characters;
 
 /**
@@ -65,21 +65,17 @@ public abstract class AbstractMultiplier<T extends Multiplier<T>> implements Mul
 		if (o == null) {
 			return 1;
 		}
-		return new CompareToBuilder()
-			.append(value, o.getValue())
-			.append(unit, o.getUnit())
-			.append(prefix, o.getPrefix())
-			.toComparison();
+		return ComparisonChain.start()
+			.compare(value, o.getValue())
+			.compare(unit, o.getUnit(), Ordering.natural().nullsLast())
+			.compare(prefix, o.getPrefix(), Ordering.natural().nullsLast())
+			.result();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder(1, 31)
-			.append(value)
-			.append(unit)
-			.append(prefix)
-			.toHashCode();
+		return Objects.hashCode(value, unit, prefix);
 	}
 	
 	public BigDecimal getValue()

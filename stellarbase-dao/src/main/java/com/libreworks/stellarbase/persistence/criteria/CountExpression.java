@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.ImmutableSet;
@@ -68,7 +67,7 @@ public class CountExpression extends AbstractExpression<Long>
 	public Long aggregate(Collection<Object> objects)
 	{
 		if (CollectionUtils.isEmpty(objects)) {
-			return NumberUtils.LONG_ZERO;
+			return Long.valueOf(0L);
 		}
 		if (argument != null) {
 			ArrayList<Object> values = new ArrayList<Object>(objects.size());
@@ -116,7 +115,7 @@ public class CountExpression extends AbstractExpression<Long>
 	public String toString()
 	{
 		return new StringBuilder().append(COUNT).append('(')
-			.append(distinct ? DISTINCT : Strings.EMPTY)
+			.append(distinct ? DISTINCT : "")
 			.append(argument == null ? Strings.STAR : argument).append(')')
 			.toString();
 	}

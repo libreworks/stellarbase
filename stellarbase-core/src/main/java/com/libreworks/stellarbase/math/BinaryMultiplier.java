@@ -20,7 +20,7 @@ package com.libreworks.stellarbase.math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import com.google.common.base.Objects;
 
 /**
  * Stores a number and presents it abbreviated as a power of two (e.g 1024 = 1 Ki).
@@ -109,15 +109,13 @@ public class BinaryMultiplier extends AbstractMultiplier<BinaryMultiplier>
 	{
 		if (this == obj) {
 			return true;
-		} else if (obj == null || !(obj instanceof BinaryMultiplier)) {
-			return false;
+		} else if (obj instanceof BinaryMultiplier) {
+			BinaryMultiplier other = (BinaryMultiplier) obj;
+			return Objects.equal(getValue(), other.getValue()) &&
+				Objects.equal(getUnit(), other.getUnit()) &&
+				Objects.equal(getPrefix(), other.getPrefix());
 		}
-		BinaryMultiplier other = (BinaryMultiplier) obj;
-		return new EqualsBuilder()
-			.append(getValue(), other.getValue())
-			.append(getUnit(), other.getUnit())
-			.append(getPrefix(), other.getPrefix())
-			.isEquals();
+		return false;
 	}
 
 	/**

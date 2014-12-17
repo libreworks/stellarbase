@@ -27,8 +27,6 @@ import java.util.Map;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.lang.ObjectUtils;
-
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.util.Arguments;
 
@@ -75,6 +73,12 @@ public class MailParams implements Serializable
 		this(new InternetAddress(from));
 	}
 	
+	protected static InternetAddress createAddress(Object addr) throws AddressException
+	{
+		return addr instanceof InternetAddress ? (InternetAddress) addr
+	        : new InternetAddress(addr == null ? "" : addr.toString());
+	}
+	
 	/**
 	 * Adds a collection of BCC addresses to the params.
 	 * 
@@ -85,9 +89,7 @@ public class MailParams implements Serializable
 	public MailParams addBcc(Collection<?> bcc) throws AddressException
 	{
 		for (Object addr : bcc) {
-			this.bcc
-			    .add(addr instanceof InternetAddress ? (InternetAddress) addr
-			        : new InternetAddress(ObjectUtils.toString(addr)));
+			this.bcc.add(createAddress(addr));
 		}
 		return this;
 	}
@@ -100,7 +102,7 @@ public class MailParams implements Serializable
 	 */
 	public MailParams addBcc(InternetAddress... bcc)
 	{
-		for(InternetAddress addr : bcc) {
+		for(InternetAddress addr : Arguments.checkContainsNull(bcc)) {
 			this.bcc.add(addr);
 		}
 		return this;
@@ -131,9 +133,7 @@ public class MailParams implements Serializable
 	public MailParams addCc(Collection<?> cc) throws AddressException
 	{
 		for (Object addr : cc) {
-			this.cc
-			    .add(addr instanceof InternetAddress ? (InternetAddress) addr
-			        : new InternetAddress(ObjectUtils.toString(addr)));
+			this.cc.add(createAddress(addr));
 		}
 		return this;
 	}
@@ -146,7 +146,7 @@ public class MailParams implements Serializable
 	 */
 	public MailParams addCc(InternetAddress... cc)
 	{
-		for(InternetAddress addr : cc) {
+		for(InternetAddress addr : Arguments.checkContainsNull(cc)) {
 			this.cc.add(addr);
 		}
 		return this;
@@ -177,9 +177,7 @@ public class MailParams implements Serializable
 	public MailParams addTo(Collection<?> to) throws AddressException
 	{
 		for (Object addr : to) {
-			this.to
-			    .add(addr instanceof InternetAddress ? (InternetAddress) addr
-			        : new InternetAddress(ObjectUtils.toString(addr)));
+			this.to.add(createAddress(addr));
 		}
 		return this;
 	}
@@ -192,7 +190,7 @@ public class MailParams implements Serializable
 	 */
 	public MailParams addTo(InternetAddress... to)
 	{
-		for(InternetAddress addr : to) {
+		for(InternetAddress addr : Arguments.checkContainsNull(to)) {
 			this.to.add(addr);
 		}
 		return this;

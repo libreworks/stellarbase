@@ -19,8 +19,6 @@ package com.libreworks.stellarbase.security.acl;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.NotFoundException;
@@ -30,6 +28,7 @@ import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.acls.model.UnloadedSidException;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.libreworks.stellarbase.text.Strings;
 import com.libreworks.stellarbase.util.Arguments;
@@ -70,32 +69,26 @@ public abstract class AbstractAcl implements Acl
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null || !(obj instanceof AbstractAcl))
-			return false;
-		AbstractAcl other = (AbstractAcl)obj;
-		return new EqualsBuilder()
-			.append(objectIdentity, other.objectIdentity)
-			.append(parentAcl, other.parentAcl)
-			.append(entriesInheriting, other.entriesInheriting)
-			.append(permissionGrantingStrategy, other.permissionGrantingStrategy)
-			.append(loadedSids, other.loadedSids)
-			.append(getEntries(), other.getEntries())
-			.isEquals();
+		} else if (obj instanceof AbstractAcl) {
+			AbstractAcl other = (AbstractAcl)obj;
+			return Objects.equal(objectIdentity, other.objectIdentity) &&
+				Objects.equal(parentAcl, other.parentAcl) &&
+				entriesInheriting == other.entriesInheriting &&
+				Objects.equal(permissionGrantingStrategy, other.permissionGrantingStrategy) &&
+				Objects.equal(loadedSids, other.loadedSids) &&
+				Objects.equal(getEntries(), other.getEntries());
+		}
+		return false;
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return new HashCodeBuilder()
-			.append(objectIdentity)
-			.append(parentAcl)
-			.append(entriesInheriting)
-			.append(permissionGrantingStrategy)
-			.append(loadedSids)
-			.append(getEntries())
-			.toHashCode();
+		return Objects.hashCode(objectIdentity, parentAcl,
+			Boolean.valueOf(entriesInheriting), permissionGrantingStrategy,
+			loadedSids, getEntries());
 	}
 
 	public ObjectIdentity getObjectIdentity()

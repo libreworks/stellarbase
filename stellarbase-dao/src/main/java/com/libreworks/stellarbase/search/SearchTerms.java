@@ -21,8 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.google.common.base.Joiner;
 import com.libreworks.stellarbase.text.Characters;
 
 /**
@@ -104,19 +103,18 @@ public class SearchTerms implements Serializable
     {
         ArrayList<String> groups = new ArrayList<String>();
         if (!all.isEmpty()) {
-            groups.add("(+" + StringUtils.join(all.toArray(), " +") + ")");
+            groups.add("(+" + Joiner.on(" +").join(all) + ")");
         }
         if (!not.isEmpty()) {
-            groups.add("(-" + StringUtils.join(not.toArray(), " -") + ")");
+            groups.add("(-" + Joiner.on(" -").join(not) + ")");
         }
         if (!any.isEmpty()) {
-            groups.add("(" + StringUtils.join(all.toArray(), Characters.SPACE) + ")");
+            groups.add("(" + Joiner.on(Characters.SPACE).join(all) + ")");
         }
         if (groups.isEmpty()) {
-            return StringUtils.EMPTY;
+            return "";
         } else {
-            return groups.size() == 1 ? groups.get(0) : StringUtils.join(groups
-                .toArray(), " AND ");
+            return groups.size() == 1 ? groups.get(0) : Joiner.on(" AND ").join(groups);
         }
     }
 }
