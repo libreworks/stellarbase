@@ -6,14 +6,14 @@
 		<groupId>com.libreworks.stellarbase</groupId>
 		<artifactId>stellarbase-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-        <relativePath>../stellarbase-parent</relativePath>
+		<relativePath>../stellarbase-parent</relativePath>
 	</parent>
 	<packaging>jar</packaging>
 	<name>stellarbase-web</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.libreworks.stellarbase</groupId>
-			<artifactId>stellarbase-core</artifactId>
+			<artifactId>stellarbase-dao</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 			<type>jar</type>
@@ -31,6 +31,18 @@
 			<version>4.1.2.RELEASE</version>
 			<type>jar</type>
 			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.1.2.RELEASE</version>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>commons-logging</artifactId>
@@ -59,6 +71,18 @@
 			<version>2.4.3</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>cz.jirutka.spring</groupId>
+			<artifactId>spring-rest-exception-handler</artifactId>
+			<version>1.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-servlet_3.0_spec</artifactId>
+			<version>1.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

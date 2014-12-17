@@ -50,7 +50,7 @@ public class Pagination
 	 *    
 	 * @return the default Pagination object
 	 */
-	public Pagination create()
+	public static Pagination create()
 	{
 		return DEFAULT;
 	}
@@ -62,7 +62,7 @@ public class Pagination
 	 * @param offset The offset in the records. If {@code null} or a negative number is provided, this defaults to {@value 0}
 	 * @return the configured Pagination object 
 	 */
-	public Pagination create(Integer max, Integer offset)
+	public static Pagination create(Integer max, Integer offset)
 	{
 		max = max == null || max < 0 ? Integer.MAX_VALUE : max;
 		offset = offset == null || offset < 0 ? ZERO : offset;
@@ -83,7 +83,7 @@ public class Pagination
 	 * @param order The field sort order. If {@code null} is provided, this defaults to an empty Map.
 	 * @return the configured Pagination object 
 	 */
-	public Pagination create(Integer max, Integer offset, Map<String,Boolean> order)
+	public static Pagination create(Integer max, Integer offset, Map<String,Boolean> order)
 	{
 		max = max == null ? Integer.MAX_VALUE : max;
 		offset = offset == null ? ZERO : offset;
