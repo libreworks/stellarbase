@@ -19,8 +19,6 @@ package com.libreworks.stellarbase.text;
 
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -108,14 +106,39 @@ public class Strings
 	
 	private Strings() {}
 	
+	/**
+	 * Whether the object's string representation is blank.
+	 * 
+	 * <p>A null object will return true.
+	 * 
+	 * <p>This method is really just a shortcut for {@code isBlank(object.toString())}.
+	 * 
+	 * @param object
+	 * @return whether the string representation of the value is
+	 * @see Strings#isBlank(CharSequence)
+	 */
 	public static boolean isBlank(Object object)
 	{
 		return object == null || isBlank(object.toString()); 
 	}
 	
+	/**
+	 * Whether the provided value is null, empty, or contains only whitespace characters.
+	 * 
+	 * @param cs The value to test
+	 * @return whether the value is blank
+	 */
 	public static boolean isBlank(CharSequence cs)
 	{
-		return StringUtils.isBlank(cs);
+		if (cs != null) {
+			int len = cs.length();
+			for (int i = 0; i < len; i++) {
+				if (!Character.isWhitespace(cs.charAt(i))) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -130,10 +153,10 @@ public class Strings
 	 */
 	public static boolean isTruthy(String value)
 	{
-		if (value == null) {
+		if (value == null || value.isEmpty()) {
 			return false;
 		}
-		String trimmed = StringUtils.trimToEmpty(value);
+		String trimmed = Trimmer.WHITESPACE.trim(value);
 		for (String v : TRUTHY) {
 			if (v.equalsIgnoreCase(trimmed)) {
 				return true;
@@ -158,7 +181,7 @@ public class Strings
 		if (length < 1) {
 			throw new IllegalArgumentException("length must be greater than zero");
 		}
-		value = value.trim();
+		value = Trimmer.WHITESPACE.trim(value);
 		if (value.length() < length) {
 			return value;
 		} else {

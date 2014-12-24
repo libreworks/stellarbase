@@ -149,8 +149,9 @@ public class ValueUtils
 		Number nvalue = value instanceof Number ? (Number)value : Double.NaN;
 		if (!(value instanceof Number)){
 			String svalue = value == null ? "" : value.toString();
-			if(org.apache.commons.lang3.math.NumberUtils.isNumber(svalue)) {
+			try {
 				nvalue = NumberUtils.parseNumber(svalue, toClass);
+			} catch (Exception e) {
 			}
 		}
 		return NumberUtils.convertNumberToTargetClass(nvalue, toClass);
